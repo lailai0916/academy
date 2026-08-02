@@ -27,7 +27,10 @@ npm run preview
 
 The repository is configured for `lailai0916/academy` and publishes to:
 
-`https://lailai0916.github.io/academy/`
+`https://lailai0916.com/academy/`
+
+The default project-page address, `https://lailai0916.github.io/academy/`, redirects
+to the same deployment.
 
 ## AI boundary
 
