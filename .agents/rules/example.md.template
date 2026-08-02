@@ -1,0 +1,34 @@
+<!--
+  How to write a project-specific rule.
+
+  Copy this file to `<name>.md` (drop the .template suffix), then register it in
+  the "Rules index" table of ../../AGENTS.md. Agents read a rule when a file
+  matching its `paths` glob is touched — so keep each rule scoped and small.
+
+  Golden rule: DON'T restate lailai.skill here. The general voice/wording/math/
+  code/design rules already live in `.agents/skills/lailai-skill/`. A project
+  rule holds only the slice that's specific to THIS repo, and points to the
+  skill for the rest — the way the site's rules/writing-style.md does.
+
+  Delete this comment block in the real file.
+-->
+
+---
+
+paths:
+
+- 'src/\*_/_.{ts,tsx}'
+- 'src/\*_/_.css'
+
+---
+
+# <Area> rules
+
+One or two sentences on what this rule governs and when it applies.
+
+> General <X> rules live in lailai.skill — see [`.agents/skills/lailai-skill/references/<file>.md`](../skills/lailai-skill/references/). This file holds only the repo-specific layer below.
+
+## <Section>
+
+- Concrete, checkable conventions. Prefer examples over prose.
+- State the _why_ when it's non-obvious, so the rule survives refactors.

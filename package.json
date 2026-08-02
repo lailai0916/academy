@@ -8,7 +8,9 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "check": "npm run typecheck && npm run build"
+    "check": "npm run typecheck && npm run build && npm run format:check",
+    "format": "prettier --write \"src/**/*.{ts,tsx,css}\" index.html vite.config.ts README.md README.zh-Hans.md brand-spec.md AGENTS.md CLAUDE.md .github/**/*.md .github/**/*.yml package.json package-lock.json tsconfig.json",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\" index.html vite.config.ts README.md README.zh-Hans.md brand-spec.md AGENTS.md CLAUDE.md .github/**/*.md .github/**/*.yml package.json package-lock.json tsconfig.json"
   },
   "dependencies": {
     "react": "19.2.8",
@@ -19,6 +21,7 @@
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.4",
     "@vitejs/plugin-react": "6.0.5",
+    "prettier": "^3.9.6",
     "typescript": "7.0.2",
     "vite": "8.2.0"
   }

@@ -1,6 +1,13 @@
 :root {
   color-scheme: light;
-  font-family: 'SF Pro Text', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Inter', system-ui, sans-serif;
+  font-family:
+    'SF Pro Text',
+    'SF Pro Display',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Inter',
+    system-ui,
+    sans-serif;
   color: #15181c;
   background: #f6f8fa;
   font-synthesis: none;
@@ -177,6 +184,36 @@ input:focus-visible {
   width: 16px;
 }
 
+.topbar-actions {
+  align-items: center;
+  display: flex;
+  gap: 0.55rem;
+}
+
+.locale-button {
+  align-items: center;
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  color: var(--muted-strong);
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 0.68rem;
+  font-weight: 700;
+  height: 30px;
+  justify-content: center;
+  min-width: 30px;
+  padding: 0 0.55rem;
+  transition:
+    border-color 160ms ease,
+    color 160ms ease;
+}
+
+.locale-button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
 .avatar-button {
   align-items: center;
   background: var(--ink);
@@ -279,7 +316,10 @@ input:focus-visible {
   justify-content: center;
   min-height: 44px;
   padding: 0.7rem 1.1rem;
-  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
 }
 
 .primary-button {
@@ -459,7 +499,9 @@ input:focus-visible {
   min-height: 64px;
   padding: 0.7rem 0.6rem;
   text-align: left;
-  transition: background-color 160ms ease, border-color 160ms ease;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease;
   width: 100%;
 }
 
@@ -571,7 +613,9 @@ input:focus-visible {
   display: flex;
   gap: 0.5rem;
   padding: 0.35rem 0.4rem 0.35rem 0.8rem;
-  transition: border-color 160ms ease, box-shadow 160ms ease;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
 }
 
 .planner-input-row:focus-within {
@@ -716,7 +760,9 @@ input:focus-visible {
   min-height: 155px;
   padding: 1.15rem;
   text-align: left;
-  transition: background-color 160ms ease, border-color 160ms ease;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease;
 }
 
 .module-card:hover,
