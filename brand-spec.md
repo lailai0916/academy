@@ -5,9 +5,8 @@
 `lailai's Academy` is a quiet learning workspace: focused enough for daily practice,
 but broad enough to hold planning, words, poetry, and future modules.
 
-The first version reuses the visual language of [lailai's Home](https://lailai.one):
-clean surfaces, one blue accent, system typography, restrained motion, and system-driven
-light/dark appearance.
+The workspace uses clean surfaces, one low-saturation indigo accent, system typography,
+restrained motion, and system-driven light/dark appearance.
 
 ## Assets
 
@@ -16,14 +15,14 @@ light/dark appearance.
 
 ## Tokens
 
-- Primary: `#1d9bf0`
-- Primary dark: `#0e81d2`
+- Primary: `#5662c7`
+- Primary dark: `#4552b4`
 - Light surface: `#ffffff`
-- Light canvas: `#f6f8fa`
-- Dark surface: `#171b1f`
-- Dark canvas: `#101316`
-- Large radius: `20px`
-- Medium radius: `14px`
+- Light canvas: `#f5f6f8`
+- Dark surface: `#191e25`
+- Dark canvas: `#11151b`
+- Large radius: `18px`
+- Medium radius: `12px`
 - Base spacing: `4px`, composed into an 8-point rhythm
 - Display/body font: SF Pro when available, then Inter/system sans-serif
 

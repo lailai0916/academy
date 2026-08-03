@@ -26,17 +26,22 @@
 ## Project Introduction
 
 `lailai's Academy` is a personal learning workspace that turns long-term goals into daily
-practice through a dashboard, review modules, and a local AI-planner preview.
+practice through a dashboard, a local planner, active-recall word cards, classical-poem
+recitation, and a review queue.
 
 ## Project Features
 
 🧭 **Daily dashboard** — Keep the next small set of learning tasks visible and editable.
 
-🧠 **Planner preview** — Turn a learning goal into a short, clearly marked local plan.
+🧠 **Local planner** — Turn a learning goal into a practical first session and add its steps to today.
 
-📖 **Learning modules** — Switch between Words, Poems, and Review without leaving the workspace.
+📖 **Words** — Reveal vocabulary, rate recall difficulty, and schedule the next review with a small spaced-repetition loop.
 
-💾 **Local persistence** — Store task progress in the browser through `localStorage`.
+🪶 **Poems** — Read public-domain classical poems with modern readings, memory cues, and recitation counts.
+
+🔁 **Review queue** — See words and poems that are ready now and jump directly into the right session.
+
+💾 **Local persistence** — Store tasks, word progress, poem progress, and language preference in the browser through `localStorage`.
 
 🌐 **Bilingual interface** — Use English by default or switch to Simplified Chinese in place.
 
@@ -84,8 +89,8 @@ academy/
 └── vite.config.ts                  # Base path and React plugin configuration
 ```
 
-The planner currently generates a local preview. A future API can be connected through
-`VITE_API_BASE_URL`; secrets must stay on a server-side boundary.
+The planner is intentionally local and deterministic for now. A future API can be connected
+through `VITE_API_BASE_URL`; secrets must stay on a server-side boundary.
 
 ## License
 
