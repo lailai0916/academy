@@ -96,10 +96,10 @@ const messages = {
       profile: 'Personal profile is not connected yet',
     },
     overview: {
-      eyebrow: 'A quiet place to keep learning',
-      title: 'Make today count, one small session at a time.',
+      eyebrow: 'Your learning desk',
+      title: 'Keep learning in motion.',
       description:
-        'Your learning desk for planning, active recall, and the next review that matters.',
+        'Plan a small session, practise what matters, and return when it is time to review.',
       startReview: 'Start due review',
       openPlanner: 'Plan a goal',
       progress: 'Today’s progress',
@@ -220,9 +220,9 @@ const messages = {
       profile: '个人资料暂未连接',
     },
     overview: {
-      eyebrow: '一个安静、持续学习的地方',
-      title: '把今天过好，一次只专注一小段。',
-      description: '在这里规划目标、主动回忆，并接住下一次真正重要的复习。',
+      eyebrow: '你的学习桌面',
+      title: '让学习保持在路上。',
+      description: '安排一小段学习，练习真正重要的内容，在该复习时回来。',
       startReview: '开始待复习',
       openPlanner: '规划一个目标',
       progress: '今日进度',
@@ -800,50 +800,8 @@ function App(): ReactNode {
 
   return (
     <div className="app-shell">
-      <aside className="sidebar">
-        <a className="brand" href="#overview" onClick={() => goTo('overview')}>
-          <span className="brand-mark">
-            <img alt="" src={`${import.meta.env.BASE_URL}brand/logo.svg`} />
-          </span>
-          <span className="brand-copy">
-            <strong>{text.brand.name}</strong>
-            <span>{text.brand.product}</span>
-          </span>
-        </a>
-        <nav aria-label={locale === 'en' ? 'Primary navigation' : '主导航'} className="side-nav">
-          <p className="nav-label">{locale === 'en' ? 'Workspace' : '工作区'}</p>
-          {navItems.map((item) => (
-            <button
-              className={`nav-item${workspace === item.id ? ' active' : ''}`}
-              key={item.id}
-              onClick={() => goTo(item.id)}
-              type="button"
-            >
-              <Icon name={item.icon} size={17} />
-              <span>{text.nav[item.id]}</span>
-              {item.id === 'review' && dueWords.length + duePoems.length > 0 && (
-                <em>{dueWords.length + duePoems.length}</em>
-              )}
-            </button>
-          ))}
-        </nav>
-        <div className="sidebar-bottom">
-          <div className="local-status">
-            <span className="status-dot" />
-            <span>{text.common.local}</span>
-          </div>
-          <button className="profile-row" aria-label={text.common.profile} disabled type="button">
-            <span className="avatar">L</span>
-            <span>
-              <strong>lailai</strong>
-              <small>{locale === 'en' ? 'Personal desk' : '个人学习桌'}</small>
-            </span>
-          </button>
-        </div>
-      </aside>
-
-      <div className="main-shell">
-        <header className="mobile-topbar">
+      <header className="topbar">
+        <div className="topbar-inner">
           <a className="brand" href="#overview" onClick={() => goTo('overview')}>
             <span className="brand-mark">
               <img alt="" src={`${import.meta.env.BASE_URL}brand/logo.svg`} />
@@ -853,23 +811,22 @@ function App(): ReactNode {
               <span>{text.brand.product}</span>
             </span>
           </a>
-          <span className="mobile-workspace-title">{text.nav[workspace]}</span>
-          <button
-            className="locale-button"
-            aria-label={text.common.language}
-            onClick={() => setLocale(locale === 'en' ? 'zh-Hans' : 'en')}
-            type="button"
-          >
-            {locale === 'en' ? '中' : 'EN'}
-          </button>
-        </header>
-        <header className="workspace-bar">
-          <div>
-            <span className="workspace-breadcrumb">{text.brand.product}</span>
-            <span className="workspace-divider">/</span>
-            <strong>{text.nav[workspace]}</strong>
-          </div>
-          <div className="workspace-actions">
+          <nav aria-label={locale === 'en' ? 'Primary navigation' : '主导航'} className="topnav">
+            {navItems.map((item) => (
+              <button
+                className={`nav-item${workspace === item.id ? ' active' : ''}`}
+                key={item.id}
+                onClick={() => goTo(item.id)}
+                type="button"
+              >
+                <span>{text.nav[item.id]}</span>
+                {item.id === 'review' && dueWords.length + duePoems.length > 0 && (
+                  <em>{dueWords.length + duePoems.length}</em>
+                )}
+              </button>
+            ))}
+          </nav>
+          <div className="topbar-actions">
             <span className="date-label">{formatDate(locale)}</span>
             <button
               className="locale-button"
@@ -880,17 +837,16 @@ function App(): ReactNode {
               {locale === 'en' ? '中' : 'EN'}
             </button>
           </div>
-        </header>
+        </div>
+      </header>
 
+      <div className="main-shell">
         <main className="content" id="main-content">
           {workspace === 'overview' && (
             <section className="view overview-view" aria-labelledby="overview-title">
               <div className="view-intro overview-intro">
                 <div>
-                  <p className="eyebrow">
-                    <span className="eyebrow-dot" />
-                    {text.overview.eyebrow}
-                  </p>
+                  <p className="eyebrow">{text.overview.eyebrow}</p>
                   <h1 id="overview-title">{text.overview.title}</h1>
                   <p className="lead">{text.overview.description}</p>
                 </div>
@@ -906,30 +862,6 @@ function App(): ReactNode {
                   <span className="quiet-note">
                     <Icon name="clock" size={15} /> {text.common.local}
                   </span>
-                </div>
-              </div>
-              <div className="metric-grid">
-                <div className="metric-card">
-                  <span className="metric-label">{text.overview.progress}</span>
-                  <strong>{progress}%</strong>
-                  <span className="metric-meta">
-                    {completedTasks}/{state.tasks.length} {text.overview.tasks}
-                  </span>
-                  <div className="progress-track">
-                    <span className="progress-fill" style={{ width: `${progress}%` }} />
-                  </div>
-                </div>
-                <div className="metric-card">
-                  <span className="metric-label">{text.common.dueToday}</span>
-                  <strong>{dueWords.length + duePoems.length}</strong>
-                  <span className="metric-meta">
-                    {dueWords.length} {text.overview.wordsReady}
-                  </span>
-                </div>
-                <div className="metric-card">
-                  <span className="metric-label">{locale === 'en' ? 'Consistency' : '连续性'}</span>
-                  <strong>{streak}</strong>
-                  <span className="metric-meta">{text.overview.streak}</span>
                 </div>
               </div>
               <div className="overview-grid">
@@ -1006,6 +938,47 @@ function App(): ReactNode {
                     </time>
                   </div>
                 </aside>
+              </div>
+              <div
+                className="module-bento"
+                aria-label={locale === 'en' ? 'Learning modules' : '学习模块'}
+              >
+                {navItems
+                  .filter((item) => item.id !== 'overview')
+                  .map((item) => (
+                    <button
+                      className="module-card panel"
+                      key={item.id}
+                      onClick={() => goTo(item.id)}
+                      type="button"
+                    >
+                      <span className="module-card-icon">
+                        <Icon name={item.icon} size={18} />
+                      </span>
+                      <span className="module-card-copy">
+                        <strong>{text.nav[item.id]}</strong>
+                        <small>
+                          {item.id === 'planner' &&
+                            (locale === 'en' ? 'Shape the next session' : '安排下一次学习')}
+                          {item.id === 'words' &&
+                            (locale === 'en'
+                              ? `${dueWords.length} ready to recall`
+                              : `${dueWords.length} 个单词待回忆`)}
+                          {item.id === 'poems' &&
+                            (locale === 'en'
+                              ? `${state.poems.length} passages in your shelf`
+                              : `书架上有 ${state.poems.length} 篇古诗`)}
+                          {item.id === 'review' &&
+                            (locale === 'en'
+                              ? `${dueWords.length + duePoems.length} items in queue`
+                              : `队列中有 ${dueWords.length + duePoems.length} 项`)}
+                        </small>
+                      </span>
+                      <span className="module-card-arrow">
+                        <Icon name="arrow" size={16} />
+                      </span>
+                    </button>
+                  ))}
               </div>
             </section>
           )}
