@@ -814,6 +814,7 @@ function App(): ReactNode {
           <nav aria-label={locale === 'en' ? 'Primary navigation' : '主导航'} className="topnav">
             {navItems.map((item) => (
               <button
+                aria-current={workspace === item.id ? 'page' : undefined}
                 className={`nav-item${workspace === item.id ? ' active' : ''}`}
                 key={item.id}
                 onClick={() => goTo(item.id)}
@@ -987,10 +988,7 @@ function App(): ReactNode {
             <section className="view" aria-labelledby="planner-title">
               <div className="view-intro compact-intro">
                 <div>
-                  <p className="eyebrow">
-                    <span className="eyebrow-dot" />
-                    {text.planner.eyebrow}
-                  </p>
+                  <p className="eyebrow">{text.planner.eyebrow}</p>
                   <h1 id="planner-title">{text.planner.title}</h1>
                   <p className="lead">{text.planner.description}</p>
                 </div>
@@ -1090,10 +1088,7 @@ function App(): ReactNode {
             <section className="view" aria-labelledby="words-title">
               <div className="view-intro compact-intro">
                 <div>
-                  <p className="eyebrow">
-                    <span className="eyebrow-dot" />
-                    {text.words.eyebrow}
-                  </p>
+                  <p className="eyebrow">{text.words.eyebrow}</p>
                   <h1 id="words-title">{text.words.title}</h1>
                   <p className="lead">{text.words.description}</p>
                 </div>
@@ -1298,10 +1293,7 @@ function App(): ReactNode {
             <section className="view" aria-labelledby="poems-title">
               <div className="view-intro compact-intro">
                 <div>
-                  <p className="eyebrow">
-                    <span className="eyebrow-dot" />
-                    {text.poems.eyebrow}
-                  </p>
+                  <p className="eyebrow">{text.poems.eyebrow}</p>
                   <h1 id="poems-title">{text.poems.title}</h1>
                   <p className="lead">{text.poems.description}</p>
                 </div>
@@ -1412,10 +1404,7 @@ function App(): ReactNode {
             <section className="view" aria-labelledby="review-title">
               <div className="view-intro compact-intro">
                 <div>
-                  <p className="eyebrow">
-                    <span className="eyebrow-dot" />
-                    {text.review.eyebrow}
-                  </p>
+                  <p className="eyebrow">{text.review.eyebrow}</p>
                   <h1 id="review-title">{text.review.title}</h1>
                   <p className="lead">{text.review.description}</p>
                 </div>

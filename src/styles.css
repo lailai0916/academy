@@ -72,6 +72,8 @@ body {
   min-width: 320px;
   min-height: 100vh;
   background: var(--bg);
+  line-height: 1.47;
+  letter-spacing: -0.006em;
 }
 
 button,
@@ -200,15 +202,9 @@ select:focus-visible {
   color: var(--ink);
 }
 .nav-item.active {
+  background: var(--surface-soft);
   color: var(--ink);
   font-weight: 650;
-}
-.nav-item.active::after {
-  background: var(--accent);
-  border-radius: 50%;
-  content: '';
-  height: 4px;
-  width: 4px;
 }
 .nav-item em {
   color: var(--accent-strong);
@@ -379,6 +375,12 @@ h3 {
 .icon-button:disabled {
   cursor: not-allowed;
   opacity: 0.45;
+}
+
+.button:active,
+.locale-button:active,
+.nav-item:active {
+  transform: scale(0.98);
 }
 .primary-button {
   background: var(--ink);
@@ -626,7 +628,7 @@ input::placeholder {
   width: 35px;
 }
 .next-panel .panel-icon {
-  margin-bottom: auto;
+  margin-bottom: 28px;
 }
 .next-panel h2 {
   font-size: 1.08rem;
