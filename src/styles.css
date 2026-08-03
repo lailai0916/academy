@@ -1293,15 +1293,18 @@ blockquote {
   }
   .brand {
     min-height: 29px;
+    order: 0;
   }
   .topbar-actions {
     margin-left: auto;
+    order: 1;
   }
   .topnav {
     flex: 1 0 100%;
     margin-top: 8px;
     overflow-x: auto;
     padding-bottom: 2px;
+    order: 2;
   }
   .nav-item {
     min-height: 30px;
