@@ -40,7 +40,7 @@ practice through a dashboard, review modules, and a local AI-planner preview.
 
 🌐 **Bilingual interface** — Use English by default or switch to Simplified Chinese in place.
 
-🚀 **GitHub Pages deployment** — Build with Vite and publish through GitHub Actions.
+🚀 **Cloud deployment** — Build with Vite and sync the static bundle to the Academy server through GitHub Actions.
 
 ## Getting Started
 
@@ -54,14 +54,14 @@ npm install
 npm run dev
 ```
 
-Build and preview the GitHub Pages version locally:
+Build and preview the production bundle locally:
 
 ```bash
-VITE_BASE_PATH=/academy/ npm run build
+npm run build
 npm run preview
 ```
 
-The deployed app is available at [lailai0916.com/academy](https://lailai0916.com/academy/).
+The deployed app is available at [academy.lailai.one](https://academy.lailai.one/).
 
 ## Project Structure
 
@@ -69,7 +69,7 @@ The deployed app is available at [lailai0916.com/academy](https://lailai0916.com
 academy/
 ├── .github/                        # GitHub collaboration and deployment workflows
 │   └── workflows/                  # GitHub Actions deployment workflow
-│       └── deploy.yml              # Build and publish the Vite app to Pages
+│       └── deploy.yml              # Build and sync the Vite app to the cloud server
 ├── public/                         # Static assets copied to the deployment root
 │   └── brand/                      # Academy brand assets
 │       ├── favicon.ico             # Browser icon

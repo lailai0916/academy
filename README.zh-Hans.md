@@ -40,7 +40,7 @@
 
 🌐 **双语界面** —— 默认使用英语，也可以在页面内切换到简体中文。
 
-🚀 **GitHub Pages 部署** —— 使用 Vite 构建，由 GitHub Actions 发布。
+🚀 **云服务器部署** —— 使用 Vite 构建，由 GitHub Actions 同步到 Academy 云服务器。
 
 ## 快速开始
 
@@ -54,14 +54,14 @@ npm install
 npm run dev
 ```
 
-在本地构建并预览 GitHub Pages 版本：
+在本地构建并预览生产版本：
 
 ```bash
-VITE_BASE_PATH=/academy/ npm run build
+npm run build
 npm run preview
 ```
 
-线上地址为 [lailai0916.com/academy](https://lailai0916.com/academy/)。
+线上地址为 [academy.lailai.one](https://academy.lailai.one/)。
 
 ## 项目结构
 
@@ -69,7 +69,7 @@ npm run preview
 academy/
 ├── .github/                        # GitHub 协作与部署工作流
 │   └── workflows/                  # GitHub Actions 部署工作流
-│       └── deploy.yml              # 构建并发布 Vite 应用到 Pages
+│       └── deploy.yml              # 构建并同步 Vite 应用到云服务器
 ├── public/                         # 复制到部署根目录的静态资源
 │   └── brand/                      # Academy 品牌资源
 │       ├── favicon.ico             # 浏览器图标

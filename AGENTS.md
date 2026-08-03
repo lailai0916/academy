@@ -23,7 +23,7 @@ Init the submodule after cloning: `git submodule update --init`. Update it later
 
 Source for `lailai's Academy` — a Vite + React + TypeScript learning workspace for daily
 plans, word review, poetry recitation, and a local AI-planner preview. Node `>=20`; GitHub
-Actions builds the app and publishes it to [GitHub Pages](https://lailai0916.com/academy/).
+Actions builds the app and syncs it to the cloud server for [academy.lailai.one](https://academy.lailai.one/).
 
 ## Commands
 
@@ -35,8 +35,8 @@ npm run check
 npm run format
 ```
 
-The `check` script is the gate before every commit. `VITE_BASE_PATH=/academy/ npm run build`
-matches the GitHub Pages project path.
+The `check` script is the gate before every commit. `npm run build` creates the root-hosted
+bundle deployed at `academy.lailai.one`.
 
 ## Conventions
 
