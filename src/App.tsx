@@ -853,6 +853,7 @@ function App(): ReactNode {
               <span>{text.brand.product}</span>
             </span>
           </a>
+          <span className="mobile-workspace-title">{text.nav[workspace]}</span>
           <button
             className="locale-button"
             aria-label={text.common.language}
