@@ -44,11 +44,11 @@ export function ProfilePage() {
               <p className={styles.bio}>{profile.bio || '暂无个人简介。'}</p>
               <div className={styles.metaRow}>
                 <span>
-                  <Icon icon="lucide:calendar-days" />{' '}
+                  <Icon icon="lucide:calendar-days" />
                   {new Date(profile.createdAt).toLocaleDateString('zh-CN')} 加入
                 </span>
                 <span>
-                  <Icon icon={profile.isPublic ? 'lucide:globe-2' : 'lucide:lock'} />{' '}
+                  <Icon icon={profile.isPublic ? 'lucide:globe-2' : 'lucide:lock'} />
                   {profile.isPublic ? '公开主页' : '私密主页'}
                 </span>
               </div>

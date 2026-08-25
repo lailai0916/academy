@@ -39,15 +39,18 @@ standalone forms and never double as the product homepage.
 
 - Keep the top bar and left navigation as the application frame, but do not reproduce GFSSM's
   hard enterprise grid. GFSSM is an information-architecture reference, not Academy's visual skin.
-- The `60px` top bar uses a restrained functional material and a soft edge. It contains location,
+- The `60px` top bar uses a solid neutral surface and a soft edge. It contains location,
   global search, notifications, theme, and account access; it never becomes a second primary
   navigation row.
+- The top bar stays solid and neutral. Current-location text has no colored dot, gradient, or other
+  decorative marker.
 - The sidebar is an inset `224px` navigation surface with rounded outer corners. It must not use a
   dark decorative shadow, full-height hard divider, or a separate vertical active indicator.
 - Application content width: `1240px` maximum, with generous gutters and a quiet reading rhythm.
 - Page titles use `1.75–2.1rem`; section titles use `17px`.
 - Group primary navigation by Learning, Community, Account, and System. Do not mix global actions
   into the sidebar.
+- The sidebar footer contains the logout action only; do not repeat the product description there.
 - Dashboard prioritizes today's plan, current review focus, long-term metrics, recent results, and a
   compact activity trend.
 - Academy's identity comes from learning state: due reviews, memory stability, textbook progress,

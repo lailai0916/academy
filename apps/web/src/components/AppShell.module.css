@@ -14,10 +14,8 @@
     calc(var(--academy-sidebar-width) + var(--academy-shell-gap) * 2)
     minmax(120px, 1fr) auto;
   align-items: center;
-  border-bottom: 1px solid color-mix(in srgb, var(--lui-color-separator) 82%, transparent);
-  background: var(--academy-chrome);
-  backdrop-filter: saturate(160%) blur(20px);
-  -webkit-backdrop-filter: saturate(160%) blur(20px);
+  border-bottom: 1px solid var(--lui-color-separator);
+  background: var(--lui-color-surface);
 }
 
 .brandArea {
@@ -68,17 +66,7 @@
   display: flex;
   min-width: 0;
   align-items: center;
-  gap: 9px;
   padding: 0 16px;
-}
-
-.location > span {
-  width: 6px;
-  height: 6px;
-  flex: none;
-  border-radius: 50%;
-  background: var(--lui-color-accent);
-  box-shadow: 0 0 0 4px var(--lui-color-accent-soft);
 }
 
 .location strong {
@@ -131,6 +119,11 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.accountButton :global(.lui-avatar) {
+  background: var(--lui-color-surface-muted);
+  color: var(--lui-color-label-secondary);
 }
 
 .sidebar {
@@ -305,18 +298,17 @@
   height: 18px;
 }
 
-.sidebarFooter > span {
-  padding: 0 11px;
-  color: var(--lui-color-label-tertiary);
-  font-size: 10px;
-}
-
 .main {
   min-width: 0;
   width: min(100% - 64px, 1240px);
   margin-inline: auto;
   padding: 34px 0 64px;
   animation: page-enter var(--lui-motion-surface) both;
+}
+
+.main:focus,
+.main:focus-visible {
+  outline: none;
 }
 
 .mobileBackdrop {
@@ -426,7 +418,6 @@
 }
 
 @media (prefers-reduced-transparency: reduce) {
-  .topbar,
   .sidebar,
   .mobileBackdrop {
     backdrop-filter: none;

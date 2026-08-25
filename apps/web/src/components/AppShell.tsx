@@ -116,7 +116,6 @@ export function AppShell() {
         </div>
 
         <div className={styles.location} aria-label="当前位置">
-          <span aria-hidden="true" />
           <strong>{currentLabel}</strong>
         </div>
 
@@ -193,7 +192,6 @@ export function AppShell() {
             <Icon icon="lucide:log-out" />
             <span>退出登录</span>
           </button>
-          <span>Academy · 高中 AI 自学平台</span>
         </div>
       </aside>
 
