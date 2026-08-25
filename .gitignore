@@ -8,6 +8,8 @@ dist/
 build/
 out/
 *.tsbuildinfo
+apps/api/drizzle.config.js
+apps/api/drizzle.config.js.map
 
 # Environment / secrets
 .env

@@ -1,0 +1,68 @@
+name: academy
+
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${ACADEMY_POSTGRES_DB}
+      POSTGRES_USER: ${ACADEMY_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${ACADEMY_POSTGRES_PASSWORD}
+    volumes:
+      - academy_postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    logging:
+      options:
+        max-size: 10m
+        max-file: '3'
+
+  api:
+    image: academy-api:${ACADEMY_RELEASE:-latest}
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 4100
+      DATABASE_URL: postgres://${ACADEMY_POSTGRES_USER}:${ACADEMY_POSTGRES_PASSWORD}@db:5432/${ACADEMY_POSTGRES_DB}
+      APP_ORIGIN: https://academy.lailai.one
+      SESSION_COOKIE_NAME: academy_session
+      SESSION_TTL_DAYS: 30
+      AI_CONFIG_ENCRYPTION_KEY: ${AI_CONFIG_ENCRYPTION_KEY}
+      BOOTSTRAP_ADMIN_USERNAME: ${BOOTSTRAP_ADMIN_USERNAME:-admin}
+      BOOTSTRAP_ADMIN_PASSWORD: ${BOOTSTRAP_ADMIN_PASSWORD:-}
+      RUN_MIGRATIONS: 'true'
+      TRUST_PROXY: 'true'
+    ports:
+      - 127.0.0.1:4100:4100
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://127.0.0.1:4100/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    logging:
+      options:
+        max-size: 10m
+        max-file: '3'
+
+volumes:
+  academy_postgres:

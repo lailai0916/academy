@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5f5f7" />
+    <meta name="description" content="lailai's Academy — 面向高中生的 AI 自学平台。" />
+    <link rel="icon" href="/brand/favicon.ico" />
+    <title>lailai's Academy</title>
+    <script>
+      (function () {
+        try {
+          var preference = localStorage.getItem('lailai.theme');
+          var system = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          var theme = preference === 'light' || preference === 'dark' ? preference : system;
+          document.documentElement.dataset.theme = theme;
+          document.documentElement.dataset.themePreference = preference || 'system';
+        } catch (_) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <script
+      defer
+      src="https://analytics.lailai.one/script.js"
+      data-website-id="ba6c7111-ecd7-4685-898e-cb381c962eee"
+    ></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

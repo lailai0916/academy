@@ -1,0 +1,8 @@
+[Unit]
+Description=Back up lailai's Academy PostgreSQL database
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/backup-academy

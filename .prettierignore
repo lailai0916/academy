@@ -1,0 +1,7 @@
+.agents/
+dist/
+apps/*/dist/
+apps/api/drizzle.config.js*
+packages/*/dist/
+drizzle/
+node_modules/

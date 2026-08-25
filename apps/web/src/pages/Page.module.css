@@ -1,0 +1,270 @@
+.page {
+  display: grid;
+  gap: 28px;
+}
+
+.pageHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.pageTitle {
+  display: grid;
+  gap: 8px;
+}
+
+.eyebrow {
+  color: var(--lui-color-accent);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.pageTitle h1 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  letter-spacing: -0.045em;
+}
+
+.pageTitle p {
+  max-width: 62ch;
+  color: var(--lui-color-label-secondary);
+  font-size: 15px;
+}
+
+.section {
+  display: grid;
+  gap: 14px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.sectionHeader h2 {
+  font-size: 18px;
+  letter-spacing: -0.02em;
+}
+
+.sectionHeader p,
+.muted {
+  color: var(--lui-color-label-secondary);
+  font-size: 13px;
+}
+
+.grid2,
+.grid3,
+.grid4 {
+  display: grid;
+  gap: 14px;
+}
+
+.grid2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.grid3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.grid4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.panelBody {
+  display: grid;
+  gap: 18px;
+  padding: 20px;
+}
+
+.panelTitle {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.panelTitleCopy {
+  display: grid;
+  gap: 5px;
+}
+
+.panelTitle h2,
+.panelTitle h3 {
+  font-size: 17px;
+  letter-spacing: -0.015em;
+}
+
+.panelTitle p {
+  color: var(--lui-color-label-secondary);
+  font-size: 13px;
+}
+
+.iconChip {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  flex: none;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--lui-color-accent-soft);
+  color: var(--lui-color-accent);
+  font-size: 20px;
+}
+
+.metric {
+  display: grid;
+  gap: 5px;
+  min-height: 112px;
+  align-content: space-between;
+  padding: 18px;
+  border: 1px solid var(--lui-color-separator);
+  border-radius: var(--lui-radius-panel);
+  background: var(--lui-color-surface);
+}
+
+.metric span {
+  color: var(--lui-color-label-secondary);
+  font-size: 13px;
+}
+
+.metric strong {
+  font-size: clamp(1.6rem, 3vw, 2.25rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+.metric small {
+  color: var(--lui-color-label-tertiary);
+  font-size: 12px;
+}
+
+.form {
+  display: grid;
+  gap: 16px;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.notice,
+.error,
+.success {
+  padding: 12px 14px;
+  border-radius: var(--lui-radius-control);
+  font-size: 13px;
+}
+
+.notice {
+  background: var(--lui-color-accent-soft);
+  color: var(--lui-color-accent);
+}
+
+.error {
+  background: var(--lui-color-danger-soft);
+  color: var(--lui-color-danger);
+}
+
+.success {
+  background: var(--lui-color-success-soft);
+  color: var(--lui-color-success);
+}
+
+.list {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 60px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--lui-color-separator);
+}
+
+.listItem:last-child {
+  border-bottom: 0;
+}
+
+.listCopy {
+  display: grid;
+  min-width: 0;
+  flex: 1;
+  gap: 2px;
+}
+
+.listCopy strong {
+  overflow: hidden;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.listCopy span {
+  color: var(--lui-color-label-secondary);
+  font-size: 12px;
+}
+
+.empty {
+  padding: 28px;
+  border: 1px solid var(--lui-color-separator);
+  border-radius: var(--lui-radius-panel);
+  background: var(--lui-color-surface);
+  color: var(--lui-color-label-secondary);
+  text-align: center;
+}
+
+@media (max-width: 980px) {
+  .grid4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .grid3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    gap: 24px;
+  }
+
+  .pageHeader {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .grid2,
+  .grid3,
+  .formRow {
+    grid-template-columns: 1fr;
+  }
+
+  .grid4 {
+    gap: 10px;
+  }
+
+  .metric {
+    min-height: 104px;
+    padding: 14px;
+  }
+}

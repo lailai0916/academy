@@ -1,57 +1,52 @@
 # Repository instructions
 
-Runtime-neutral guidance for AI coding agents in this repo. This file is the always-loaded
-**map**; deep per-area detail lives in `.agents/rules/*.md`. Before editing a path, read the
-rules whose `paths` glob matches it.
+Runtime-neutral guidance for coding agents in this repository.
 
-## Personal style — defer to lailai.skill
+## Personal style
 
-lailai's **general, cross-project** style — Chinese voice and wording, Markdown, LaTeX math,
-OI C++, design principles (统一·简约·现代), who he is and how he decides — lives in the
-**lailai.skill** submodule at [`.agents/skills/lailai-skill/`](.agents/skills/lailai-skill/SKILL.md).
-Read its `SKILL.md`, then the relevant `references/` / `profile/`, for any task touching voice,
-writing, code, or design.
-
-**This repo's `.agents/` holds portable project config.** It does not duplicate the general
-rules; where `.agents/rules/*.md` covers only the project-specific slice, it points to the
-skill for the rest. Runtime-specific directories are compatibility adapters only.
-
-Init the submodule after cloning: `git submodule update --init`. Update it later with
-`git submodule update --remote .agents/skills/lailai-skill`.
+Cross-project writing, design, and engineering preferences live in the `lailai-skill` submodule
+at `.agents/skills/lailai-skill/`. Read its `SKILL.md` and only the references relevant to the
+task. Do not duplicate those general rules here.
 
 ## Project
 
-Source for `lailai's Academy` — a Vite + React + TypeScript learning workspace for daily
-plans, word review, poetry recitation, and a local AI-planner preview. Node `>=20`; GitHub
-Actions builds the app and syncs it to the cloud server for [academy.lailai.one](https://academy.lailai.one/).
+`lailai's Academy` is a Simplified-Chinese, invitation-only AI self-study platform for individual
+high-school students. It uses an npm-workspace architecture:
+
+- `apps/web`: React and Vite browser application;
+- `apps/api`: Fastify API and Drizzle persistence;
+- `packages/shared`: shared schemas and domain types;
+- `deployment`: production container, release, proxy, and backup assets.
+
+Node 22+ is required. PostgreSQL is the source of truth. The Web application must never contain
+AI keys, database credentials, invitation hashes, or session tokens.
 
 ## Commands
 
 ```bash
 npm install
 npm run dev
+npm run typecheck
 npm run build
+npm test
 npm run check
-npm run format
+npm run db:generate
 ```
 
-The `check` script is the gate before every commit. `npm run build` creates the root-hosted
-bundle deployed at `academy.lailai.one`.
+Run `npm run check` before committing. Run the API integration suite against an isolated database
+with `ACADEMY_INTEGRATION_TEST=true` when changing authentication, learning, social, or admin flows.
 
-## Conventions
+## Durable conventions
 
-<!-- Project-specific rules only. General taste (精益求精, edit-don't-rewrite, comment the *why*, no AI-tells) lives in the skill's profile/ and references/. -->
-
-- **Verify before committing** — the project's check gate must exit clean.
-- **Keep the planner local by default** — connect a future API through
-  `VITE_API_BASE_URL`; never expose secrets in browser code.
-- **Keep UI copy bilingual** — English is the default locale; update the `en` and `zh-Hans`
-  message entries together when adding visible text.
-- **Small changes go straight to `main`.** Reserve branches / PRs for substantial multi-file work.
-
-## Keep Agent guidance current
-
-Update `AGENTS.md` and applicable `.agents/rules/` in the same change that invalidates them.
-Record **durable** conventions, not transient task state; verify against the actual code before
-writing, since stale guidance is worse than none. `CLAUDE.md`, `.claude/rules`, and
-`.claude/skills` are compatibility pointers, not additional sources of truth.
+- Keep the student interface Simplified Chinese. Tools remains the bilingual product.
+- Use semantic tokens and primitives from `@lailai/ui`; keep light, dark, and system modes complete.
+- Measure mastery, delayed accuracy, and long-term retention. Do not optimize product feedback for
+  time spent.
+- Treat reviewed textbook content as the factual source. AI may explain and generate variants but
+  must not silently rewrite canonical answers.
+- Store invitation and session tokens as hashes. Store AI keys encrypted at rest and return only
+  `hasApiKey` to the browser.
+- Preserve additive, reviewed database migrations. Back up production before applying migrations.
+- Never attach usernames, answers, content text, API responses, or other sensitive learning data to
+  Umami events.
+- Keep `AGENTS.md`, architecture docs, and deployment instructions aligned with code changes.

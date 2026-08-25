@@ -1,0 +1,89 @@
+.plan {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.7fr) minmax(0, 1.3fr);
+  gap: 32px;
+  padding: 24px;
+}
+
+.planProgress {
+  display: grid;
+  align-content: center;
+  gap: 18px;
+  padding-right: 32px;
+  border-right: 1px solid var(--lui-color-separator);
+}
+
+.completion {
+  display: grid;
+  gap: 5px;
+}
+
+.completion strong {
+  font-size: clamp(2.5rem, 6vw, 4.25rem);
+  line-height: 1;
+  letter-spacing: -0.06em;
+}
+
+.completion span {
+  color: var(--lui-color-label-secondary);
+  font-size: 13px;
+}
+
+.planItems {
+  display: grid;
+  gap: 10px;
+}
+
+.planItems button {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  min-height: 82px;
+  padding: 14px;
+  border: 1px solid var(--lui-color-separator);
+  border-radius: var(--lui-radius-panel);
+  background: var(--lui-color-surface-raised);
+  color: var(--lui-color-label);
+  text-align: left;
+  transition:
+    background-color var(--lui-motion-control),
+    border-color var(--lui-motion-control);
+}
+
+.planItems button:hover {
+  border-color: var(--lui-color-separator-strong);
+  background: var(--lui-color-surface-muted);
+}
+
+.planItems button > span:nth-child(2) {
+  display: grid;
+  gap: 3px;
+}
+
+.planItems strong {
+  font-size: 15px;
+}
+
+.planItems small {
+  color: var(--lui-color-label-secondary);
+  font-size: 12px;
+}
+
+.planItems button > svg {
+  color: var(--lui-color-label-tertiary);
+}
+
+@media (max-width: 720px) {
+  .plan {
+    grid-template-columns: 1fr;
+    gap: 22px;
+    padding: 18px;
+  }
+
+  .planProgress {
+    padding: 0 0 22px;
+    border-right: 0;
+    border-bottom: 1px solid var(--lui-color-separator);
+  }
+}

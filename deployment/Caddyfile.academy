@@ -1,0 +1,22 @@
+academy.lailai.one {
+    encode zstd gzip
+
+    handle /api/* {
+        reverse_proxy 127.0.0.1:4100
+    }
+
+    handle {
+        root * /var/www/academy.lailai.one
+        try_files {path} /index.html
+        file_server
+    }
+
+    header {
+        -Server
+        X-Content-Type-Options nosniff
+        X-Frame-Options DENY
+        Referrer-Policy strict-origin-when-cross-origin
+        Permissions-Policy "camera=(), microphone=(), geolocation=()"
+        Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://analytics.lailai.one; connect-src 'self' https://analytics.lailai.one; img-src 'self' data:; style-src 'self'; font-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+    }
+}

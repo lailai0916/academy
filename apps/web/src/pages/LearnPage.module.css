@@ -1,0 +1,112 @@
+.subjectGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.subject {
+  min-height: 340px;
+}
+
+.subjectBody {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 22px;
+  padding: 24px;
+}
+
+.subjectIcon {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  place-items: center;
+  border-radius: 14px;
+  background: var(--lui-color-accent-soft);
+  color: var(--lui-color-accent);
+  font-size: 25px;
+}
+
+.subjectCopy {
+  display: grid;
+  gap: 6px;
+}
+
+.subjectCopy p {
+  color: var(--lui-color-accent);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.subjectCopy h2 {
+  font-size: 24px;
+  letter-spacing: -0.035em;
+}
+
+.subjectCopy span {
+  color: var(--lui-color-label-secondary);
+  font-size: 14px;
+}
+
+.subjectStats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.subjectStats span,
+.pending {
+  padding: 5px 9px;
+  border-radius: 7px;
+  background: var(--lui-color-surface-muted);
+  color: var(--lui-color-label-secondary);
+  font-size: 12px;
+}
+
+.subjectStats strong {
+  color: var(--lui-color-label);
+  font-variant-numeric: tabular-nums;
+}
+
+.subjectBody > :last-child {
+  margin-top: auto;
+}
+
+.method {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 14px;
+  padding: 18px;
+}
+
+.method > svg {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  color: var(--lui-color-accent);
+}
+
+.method div {
+  display: grid;
+  gap: 4px;
+}
+
+.method strong {
+  font-size: 14px;
+}
+
+.method p {
+  color: var(--lui-color-label-secondary);
+  font-size: 13px;
+}
+
+@media (max-width: 720px) {
+  .subjectGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .subject {
+    min-height: 300px;
+  }
+}

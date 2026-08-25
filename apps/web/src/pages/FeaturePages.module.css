@@ -1,0 +1,220 @@
+.toolbar,
+.composerActions,
+.reactionRow,
+.metaRow,
+.tabList {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.tabList {
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--lui-color-separator);
+}
+
+.tab {
+  min-height: 44px;
+  padding: 0 14px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--lui-color-label-secondary);
+  cursor: pointer;
+}
+
+.tabActive {
+  border-bottom-color: var(--lui-color-accent);
+  color: var(--lui-color-label);
+  font-weight: 650;
+}
+
+.composer,
+.post,
+.profileHero,
+.adminSection {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+}
+
+.composer textarea {
+  min-height: 104px;
+  resize: vertical;
+}
+
+.composerActions {
+  justify-content: space-between;
+}
+
+.feed {
+  display: grid;
+  gap: 12px;
+}
+
+.postHeader,
+.profileIdentity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.postHeader > div,
+.profileIdentity > div {
+  display: grid;
+  min-width: 0;
+  flex: 1;
+  gap: 2px;
+}
+
+.postHeader strong,
+.profileIdentity strong {
+  font-size: 15px;
+}
+
+.postHeader span,
+.postHeader time,
+.profileIdentity span,
+.metaRow {
+  color: var(--lui-color-label-secondary);
+  font-size: 12px;
+}
+
+.postBody {
+  white-space: pre-wrap;
+}
+
+.reactionRow button {
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--lui-color-separator);
+  border-radius: 999px;
+  background: var(--lui-color-surface);
+  color: var(--lui-color-label-secondary);
+  cursor: pointer;
+}
+
+.reactionRow button[aria-pressed='true'] {
+  border-color: var(--lui-color-accent);
+  background: var(--lui-color-accent-soft);
+  color: var(--lui-color-accent);
+}
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.card {
+  display: grid;
+  gap: 12px;
+  padding: 18px;
+}
+
+.card h3 {
+  font-size: 16px;
+}
+
+.card p {
+  color: var(--lui-color-label-secondary);
+  font-size: 13px;
+}
+
+.profileHero {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+}
+
+.profileIdentity {
+  align-items: flex-start;
+}
+
+.profileIdentity strong {
+  font-size: 24px;
+  letter-spacing: -0.03em;
+}
+
+.bio {
+  max-width: 60ch;
+  color: var(--lui-color-label-secondary);
+}
+
+.settingsGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(240px, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.themeBox {
+  display: grid;
+  gap: 14px;
+}
+
+.code {
+  padding: 12px;
+  border: 1px dashed var(--lui-color-separator-strong);
+  border-radius: var(--lui-radius-control);
+  background: var(--lui-color-surface-muted);
+  font-family: var(--lui-font-mono);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.table th,
+.table td {
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--lui-color-separator);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.table th {
+  color: var(--lui-color-label-secondary);
+  font-weight: 600;
+}
+
+.jsonArea {
+  min-height: 260px;
+  font-family: var(--lui-font-mono);
+  font-size: 13px;
+}
+
+.notFound {
+  display: grid;
+  min-height: 65vh;
+  place-content: center;
+  justify-items: center;
+  gap: 14px;
+  text-align: center;
+}
+
+.notFound strong {
+  color: var(--lui-color-label-tertiary);
+  font-size: 72px;
+  line-height: 1;
+}
+
+@media (max-width: 760px) {
+  .cardGrid,
+  .settingsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .profileHero {
+    grid-template-columns: 1fr;
+  }
+}
