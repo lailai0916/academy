@@ -1,93 +1,24 @@
 .page {
-  display: grid;
   min-height: 100vh;
-  grid-template-columns: minmax(0, 1fr) minmax(360px, 460px);
-  align-items: center;
-  gap: clamp(48px, 8vw, 112px);
-  width: min(100% - 48px, 1100px);
-  margin-inline: auto;
-  padding: 64px 0;
+  background: var(--lui-color-canvas);
 }
 
-.intro {
+.content {
   display: grid;
-  align-content: center;
-  gap: 40px;
-}
-
-.introCopy {
-  display: grid;
-  gap: 14px;
-  max-width: 620px;
-}
-
-.eyebrow {
-  color: var(--lui-color-accent);
-  font-size: 14px;
-  font-weight: 650;
-}
-
-.introCopy h1 {
-  max-width: 13ch;
-  font-size: clamp(2.35rem, 5vw, 4rem);
-  letter-spacing: -0.055em;
-}
-
-.introCopy > p:last-child {
-  max-width: 52ch;
-  color: var(--lui-color-label-secondary);
-  font-size: 16px;
-  line-height: 1.75;
-}
-
-.features {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.features li {
-  display: grid;
-  gap: 14px;
-  min-width: 0;
-  padding: 16px;
-  border: 1px solid var(--lui-color-separator);
-  border-radius: var(--lui-radius-panel);
-  background: var(--lui-color-surface);
-}
-
-.features svg {
-  width: 22px;
-  height: 22px;
-  color: var(--lui-color-accent);
-}
-
-.features span {
-  display: grid;
-  gap: 3px;
-}
-
-.features strong {
-  font-size: 14px;
-}
-
-.features small {
-  color: var(--lui-color-label-secondary);
-  font-size: 12px;
-  line-height: 1.55;
+  min-height: calc(100vh - 60px);
+  place-items: center;
+  padding: 48px 20px;
 }
 
 .formPanel {
+  width: min(100%, 420px);
   background: var(--lui-color-surface);
 }
 
 .form {
   display: grid;
   gap: 18px;
-  padding: 32px;
+  padding: 30px;
 }
 
 .formHeader {
@@ -96,15 +27,16 @@
   margin-bottom: 6px;
 }
 
-.formHeader h2 {
-  font-size: 24px;
-  letter-spacing: -0.025em;
+.formHeader h1 {
+  font-size: 26px;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
 }
 
 .formHeader p,
 .switchMode {
   color: var(--lui-color-label-secondary);
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .error {
@@ -124,39 +56,15 @@
 }
 
 .switchMode a {
-  color: var(--lui-color-accent);
+  color: var(--lui-color-accent-label);
   font-weight: 600;
 }
 
-@media (max-width: 900px) {
-  .page {
-    grid-template-columns: 1fr;
-    gap: 36px;
-    width: min(100% - 32px, 520px);
-    padding: 32px 0;
-  }
-
-  .intro {
-    gap: 24px;
-  }
-
-  .introCopy h1 {
-    font-size: clamp(2rem, 10vw, 3.25rem);
-  }
-
-  .features {
-    display: none;
-  }
-}
-
 @media (max-width: 520px) {
-  .page {
-    width: min(100% - 24px, 480px);
-    padding: 20px 0 32px;
-  }
-
-  .introCopy > p:last-child {
-    font-size: 15px;
+  .content {
+    min-height: calc(100vh - 60px);
+    align-items: start;
+    padding: 28px 12px;
   }
 
   .form {

@@ -57,9 +57,9 @@ export function SettingsPage() {
     <div className={page.page}>
       <header className={page.pageHeader}>
         <div className={page.pageTitle}>
-          <p className={page.eyebrow}>设置</p>
-          <h1>让 Academy 适合你的目标。</h1>
-          <p>年级、目标分数和每日容量会影响后续学习计划。</p>
+          <p className={page.eyebrow}>我的</p>
+          <h1>设置</h1>
+          <p>修改个人资料、学习目标和外观。</p>
         </div>
       </header>
       {error && <p className={page.error}>{error}</p>}
@@ -71,7 +71,7 @@ export function SettingsPage() {
               <div className={page.panelTitle}>
                 <div className={page.panelTitleCopy}>
                   <h2>个人资料与学习目标</h2>
-                  <p>这些信息可随时修改。</p>
+                  <p>年级、目标分数和每日项目数会影响学习计划。</p>
                 </div>
               </div>
               <div className={page.formRow}>
@@ -139,10 +139,10 @@ export function SettingsPage() {
             <div className={`${styles.adminSection} ${styles.themeBox}`}>
               <div className={page.panelTitleCopy}>
                 <h2>外观</h2>
-                <p>可跟随系统，也可固定为浅色或深色。</p>
+                <p>当前设备的显示方式。</p>
               </div>
               <ThemeControl labels={{ system: '自动', light: '浅色', dark: '深色' }} />
-              <p className={page.muted}>外观选择只保存在当前设备，不会影响你的学习数据。</p>
+              <p className={page.muted}>选择保存在当前设备。</p>
             </div>
           </Panel>
         </div>

@@ -98,7 +98,7 @@
 .reactionRow button[aria-pressed='true'] {
   border-color: var(--lui-color-accent);
   background: var(--lui-color-accent-soft);
-  color: var(--lui-color-accent);
+  color: var(--lui-color-accent-label);
 }
 
 .cardGrid {

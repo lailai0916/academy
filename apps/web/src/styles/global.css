@@ -6,6 +6,8 @@
 
 html {
   min-width: 320px;
+  scroll-behavior: smooth;
+  scroll-padding-top: 76px;
   background: var(--lui-color-canvas);
   color: var(--lui-color-label);
   font-family: var(--lui-font-sans);
@@ -57,6 +59,10 @@ h3 {
   line-height: 1.2;
 }
 
+button {
+  cursor: default;
+}
+
 p {
   margin: 0;
 }
@@ -68,6 +74,26 @@ p {
 :focus-visible {
   outline: 2px solid var(--lui-color-focus);
   outline-offset: 2px;
+}
+
+.skip-link {
+  position: fixed;
+  z-index: 100;
+  top: 8px;
+  left: 8px;
+  padding: 8px 12px;
+  border-radius: var(--lui-radius-control);
+  background: var(--lui-color-surface);
+  color: var(--lui-color-label);
+  font-size: 14px;
+  font-weight: 650;
+  box-shadow: var(--lui-shadow-overlay);
+  transform: translateY(-160%);
+  transition: transform var(--lui-motion-control);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
 }
 
 .sr-only {

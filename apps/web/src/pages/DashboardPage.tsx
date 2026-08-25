@@ -33,18 +33,20 @@ export function DashboardPage() {
       <header className={page.pageHeader}>
         <div className={page.pageTitle}>
           <p className={page.eyebrow}>{plan.date}</p>
-          <h1>{user.displayName}，今天继续向目标靠近。</h1>
-          <p>{plan.reason}</p>
+          <h1>今日学习</h1>
+          <p>
+            {user.displayName} · {plan.reason}
+          </p>
         </div>
         <Button size="large" onClick={() => navigate('/learn')}>
           <Icon icon="lucide:play" />
-          开始今天的学习
+          开始学习
         </Button>
       </header>
 
       <section className={page.section}>
         <div className={page.sectionHeader}>
-          <h2>今天的计划</h2>
+          <h2>学习计划</h2>
           <p>
             {plan.completed} / {plan.total} 项
           </p>
@@ -90,8 +92,8 @@ export function DashboardPage() {
 
       <section className={page.section}>
         <div className={page.sectionHeader}>
-          <h2>真实学习结果</h2>
-          <p>不以使用时长作为核心指标</p>
+          <h2>学习数据</h2>
+          <p>长期记忆指标</p>
         </div>
         <div className={page.grid4}>
           <article className={page.metric}>
@@ -110,7 +112,7 @@ export function DashboardPage() {
             <small>稳定期达到 21 天</small>
           </article>
           <article className={page.metric}>
-            <span>连续有效学习</span>
+            <span>连续学习</span>
             <strong>{metrics.streakDays}</strong>
             <small>天</small>
           </article>
@@ -124,7 +126,7 @@ export function DashboardPage() {
         <Panel>
           <div className={page.panelBody}>
             {dashboard.recentActivity.length === 0 ? (
-              <p className={page.muted}>完成第一组练习后，结果会出现在这里。</p>
+              <p className={page.muted}>暂无完成记录。</p>
             ) : (
               <ul className={page.list}>
                 {dashboard.recentActivity.map((item) => (

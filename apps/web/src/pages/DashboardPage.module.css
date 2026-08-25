@@ -1,15 +1,15 @@
 .plan {
   display: grid;
-  grid-template-columns: minmax(220px, 0.7fr) minmax(0, 1.3fr);
-  gap: 32px;
-  padding: 24px;
+  grid-template-columns: minmax(200px, 0.62fr) minmax(0, 1.38fr);
+  gap: 24px;
+  padding: 20px;
 }
 
 .planProgress {
   display: grid;
   align-content: center;
-  gap: 18px;
-  padding-right: 32px;
+  gap: 16px;
+  padding-right: 24px;
   border-right: 1px solid var(--lui-color-separator);
 }
 
@@ -19,7 +19,7 @@
 }
 
 .completion strong {
-  font-size: clamp(2.5rem, 6vw, 4.25rem);
+  font-size: clamp(2.25rem, 5vw, 3.25rem);
   line-height: 1;
   letter-spacing: -0.06em;
 }
@@ -39,7 +39,7 @@
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 14px;
-  min-height: 82px;
+  min-height: 76px;
   padding: 14px;
   border: 1px solid var(--lui-color-separator);
   border-radius: var(--lui-radius-panel);

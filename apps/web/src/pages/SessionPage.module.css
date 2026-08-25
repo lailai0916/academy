@@ -256,7 +256,7 @@
 }
 
 .variant summary {
-  color: var(--lui-color-accent);
+  color: var(--lui-color-accent-label);
   font-size: 13px;
   font-weight: 600;
 }

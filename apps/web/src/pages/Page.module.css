@@ -1,40 +1,40 @@
 .page {
   display: grid;
-  gap: 28px;
+  gap: 24px;
 }
 
 .pageHeader {
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 24px;
 }
 
 .pageTitle {
   display: grid;
-  gap: 8px;
+  gap: 6px;
 }
 
 .eyebrow {
-  color: var(--lui-color-accent);
-  font-size: 13px;
-  font-weight: 650;
+  color: var(--lui-color-label-tertiary);
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .pageTitle h1 {
-  font-size: clamp(2rem, 4vw, 3rem);
-  letter-spacing: -0.045em;
+  font-size: clamp(1.75rem, 3vw, 2.1rem);
+  letter-spacing: -0.035em;
 }
 
 .pageTitle p {
   max-width: 62ch;
   color: var(--lui-color-label-secondary);
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .section {
   display: grid;
-  gap: 14px;
+  gap: 12px;
 }
 
 .sectionHeader {
@@ -45,7 +45,7 @@
 }
 
 .sectionHeader h2 {
-  font-size: 18px;
+  font-size: 17px;
   letter-spacing: -0.02em;
 }
 
@@ -59,7 +59,7 @@
 .grid3,
 .grid4 {
   display: grid;
-  gap: 14px;
+  gap: 12px;
 }
 
 .grid2 {
@@ -105,20 +105,20 @@
 
 .iconChip {
   display: grid;
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   flex: none;
   place-items: center;
   border-radius: 10px;
   background: var(--lui-color-accent-soft);
-  color: var(--lui-color-accent);
-  font-size: 20px;
+  color: var(--lui-color-accent-label);
+  font-size: 18px;
 }
 
 .metric {
   display: grid;
   gap: 5px;
-  min-height: 112px;
+  min-height: 104px;
   align-content: space-between;
   padding: 18px;
   border: 1px solid var(--lui-color-separator);
@@ -132,7 +132,7 @@
 }
 
 .metric strong {
-  font-size: clamp(1.6rem, 3vw, 2.25rem);
+  font-size: clamp(1.55rem, 2.6vw, 2rem);
   line-height: 1;
   letter-spacing: -0.04em;
   font-variant-numeric: tabular-nums;
@@ -171,7 +171,7 @@
 
 .notice {
   background: var(--lui-color-accent-soft);
-  color: var(--lui-color-accent);
+  color: var(--lui-color-accent-label);
 }
 
 .error {

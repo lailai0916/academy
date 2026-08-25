@@ -1,11 +1,11 @@
-import { Avatar, Brand, ThemeControl } from '@lailai/ui';
+import { Avatar, Brand } from '@lailai/ui';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router';
 import { useAuth } from '../auth/AuthProvider';
 import { Icon } from './Icon';
 import styles from './AppShell.module.css';
 
 const navigation = [
-  { to: '/', label: '今天', icon: 'lucide:house' },
+  { to: '/dashboard', label: '今天', icon: 'lucide:house' },
   { to: '/learn', label: '学习', icon: 'lucide:book-open' },
   { to: '/social', label: '同学', icon: 'lucide:users' },
   { to: '/profile', label: '我的', icon: 'lucide:user-round' },
@@ -23,8 +23,11 @@ export function AppShell() {
 
   return (
     <div className={styles.shell}>
+      <a className="skip-link" href="#main-content">
+        跳到主要内容
+      </a>
       <aside className={styles.sidebar}>
-        <NavLink to="/" className={styles.brand} aria-label="返回今天">
+        <NavLink to="/dashboard" className={styles.brand} aria-label="返回今天">
           <Brand logoSrc="/brand/logo.svg" name="lailai's Academy" />
         </NavLink>
         <nav className={styles.navigation} aria-label="主导航">
@@ -32,7 +35,7 @@ export function AppShell() {
             <NavLink
               key={item.to}
               to={item.to}
-              end={item.to === '/'}
+              end
               className={({ isActive }) => `${styles.navItem} ${isActive ? styles.active : ''}`}
             >
               <Icon icon={item.icon} />
@@ -58,7 +61,6 @@ export function AppShell() {
         </nav>
 
         <div className={styles.sidebarFooter}>
-          <ThemeControl labels={{ system: '自动', light: '浅色', dark: '深色' }} />
           <div className={styles.account}>
             <Avatar name={user?.displayName ?? '?'} alt="个人头像" size={36} />
             <div className={styles.accountCopy}>
@@ -78,7 +80,7 @@ export function AppShell() {
       </aside>
 
       <header className={styles.mobileHeader}>
-        <NavLink to="/" aria-label="返回今天">
+        <NavLink to="/dashboard" aria-label="返回今天">
           <Brand logoSrc="/brand/logo.svg" name="Academy" />
         </NavLink>
         <div className={styles.mobileActions}>
@@ -93,7 +95,7 @@ export function AppShell() {
         </div>
       </header>
 
-      <main className={styles.main} key={location.pathname}>
+      <main id="main-content" className={styles.main} key={location.pathname}>
         <Outlet />
       </main>
 
@@ -102,7 +104,7 @@ export function AppShell() {
           <NavLink
             key={item.to}
             to={item.to}
-            end={item.to === '/'}
+            end
             className={({ isActive }) => `${styles.bottomItem} ${isActive ? styles.active : ''}`}
           >
             <Icon icon={item.icon} />

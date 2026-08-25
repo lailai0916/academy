@@ -7,8 +7,8 @@ export function NotFoundPage() {
   return (
     <main className={styles.notFound}>
       <strong>404</strong>
-      <h1>这里没有学习任务。</h1>
-      <p>这个地址不存在，返回今天的计划继续学习吧。</p>
+      <h1>页面不存在</h1>
+      <p>请检查地址，或返回 Academy 首页。</p>
       <Button onClick={() => navigate('/')}>返回首页</Button>
     </main>
   );

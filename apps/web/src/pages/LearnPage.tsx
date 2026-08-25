@@ -156,11 +156,8 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
           <div className={styles.method}>
             <Icon icon="lucide:info" />
             <div>
-              <strong>为什么每个人看到的题目不同？</strong>
-              <p>
-                系统会结合复习间隔、历史错误、反应时间和当前稳定性调整题型。即时答对不代表长期掌握，至少间隔
-                24 小时后的正确率更重要。
-              </p>
+              <strong>题型调整</strong>
+              <p>系统根据复习间隔、历史错误、反应时间和记忆稳定性选择下一题。</p>
             </div>
           </div>
         </Panel>
@@ -172,9 +169,9 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
     <div className={page.page}>
       <header className={page.pageHeader}>
         <div className={page.pageTitle}>
-          <p className={page.eyebrow}>学习中心</p>
-          <h1>选择今天要攻克的内容。</h1>
-          <p>首期聚焦英语单词和古诗词，所有结果进入同一套掌握度与长期记忆模型。</p>
+          <p className={page.eyebrow}>学习</p>
+          <h1>学习内容</h1>
+          <p>英语单词和古诗词共用一套掌握度与长期记忆模型。</p>
         </div>
       </header>
 
@@ -225,8 +222,8 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
 
       <section className={page.section}>
         <div className={page.sectionHeader}>
-          <h2>后续课程框架</h2>
-          <p>按教材学科与单元扩展</p>
+          <h2>其他学科</h2>
+          <p>按教材学科与单元逐步加入</p>
         </div>
         <div className={page.grid3}>
           {[
@@ -243,7 +240,7 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
                   <h3>{title}</h3>
                   <p>{description}</p>
                 </div>
-                <span className={styles.pending}>框架已预留</span>
+                <span className={styles.pending}>尚未开放</span>
               </div>
             </Panel>
           ))}

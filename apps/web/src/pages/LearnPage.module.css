@@ -24,7 +24,7 @@
   place-items: center;
   border-radius: 14px;
   background: var(--lui-color-accent-soft);
-  color: var(--lui-color-accent);
+  color: var(--lui-color-accent-label);
   font-size: 25px;
 }
 
@@ -34,7 +34,7 @@
 }
 
 .subjectCopy p {
-  color: var(--lui-color-accent);
+  color: var(--lui-color-accent-label);
   font-size: 12px;
   font-weight: 650;
 }
@@ -84,7 +84,7 @@
   width: 20px;
   height: 20px;
   margin-top: 2px;
-  color: var(--lui-color-accent);
+  color: var(--lui-color-accent-label);
 }
 
 .method div {

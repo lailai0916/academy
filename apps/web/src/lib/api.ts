@@ -24,9 +24,19 @@ export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
   if (response.status === 204) {
     return undefined as T;
   }
-  const payload = (await response.json()) as T | ApiError;
+  const responseText = await response.text();
+  let payload: T | ApiError | undefined;
+  try {
+    payload = responseText ? (JSON.parse(responseText) as T | ApiError) : undefined;
+  } catch {
+    throw new ApiRequestError(response.status, { error: '服务响应异常，请稍后重试。' });
+  }
   if (!response.ok) {
-    throw new ApiRequestError(response.status, payload as ApiError);
+    const apiError = payload as ApiError | undefined;
+    throw new ApiRequestError(response.status, {
+      error: apiError?.error || '服务暂时不可用，请稍后重试。',
+      details: apiError?.details,
+    });
   }
   return payload as T;
 }

@@ -218,7 +218,9 @@ export function SessionPage() {
                   <span>下次复习 {new Date(result.nextDueAt).toLocaleString('zh-CN')}</span>
                 </div>
                 <div className={page.actions}>
-                  <Button onClick={() => (result.sessionComplete ? navigate('/') : loadNext())}>
+                  <Button
+                    onClick={() => (result.sessionComplete ? navigate('/dashboard') : loadNext())}
+                  >
                     {result.sessionComplete ? '完成本组学习' : '下一题'}
                     <Icon icon="lucide:arrow-right" />
                   </Button>

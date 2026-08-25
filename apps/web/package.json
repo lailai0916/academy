@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@lailai/academy-shared": "*",
-    "@lailai/ui": "github:lailai0916/ui#v0.1.1",
+    "@lailai/ui": "github:lailai0916/ui#v0.2.2",
     "lucide-react": "^0.468.0",
     "react": "19.2.8",
     "react-dom": "19.2.8",

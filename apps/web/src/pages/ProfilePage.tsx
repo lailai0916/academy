@@ -25,9 +25,9 @@ export function ProfilePage() {
     <div className={page.page}>
       <header className={page.pageHeader}>
         <div className={page.pageTitle}>
-          <p className={page.eyebrow}>个人主页</p>
-          <h1>你的学习档案。</h1>
-          <p>记录的是掌握和记忆结果，而不是在网页上停留了多久。</p>
+          <p className={page.eyebrow}>我的</p>
+          <h1>个人主页</h1>
+          <p>个人资料与学习结果。</p>
         </div>
       </header>
 
@@ -40,7 +40,7 @@ export function ProfilePage() {
               <span>
                 @{profile.username} · {profile.grade}
               </span>
-              <p className={styles.bio}>{profile.bio || '还没有写个人简介。'}</p>
+              <p className={styles.bio}>{profile.bio || '暂无个人简介。'}</p>
               <div className={styles.metaRow}>
                 <span>
                   <Icon icon="lucide:calendar-days" />{' '}

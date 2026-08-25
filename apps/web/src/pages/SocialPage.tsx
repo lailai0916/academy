@@ -91,9 +91,9 @@ export function SocialPage() {
     <div className={page.page}>
       <header className={page.pageHeader}>
         <div className={page.pageTitle}>
-          <p className={page.eyebrow}>同学圈</p>
-          <h1>和认真学习的人互相推动。</h1>
-          <p>分享方法、加入小组和发起挑战。这里只比较真实学习结果，不制造使用时长焦虑。</p>
+          <p className={page.eyebrow}>社区</p>
+          <h1>同学</h1>
+          <p>动态、学习小组、挑战与好友。</p>
         </div>
       </header>
 
@@ -129,7 +129,7 @@ export function SocialPage() {
                 label="分享一条学习动态"
                 value={post}
                 maxLength={500}
-                placeholder="例如：今天用语境联想记住了 responsible，分享一下你的方法……"
+                placeholder="分享学习方法或复习记录"
                 onChange={(event) => setPost(event.target.value)}
               />
               <div className={styles.composerActions}>
@@ -191,7 +191,7 @@ export function SocialPage() {
                 </Panel>
               ))
             ) : (
-              <p className={page.empty}>还没有动态。你可以发布第一条学习心得。</p>
+              <p className={page.empty}>暂无动态。</p>
             )}
           </div>
         </>
@@ -230,7 +230,7 @@ export function SocialPage() {
               <Panel key={group.id}>
                 <article className={styles.card}>
                   <h3>{group.name}</h3>
-                  <p>{group.description || '这个小组还没有简介。'}</p>
+                  <p>{group.description || '暂无简介。'}</p>
                   <div className={styles.metaRow}>
                     <span>{group.memberCount} 位成员</span>
                     <span>创建者 @{group.ownerUsername}</span>
@@ -279,7 +279,7 @@ export function SocialPage() {
                 </Panel>
               ))
             ) : (
-              <p className={page.empty}>还没有挑战。挑战创建接口已就绪，可由小组成员发起。</p>
+              <p className={page.empty}>暂无挑战。</p>
             )}
           </div>
         </div>
@@ -357,7 +357,7 @@ export function SocialPage() {
                   ))}
                 </ul>
               ) : (
-                <p className={page.muted}>暂时没有好友或待处理申请。</p>
+                <p className={page.muted}>暂无好友或待处理申请。</p>
               )}
             </div>
           </Panel>

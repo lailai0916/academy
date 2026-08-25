@@ -125,9 +125,9 @@ export function AdminPage() {
     <div className={page.page}>
       <header className={page.pageHeader}>
         <div className={page.pageTitle}>
-          <p className={page.eyebrow}>管理员控制台</p>
-          <h1>平台配置与内容入口。</h1>
-          <p>管理邀请码、AI 服务和教材内容。API Key 只会加密保存在服务端。</p>
+          <p className={page.eyebrow}>管理员</p>
+          <h1>管理</h1>
+          <p>邀请码、AI 服务、教材内容与用户。</p>
         </div>
       </header>
       {error && <p className={page.error}>{error}</p>}
