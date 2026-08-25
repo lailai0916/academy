@@ -10,24 +10,37 @@
 }
 
 .tabList {
-  padding-bottom: 2px;
-  border-bottom: 1px solid var(--lui-color-separator);
+  width: fit-content;
+  gap: 3px;
+  padding: 3px;
+  border: 1px solid var(--lui-color-separator);
+  border-radius: 12px;
+  background: var(--lui-color-surface-muted);
 }
 
 .tab {
-  min-height: 44px;
-  padding: 0 14px;
+  min-height: 38px;
+  padding: 0 13px;
   border: 0;
-  border-bottom: 2px solid transparent;
+  border-radius: 9px;
   background: transparent;
   color: var(--lui-color-label-secondary);
   cursor: pointer;
+  transition:
+    background-color var(--lui-motion-control),
+    color var(--lui-motion-control),
+    transform var(--lui-motion-control);
 }
 
 .tabActive {
-  border-bottom-color: var(--lui-color-accent);
+  background: var(--lui-color-surface);
   color: var(--lui-color-label);
   font-weight: 650;
+  box-shadow: var(--lui-shadow-control);
+}
+
+.tab:active {
+  transform: scale(0.97);
 }
 
 .composer,
@@ -36,7 +49,7 @@
 .adminSection {
   display: grid;
   gap: 16px;
-  padding: 20px;
+  padding: 22px;
 }
 
 .composer textarea {
@@ -50,7 +63,7 @@
 
 .feed {
   display: grid;
-  gap: 12px;
+  gap: 14px;
 }
 
 .postHeader,
@@ -93,6 +106,20 @@
   background: var(--lui-color-surface);
   color: var(--lui-color-label-secondary);
   cursor: pointer;
+  transition:
+    background-color var(--lui-motion-control),
+    border-color var(--lui-motion-control),
+    color var(--lui-motion-control),
+    transform var(--lui-motion-control);
+}
+
+.reactionRow button:hover {
+  border-color: var(--lui-color-separator-strong);
+  background: var(--lui-color-surface-muted);
+}
+
+.reactionRow button:active {
+  transform: scale(0.96);
 }
 
 .reactionRow button[aria-pressed='true'] {
@@ -104,13 +131,13 @@
 .cardGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  gap: 14px;
 }
 
 .card {
   display: grid;
   gap: 12px;
-  padding: 18px;
+  padding: 20px;
 }
 
 .card h3 {
@@ -156,7 +183,7 @@
 .code {
   padding: 12px;
   border: 1px dashed var(--lui-color-separator-strong);
-  border-radius: var(--lui-radius-control);
+  border-radius: 12px;
   background: var(--lui-color-surface-muted);
   font-family: var(--lui-font-mono);
   font-size: 13px;
@@ -165,7 +192,11 @@
 }
 
 .tableWrap {
+  min-width: 0;
+  max-width: 100%;
   overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: thin;
 }
 
 .table {
@@ -216,5 +247,14 @@
 
   .profileHero {
     grid-template-columns: 1fr;
+  }
+
+  .tabList {
+    width: 100%;
+  }
+
+  .tab {
+    flex: 1;
+    min-height: 44px;
   }
 }

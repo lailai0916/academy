@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, EmptyState, Panel, Progress } from '@lailai/ui';
+import { Button, EmptyState, Panel } from '@lailai/ui';
 import { useNavigate } from 'react-router';
 import type { Dashboard, LearningInsights, LearningOverview } from '@lailai/academy-shared';
 import { Icon } from '../components/Icon';
@@ -42,8 +42,13 @@ export function DashboardPage() {
 
   const { plan, metrics, user } = data.dashboard;
   const completion = plan.total === 0 ? 0 : Math.round((plan.completed / plan.total) * 100);
+  const boundedCompletion = Math.min(100, Math.max(0, completion));
+  const ringLength = 276.46;
+  const ringOffset = ringLength * (1 - boundedCompletion / 100);
+  const remaining = Math.max(0, plan.total - plan.completed);
   const mistakeCount = data.words.summary.mistakes + data.poems.summary.mistakes;
   const maxDaily = Math.max(1, ...data.insights.daily.map((day) => day.reviews));
+  const hasReviewActivity = data.insights.daily.some((day) => day.reviews > 0);
 
   return (
     <div className={page.page}>
@@ -72,11 +77,39 @@ export function DashboardPage() {
           <Panel feature className={styles.planPanel}>
             <div className={styles.plan}>
               <div className={styles.planProgress}>
-                <div className={styles.completion}>
-                  <strong>{completion}%</strong>
-                  <span>已完成</span>
+                <div
+                  className={styles.progressRing}
+                  role="progressbar"
+                  aria-label="今日计划完成度"
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-valuenow={boundedCompletion}
+                >
+                  <svg viewBox="0 0 104 104" aria-hidden="true">
+                    <circle className={styles.ringTrack} cx="52" cy="52" r="44" />
+                    <circle
+                      className={styles.ringValue}
+                      cx="52"
+                      cy="52"
+                      r="44"
+                      style={{ strokeDashoffset: ringOffset }}
+                    />
+                  </svg>
+                  <span>
+                    <strong>{boundedCompletion}%</strong>
+                    <small>完成</small>
+                  </span>
                 </div>
-                <Progress label="今日计划完成度" value={completion} showValue={false} />
+                <div className={styles.progressCopy}>
+                  <strong>
+                    {plan.total === 0
+                      ? '今天暂无计划'
+                      : remaining === 0
+                        ? '今日计划已完成'
+                        : `还需完成 ${remaining} 项`}
+                  </strong>
+                  <span>到期内容优先，其后安排新学内容</span>
+                </div>
               </div>
               <div className={styles.planItems}>
                 <button type="button" onClick={() => navigate('/learn/words')}>
@@ -196,18 +229,28 @@ export function DashboardPage() {
             </Button>
           </div>
           <Panel>
-            <div className={styles.miniChart}>
-              {data.insights.daily.map((day) => (
-                <div key={day.date} title={`${day.date} · ${day.reviews} 次`}>
-                  <span style={{ height: `${Math.max(3, (day.reviews / maxDaily) * 100)}%` }} />
+            {hasReviewActivity ? (
+              <>
+                <div className={styles.miniChart}>
+                  {data.insights.daily.map((day) => (
+                    <div key={day.date} title={`${day.date} · ${day.reviews} 次`}>
+                      <span style={{ height: `${Math.max(3, (day.reviews / maxDaily) * 100)}%` }} />
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-            <div className={styles.chartMeta}>
-              <span>{data.insights.metrics.reviewCount} 次有效复习</span>
-              <span>{data.insights.metrics.activeDays} 个学习日</span>
-              <span>{data.insights.metrics.accuracy}% 正确率</span>
-            </div>
+                <div className={styles.chartMeta}>
+                  <span>{data.insights.metrics.reviewCount} 次有效复习</span>
+                  <span>{data.insights.metrics.activeDays} 个学习日</span>
+                  <span>{data.insights.metrics.accuracy}% 正确率</span>
+                </div>
+              </>
+            ) : (
+              <EmptyState
+                title="近 14 天暂无复习记录"
+                description="完成一组学习后，这里会显示每日复习量。"
+                icon={<Icon icon="lucide:chart-no-axes-column" />}
+              />
+            )}
           </Panel>
         </section>
 

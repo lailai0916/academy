@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#f5f5f7" />
+    <meta name="theme-color" content="#f6f6f8" />
     <meta name="description" content="lailai's Academy — 面向高中生的个性化自学平台。" />
     <link rel="icon" href="/brand/favicon.ico" />
     <title>lailai's Academy</title>
@@ -19,6 +19,21 @@
           document.documentElement.dataset.theme = 'light';
           document.documentElement.dataset.themePreference = 'system';
         }
+
+        function syncThemeColor() {
+          var meta = document.querySelector('meta[name="theme-color"]');
+          if (!meta) return;
+          meta.setAttribute(
+            'content',
+            document.documentElement.dataset.theme === 'dark' ? '#111214' : '#f6f6f8'
+          );
+        }
+
+        syncThemeColor();
+        new MutationObserver(syncThemeColor).observe(document.documentElement, {
+          attributes: true,
+          attributeFilter: ['data-theme'],
+        });
       })();
     </script>
     <script

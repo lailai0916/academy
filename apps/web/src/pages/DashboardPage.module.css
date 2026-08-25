@@ -1,7 +1,7 @@
 .workspaceGrid {
   display: grid;
   grid-template-columns: minmax(0, 1.7fr) minmax(260px, 0.7fr);
-  gap: 16px;
+  gap: 18px;
   align-items: stretch;
 }
 
@@ -13,33 +13,85 @@
 
 .plan {
   display: grid;
-  grid-template-columns: minmax(200px, 0.62fr) minmax(0, 1.38fr);
-  gap: 24px;
-  padding: 20px;
+  grid-template-columns: minmax(190px, 0.58fr) minmax(0, 1.42fr);
+  gap: 26px;
+  padding: 22px;
 }
 
 .planProgress {
   display: grid;
+  justify-items: center;
   align-content: center;
-  gap: 16px;
-  padding-right: 24px;
+  gap: 14px;
+  padding-right: 26px;
   border-right: 1px solid var(--lui-color-separator);
+  text-align: center;
 }
 
-.completion {
+.progressRing {
+  position: relative;
   display: grid;
-  gap: 5px;
+  width: 128px;
+  height: 128px;
+  place-items: center;
 }
 
-.completion strong {
-  font-size: clamp(2.25rem, 5vw, 3.25rem);
+.progressRing svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transform: rotate(-90deg);
+}
+
+.progressRing circle {
+  fill: none;
+  stroke-width: 7;
+}
+
+.ringTrack {
+  stroke: var(--lui-color-surface-muted);
+}
+
+.ringValue {
+  stroke: var(--lui-color-accent);
+  stroke-linecap: round;
+  stroke-dasharray: 276.46;
+  transition: stroke-dashoffset var(--lui-motion-surface);
+}
+
+.progressRing > span {
+  display: grid;
+  gap: 2px;
+  place-items: center;
+}
+
+.progressRing strong {
+  font-size: 25px;
   line-height: 1;
-  letter-spacing: -0.06em;
+  letter-spacing: -0.045em;
+  font-variant-numeric: tabular-nums;
 }
 
-.completion span {
+.progressRing small,
+.progressCopy span {
   color: var(--lui-color-label-secondary);
+  font-size: 11px;
+}
+
+.progressCopy {
+  display: grid;
+  max-width: 190px;
+  gap: 3px;
+}
+
+.progressCopy strong {
   font-size: 13px;
+}
+
+.progressCopy span {
+  line-height: 1.45;
 }
 
 .planItems {
@@ -52,8 +104,8 @@
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 14px;
-  min-height: 76px;
-  padding: 14px;
+  min-height: 82px;
+  padding: 15px;
   border: 1px solid var(--lui-color-separator);
   border-radius: var(--lui-radius-panel);
   background: var(--lui-color-surface-raised);
@@ -61,12 +113,17 @@
   text-align: left;
   transition:
     background-color var(--lui-motion-control),
-    border-color var(--lui-motion-control);
+    border-color var(--lui-motion-control),
+    transform var(--lui-motion-control);
 }
 
 .planItems button:hover {
   border-color: var(--lui-color-separator-strong);
   background: var(--lui-color-surface-muted);
+}
+
+.planItems button:active {
+  transform: scale(0.985);
 }
 
 .planItems button > span:nth-child(2) {
@@ -75,7 +132,7 @@
 }
 
 .planItems strong {
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .planItems small {
@@ -89,12 +146,12 @@
 
 .focus {
   display: grid;
-  padding: 9px 18px 14px;
+  padding: 8px 18px 14px;
 }
 
 .focus article {
   display: grid;
-  min-height: 64px;
+  min-height: 68px;
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
   gap: 11px;
@@ -106,7 +163,7 @@
   width: 34px;
   height: 34px;
   place-items: center;
-  border-radius: 9px;
+  border-radius: 10px;
   background: var(--lui-color-accent-soft);
   color: var(--lui-color-accent-label);
 }
@@ -122,7 +179,7 @@
 }
 
 .focus article strong {
-  font-size: 18px;
+  font-size: 19px;
   font-variant-numeric: tabular-nums;
 }
 
@@ -141,7 +198,7 @@
 .lowerGrid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 16px;
+  gap: 18px;
   align-items: start;
 }
 
@@ -164,8 +221,9 @@
 .miniChart span {
   width: 100%;
   min-height: 3px;
-  border-radius: 3px 3px 0 0;
+  border-radius: 4px 4px 2px 2px;
   background: var(--lui-color-accent);
+  opacity: 0.86;
 }
 
 .chartMeta {
@@ -217,9 +275,21 @@
   }
 
   .planProgress {
+    grid-template-columns: auto minmax(0, 1fr);
+    justify-items: start;
     padding: 0 0 22px;
     border-right: 0;
     border-bottom: 1px solid var(--lui-color-separator);
+    text-align: left;
+  }
+
+  .progressRing {
+    width: 104px;
+    height: 104px;
+  }
+
+  .progressCopy {
+    max-width: 240px;
   }
 
   .focus {

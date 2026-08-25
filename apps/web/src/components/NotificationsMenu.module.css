@@ -10,14 +10,22 @@
   padding: 0;
   place-items: center;
   border: 0;
-  border-radius: var(--lui-radius-control);
+  border-radius: 10px;
   background: transparent;
   color: var(--lui-color-label-secondary);
+  transition:
+    background-color var(--lui-motion-control),
+    color var(--lui-motion-control),
+    transform var(--lui-motion-control);
 }
 
 .trigger:hover {
   background: var(--lui-color-surface-muted);
   color: var(--lui-color-label);
+}
+
+.trigger:active {
+  transform: scale(0.94);
 }
 
 .trigger > svg {
@@ -50,8 +58,8 @@
   right: 0;
   width: min(360px, calc(100vw - 24px));
   overflow: hidden;
-  border: 1px solid var(--lui-color-separator-strong);
-  border-radius: 14px;
+  border: 1px solid var(--lui-color-separator);
+  border-radius: 18px;
   background: var(--lui-color-surface);
   box-shadow: var(--lui-shadow-overlay);
   animation: notification-enter var(--lui-motion-surface) both;
@@ -83,6 +91,12 @@
   border-bottom: 1px solid var(--lui-color-separator);
 }
 
+.list a {
+  transition:
+    background-color var(--lui-motion-control),
+    transform var(--lui-motion-control);
+}
+
 .list a:last-child,
 .list article:last-child {
   border-bottom: 0;
@@ -92,11 +106,17 @@
   background: var(--lui-color-surface-muted);
 }
 
+.list a:active {
+  transform: scale(0.99);
+}
+
 .unread::before {
   position: absolute;
-  inset: 12px auto 12px 0;
-  width: 2px;
-  border-radius: 0 2px 2px 0;
+  top: 18px;
+  right: 13px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
   background: var(--lui-color-accent);
   content: '';
 }

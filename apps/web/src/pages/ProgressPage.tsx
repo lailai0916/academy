@@ -28,6 +28,7 @@ export function ProgressPage() {
   if (!insights) return <div className={page.empty}>正在整理学习记录……</div>;
 
   const maxReviews = Math.max(1, ...insights.daily.map((day) => day.reviews));
+  const hasReviewActivity = insights.daily.some((day) => day.reviews > 0);
 
   return (
     <div className={page.page}>
@@ -68,32 +69,40 @@ export function ProgressPage() {
           <p>柱高表示复习量，颜色深浅表示正确率</p>
         </div>
         <Panel>
-          <div className={styles.chart} role="img" aria-label="近 30 天每日复习数量与正确率">
-            <div className={styles.plot}>
-              {insights.daily.map((day, index) => (
-                <div
-                  key={day.date}
-                  className={styles.day}
-                  title={`${day.date}：${day.reviews} 次，正确率 ${day.accuracy}%`}
-                >
+          {hasReviewActivity ? (
+            <div className={styles.chart} role="img" aria-label="近 30 天每日复习数量与正确率">
+              <div className={styles.plot}>
+                {insights.daily.map((day, index) => (
                   <div
-                    className={styles.bar}
-                    style={{
-                      height: `${Math.max(day.reviews ? 8 : 2, (day.reviews / maxReviews) * 100)}%`,
-                      opacity: day.reviews ? Math.max(0.42, day.accuracy / 100) : 0.18,
-                    }}
-                  />
-                  {(index === 0 || index === insights.daily.length - 1 || index % 7 === 0) && (
-                    <time dateTime={day.date}>{day.date.slice(5).replace('-', '/')}</time>
-                  )}
-                </div>
-              ))}
+                    key={day.date}
+                    className={styles.day}
+                    title={`${day.date}：${day.reviews} 次，正确率 ${day.accuracy}%`}
+                  >
+                    <div
+                      className={styles.bar}
+                      style={{
+                        height: `${Math.max(day.reviews ? 8 : 2, (day.reviews / maxReviews) * 100)}%`,
+                        opacity: day.reviews ? Math.max(0.42, day.accuracy / 100) : 0.18,
+                      }}
+                    />
+                    {(index === 0 || index === insights.daily.length - 1 || index % 7 === 0) && (
+                      <time dateTime={day.date}>{day.date.slice(5).replace('-', '/')}</time>
+                    )}
+                  </div>
+                ))}
+              </div>
+              <div className={styles.chartSummary}>
+                <span>平均反应 {Math.round(insights.metrics.averageResponseMs / 100) / 10} 秒</span>
+                <span>只统计完成提交的学习项目</span>
+              </div>
             </div>
-            <div className={styles.chartSummary}>
-              <span>平均反应 {Math.round(insights.metrics.averageResponseMs / 100) / 10} 秒</span>
-              <span>只统计完成提交的学习项目</span>
-            </div>
-          </div>
+          ) : (
+            <EmptyState
+              title="近 30 天暂无复习记录"
+              description="完成一组学习后，这里会显示每日复习量和正确率。"
+              icon={<Icon icon="lucide:chart-no-axes-column" />}
+            />
+          )}
         </Panel>
       </section>
 

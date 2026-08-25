@@ -1,3 +1,42 @@
+/* Academy owns its product tokens locally so the shared UI package can stay neutral. */
+:root {
+  --lui-color-canvas: #f6f6f8;
+  --lui-color-surface-raised: #fbfbfc;
+  --lui-color-surface-muted: #f0f1f3;
+  --lui-color-label-secondary: #5c5d65;
+  --lui-color-label-tertiary: #71727b;
+  --lui-color-separator: #dddde2;
+  --lui-color-separator-strong: #c7c8ce;
+  --lui-radius-control: 10px;
+  --lui-radius-panel: 14px;
+  --lui-radius-feature: 18px;
+  --lui-radius-overlay: 20px;
+  --lui-header-height: 60px;
+  --lui-shadow-control: 0 1px 2px rgb(0 0 0 / 7%);
+  --lui-shadow-overlay: 0 18px 50px rgb(0 0 0 / 14%), 0 2px 10px rgb(0 0 0 / 6%);
+  --academy-sidebar-width: 224px;
+  --academy-shell-gap: 12px;
+  --academy-shadow-panel: 0 1px 2px rgb(15 23 42 / 3%);
+  --academy-chrome: color-mix(in srgb, var(--lui-color-surface) 86%, transparent);
+}
+
+:root[data-theme='dark'] {
+  --lui-color-canvas: #111214;
+  --lui-color-surface: #1a1b1f;
+  --lui-color-surface-raised: #202126;
+  --lui-color-surface-muted: #25262b;
+  --lui-color-label: #f5f5f7;
+  --lui-color-label-secondary: #b8b9c1;
+  --lui-color-label-tertiary: #92939d;
+  --lui-color-separator: #34353b;
+  --lui-color-separator-strong: #4a4b53;
+  --lui-color-accent-soft: #12385f;
+  --lui-color-accent-label: #8bc5ff;
+  --lui-shadow-control: 0 1px 2px rgb(0 0 0 / 22%);
+  --lui-shadow-overlay: 0 20px 56px rgb(0 0 0 / 48%), 0 2px 12px rgb(0 0 0 / 26%);
+  --academy-shadow-panel: 0 1px 1px rgb(0 0 0 / 18%);
+}
+
 *,
 *::before,
 *::after {
@@ -24,6 +63,7 @@ body {
   color: var(--lui-color-label);
   font-size: 15px;
   line-height: 1.6;
+  font-variant-numeric: proportional-nums;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -37,6 +77,7 @@ textarea {
 
 button,
 a {
+  touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -60,7 +101,12 @@ h3 {
 }
 
 button {
-  cursor: default;
+  cursor: pointer;
+}
+
+button:disabled,
+select:disabled {
+  cursor: not-allowed;
 }
 
 p {
@@ -68,7 +114,29 @@ p {
 }
 
 ::selection {
-  background: var(--lui-color-accent-soft);
+  background: color-mix(in srgb, var(--lui-color-accent) 24%, transparent);
+}
+
+/* Shared primitives are tuned to the Academy geometry without forking @lailai/ui. */
+.lui-panel {
+  box-shadow: var(--academy-shadow-panel);
+}
+
+.lui-brand__logo {
+  border: 0;
+  box-shadow: none;
+}
+
+.lui-field__control {
+  background: var(--lui-color-surface-raised);
+}
+
+.lui-field__control:focus-visible {
+  background: var(--lui-color-surface);
+}
+
+.lui-theme-picker__menu {
+  border-radius: 12px;
 }
 
 :focus-visible {
@@ -138,5 +206,11 @@ p {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --academy-chrome: var(--lui-color-surface);
   }
 }

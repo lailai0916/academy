@@ -1,23 +1,28 @@
 .trigger {
   display: flex;
-  width: min(360px, 34vw);
+  width: min(320px, 31vw);
   height: 36px;
   align-items: center;
   gap: 8px;
   padding: 0 10px;
   border: 1px solid var(--lui-color-separator);
-  border-radius: var(--lui-radius-control);
-  background: var(--lui-color-surface-muted);
+  border-radius: 11px;
+  background: var(--lui-color-surface-raised);
   color: var(--lui-color-label-tertiary);
   font-size: 13px;
   transition:
     border-color var(--lui-motion-control),
-    background-color var(--lui-motion-control);
+    background-color var(--lui-motion-control),
+    transform var(--lui-motion-control);
 }
 
 .trigger:hover {
   border-color: var(--lui-color-separator-strong);
   background: var(--lui-color-surface);
+}
+
+.trigger:active {
+  transform: scale(0.985);
 }
 
 .trigger svg {
@@ -52,14 +57,16 @@
   display: grid;
   place-items: start center;
   padding: min(15vh, 128px) 16px 24px;
-  background: rgb(0 0 0 / 45%);
+  background: rgb(0 0 0 / 34%);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
 }
 
 .dialog {
   width: min(100%, 600px);
   overflow: hidden;
-  border: 1px solid var(--lui-color-separator-strong);
-  border-radius: 16px;
+  border: 1px solid var(--lui-color-separator);
+  border-radius: 20px;
   background: var(--lui-color-surface);
   box-shadow: var(--lui-shadow-overlay);
   animation: search-enter var(--lui-motion-surface) both;
@@ -134,12 +141,19 @@
   gap: 10px;
   min-height: 52px;
   padding: 7px 9px;
-  border-radius: var(--lui-radius-control);
+  border-radius: 11px;
+  transition:
+    background-color var(--lui-motion-control),
+    transform var(--lui-motion-control);
 }
 
 .group a:hover,
 .group a:focus-visible {
   background: var(--lui-color-surface-muted);
+}
+
+.group a:active {
+  transform: scale(0.99);
 }
 
 .resultIcon {
@@ -213,5 +227,12 @@
 
   .results {
     max-height: calc(100vh - 150px);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .backdrop {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
   }
 }

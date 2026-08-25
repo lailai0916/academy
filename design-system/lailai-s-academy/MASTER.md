@@ -37,14 +37,21 @@ standalone forms and never double as the product homepage.
 
 ## Authenticated Application
 
-- The `56px` top bar spans the viewport. It contains location, global search, notifications, theme,
-  and account access; it never becomes a second primary navigation row.
-- Sidebar width: `240px`; application content width: `1280px` maximum.
+- Keep the top bar and left navigation as the application frame, but do not reproduce GFSSM's
+  hard enterprise grid. GFSSM is an information-architecture reference, not Academy's visual skin.
+- The `60px` top bar uses a restrained functional material and a soft edge. It contains location,
+  global search, notifications, theme, and account access; it never becomes a second primary
+  navigation row.
+- The sidebar is an inset `224px` navigation surface with rounded outer corners. It must not use a
+  dark decorative shadow, full-height hard divider, or a separate vertical active indicator.
+- Application content width: `1240px` maximum, with generous gutters and a quiet reading rhythm.
 - Page titles use `1.75–2.1rem`; section titles use `17px`.
 - Group primary navigation by Learning, Community, Account, and System. Do not mix global actions
   into the sidebar.
 - Dashboard prioritizes today's plan, current review focus, long-term metrics, recent results, and a
   compact activity trend.
+- Academy's identity comes from learning state: due reviews, memory stability, textbook progress,
+  and a precise daily-plan completion ring. Generic SaaS metric-card repetition is secondary.
 - Global search must return real routes, textbook content, and public profiles. Empty search buttons
   are not permitted.
 - Desktop uses the fixed sidebar. Mobile keeps the top bar and opens the same grouped navigation in
@@ -52,7 +59,8 @@ standalone forms and never double as the product homepage.
 
 ## Components
 
-- Panels use a `1px` separator and `10–16px` radius according to hierarchy.
+- Panels use a soft `1px` separator and `12–18px` concentric radius according to hierarchy. Content
+  panels stay solid; translucency is reserved for application chrome and overlays.
 - Buttons use direct verbs and no promotional text.
 - Empty states name what is absent in one short sentence.
 - Forms keep visible labels, inline errors, and concrete recovery steps.
@@ -63,6 +71,8 @@ standalone forms and never double as the product homepage.
 - Control feedback: `140ms`; surface transitions: `220ms`.
 - Motion communicates open, close, selection, and progress only.
 - Do not animate whole cards or run decorative scroll reveals.
+- Press feedback may use a subtle `0.98–0.985` scale. Frequently used navigation selection should
+  rely on calm color interpolation rather than movement.
 - Respect `prefers-reduced-motion` globally.
 
 ## Copy

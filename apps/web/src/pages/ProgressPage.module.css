@@ -1,7 +1,7 @@
 .chart {
   display: grid;
   gap: 16px;
-  padding: 22px;
+  padding: 24px;
 }
 
 .plot {
@@ -24,8 +24,9 @@
 .bar {
   width: 100%;
   min-height: 2px;
-  border-radius: 3px 3px 0 0;
+  border-radius: 4px 4px 2px 2px;
   background: var(--lui-color-accent);
+  opacity: 0.86;
 }
 
 .day time {
@@ -50,7 +51,7 @@
 .columns {
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-  gap: 16px;
+  gap: 18px;
   align-items: start;
 }
 
@@ -111,10 +112,21 @@
   border-bottom: 1px solid var(--lui-color-separator);
   background: transparent;
   text-align: left;
+  transition:
+    background-color var(--lui-motion-control),
+    transform var(--lui-motion-control);
+}
+
+.sessionList button:hover {
+  background: color-mix(in srgb, var(--lui-color-surface-muted) 72%, transparent);
 }
 
 .sessionList button:hover strong {
   color: var(--lui-color-accent-label);
+}
+
+.sessionList button:active {
+  transform: scale(0.99);
 }
 
 .sessionIcon {
@@ -122,7 +134,7 @@
   width: 36px;
   height: 36px;
   place-items: center;
-  border-radius: 9px;
+  border-radius: 10px;
   background: var(--lui-color-accent-soft);
   color: var(--lui-color-accent-label);
 }

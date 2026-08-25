@@ -1,6 +1,7 @@
 .shell {
   min-height: 100vh;
-  padding: var(--lui-header-height) 0 0 240px;
+  padding: var(--lui-header-height) 0 0
+    calc(var(--academy-sidebar-width) + var(--academy-shell-gap) * 2);
 }
 
 .topbar {
@@ -9,10 +10,14 @@
   inset: 0 0 auto;
   display: grid;
   height: var(--lui-header-height);
-  grid-template-columns: 240px minmax(120px, 1fr) auto;
+  grid-template-columns:
+    calc(var(--academy-sidebar-width) + var(--academy-shell-gap) * 2)
+    minmax(120px, 1fr) auto;
   align-items: center;
-  border-bottom: 1px solid var(--lui-color-separator);
-  background: var(--lui-color-surface);
+  border-bottom: 1px solid color-mix(in srgb, var(--lui-color-separator) 82%, transparent);
+  background: var(--academy-chrome);
+  backdrop-filter: saturate(160%) blur(20px);
+  -webkit-backdrop-filter: saturate(160%) blur(20px);
 }
 
 .brandArea {
@@ -20,7 +25,7 @@
   min-width: 0;
   align-items: center;
   gap: 4px;
-  padding: 0 14px;
+  padding: 0 18px;
 }
 
 .brandArea > a {
@@ -39,6 +44,19 @@
   border-radius: var(--lui-radius-control);
   background: transparent;
   color: var(--lui-color-label-secondary);
+  transition:
+    background-color var(--lui-motion-control),
+    color var(--lui-motion-control),
+    transform var(--lui-motion-control);
+}
+
+.menuButton:hover {
+  background: var(--lui-color-surface-muted);
+  color: var(--lui-color-label);
+}
+
+.menuButton:active {
+  transform: scale(0.94);
 }
 
 .menuButton svg {
@@ -50,18 +68,22 @@
   display: flex;
   min-width: 0;
   align-items: center;
-  gap: 16px;
-  padding: 0 18px;
+  gap: 9px;
+  padding: 0 16px;
 }
 
 .location > span {
-  width: 1px;
-  height: 20px;
-  background: var(--lui-color-separator-strong);
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--lui-color-accent);
+  box-shadow: 0 0 0 4px var(--lui-color-accent-soft);
 }
 
 .location strong {
   overflow: hidden;
+  color: var(--lui-color-label-secondary);
   font-size: 13px;
   font-weight: 600;
   text-overflow: ellipsis;
@@ -71,15 +93,15 @@
 .topbarTools {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   padding-right: 12px;
 }
 
 .divider {
   width: 1px;
-  height: 20px;
-  margin: 0 2px;
-  background: var(--lui-color-separator-strong);
+  height: 18px;
+  margin: 0 3px;
+  background: var(--lui-color-separator);
 }
 
 .accountButton {
@@ -89,13 +111,20 @@
   align-items: center;
   gap: 8px;
   padding: 0 7px;
-  border-radius: var(--lui-radius-control);
+  border-radius: 12px;
   font-size: 13px;
   font-weight: 600;
+  transition:
+    background-color var(--lui-motion-control),
+    transform var(--lui-motion-control);
 }
 
 .accountButton:hover {
   background: var(--lui-color-surface-muted);
+}
+
+.accountButton:active {
+  transform: scale(0.97);
 }
 
 .accountButton span {
@@ -107,27 +136,40 @@
 .sidebar {
   position: fixed;
   z-index: 30;
-  inset: var(--lui-header-height) auto 0 0;
+  top: calc(var(--lui-header-height) + var(--academy-shell-gap));
+  bottom: var(--academy-shell-gap);
+  left: var(--academy-shell-gap);
   display: flex;
-  width: 240px;
+  width: var(--academy-sidebar-width);
+  overflow: hidden;
   flex-direction: column;
-  border-right: 1px solid var(--lui-color-separator);
-  background: var(--lui-color-surface);
+  border: 1px solid var(--lui-color-separator);
+  border-radius: 18px;
+  background: var(--academy-chrome);
+  backdrop-filter: saturate(150%) blur(18px);
+  -webkit-backdrop-filter: saturate(150%) blur(18px);
 }
 
 .userCard {
   display: grid;
+  min-height: 62px;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 10px;
-  min-height: 62px;
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--lui-color-separator);
-  transition: background-color var(--lui-motion-control);
+  margin: 8px 8px 4px;
+  padding: 9px 10px;
+  border-radius: 12px;
+  transition:
+    background-color var(--lui-motion-control),
+    transform var(--lui-motion-control);
 }
 
 .userCard:hover {
   background: var(--lui-color-surface-muted);
+}
+
+.userCard:active {
+  transform: scale(0.985);
 }
 
 .userCard > span:nth-child(2) {
@@ -166,35 +208,36 @@
   flex: 1;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: 12px 8px;
+  padding: 7px 8px 12px;
+  scrollbar-width: thin;
 }
 
 .navGroup + .navGroup {
-  margin-top: 18px;
+  margin-top: 17px;
 }
 
 .navGroup > p {
-  padding: 0 10px 5px;
+  padding: 0 10px 6px;
   color: var(--lui-color-label-tertiary);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
 
 .navItem {
-  position: relative;
   display: flex;
-  min-height: 38px;
+  min-height: 40px;
   align-items: center;
-  gap: 10px;
-  padding: 0 10px;
-  border-radius: var(--lui-radius-control);
+  gap: 11px;
+  padding: 0 11px;
+  border-radius: 11px;
   color: var(--lui-color-label-secondary);
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 590;
   transition:
     background-color var(--lui-motion-control),
-    color var(--lui-motion-control);
+    color var(--lui-motion-control),
+    transform var(--lui-motion-control);
 }
 
 .navItem + .navItem {
@@ -206,51 +249,55 @@
   color: var(--lui-color-label);
 }
 
+.navItem:active {
+  transform: scale(0.985);
+}
+
 .navItem.active {
   background: var(--lui-color-accent-soft);
   color: var(--lui-color-accent-label);
-}
-
-.navItem.active::before {
-  position: absolute;
-  top: 9px;
-  bottom: 9px;
-  left: -8px;
-  width: 2px;
-  border-radius: 0 2px 2px 0;
-  background: var(--lui-color-accent);
-  content: '';
+  font-weight: 650;
 }
 
 .navItem svg {
   width: 18px;
   height: 18px;
   flex: none;
+  stroke-width: 1.85;
 }
 
 .sidebarFooter {
   display: grid;
   gap: 7px;
-  padding: 9px 10px 11px;
+  margin: 0 8px;
+  padding: 9px 0 11px;
   border-top: 1px solid var(--lui-color-separator);
 }
 
 .sidebarFooter button {
   display: flex;
-  min-height: 38px;
+  min-height: 40px;
   align-items: center;
-  gap: 10px;
-  padding: 0 10px;
+  gap: 11px;
+  padding: 0 11px;
   border: 0;
-  border-radius: var(--lui-radius-control);
+  border-radius: 11px;
   background: transparent;
   color: var(--lui-color-label-secondary);
   font-size: 13px;
+  transition:
+    background-color var(--lui-motion-control),
+    color var(--lui-motion-control),
+    transform var(--lui-motion-control);
 }
 
 .sidebarFooter button:hover {
   background: var(--lui-color-danger-soft);
   color: var(--lui-color-danger);
+}
+
+.sidebarFooter button:active {
+  transform: scale(0.985);
 }
 
 .sidebarFooter button svg {
@@ -259,15 +306,16 @@
 }
 
 .sidebarFooter > span {
-  padding: 0 10px;
+  padding: 0 11px;
   color: var(--lui-color-label-tertiary);
   font-size: 10px;
 }
 
 .main {
-  width: min(100% - 48px, 1280px);
+  min-width: 0;
+  width: min(100% - 64px, 1240px);
   margin-inline: auto;
-  padding: 28px 0 56px;
+  padding: 34px 0 64px;
   animation: page-enter var(--lui-motion-surface) both;
 }
 
@@ -283,10 +331,6 @@
 }
 
 @media (max-width: 1080px) {
-  .topbar {
-    grid-template-columns: 220px minmax(80px, 1fr) auto;
-  }
-
   .location {
     padding-inline: 10px;
   }
@@ -328,10 +372,13 @@
   }
 
   .sidebar {
-    width: min(280px, calc(100vw - 48px));
+    top: calc(var(--lui-header-height) + 8px);
+    bottom: 8px;
+    left: 8px;
+    width: min(292px, calc(100vw - 24px));
     visibility: hidden;
     pointer-events: none;
-    transform: translateX(-102%);
+    transform: translateX(calc(-100% - 16px));
     transition:
       transform var(--lui-motion-surface),
       visibility var(--lui-motion-surface);
@@ -354,12 +401,14 @@
     inset: var(--lui-header-height) 0 0;
     display: block;
     border: 0;
-    background: rgb(0 0 0 / 45%);
+    background: rgb(0 0 0 / 36%);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
   }
 
   .main {
     width: min(100% - 28px, 760px);
-    padding: 24px 0 44px;
+    padding: 26px 0 48px;
   }
 }
 
@@ -373,5 +422,14 @@
 
   .brandArea :global(.lui-brand) > span {
     display: none;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .topbar,
+  .sidebar,
+  .mobileBackdrop {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
   }
 }

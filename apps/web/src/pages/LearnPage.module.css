@@ -1,11 +1,11 @@
 .subjectGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
+  gap: 18px;
 }
 
 .subject {
-  min-height: 340px;
+  min-height: 320px;
 }
 
 .subjectBody {
@@ -13,19 +13,19 @@
   height: 100%;
   flex-direction: column;
   align-items: flex-start;
-  gap: 22px;
-  padding: 24px;
+  gap: 20px;
+  padding: 26px;
 }
 
 .subjectIcon {
   display: grid;
-  width: 52px;
-  height: 52px;
+  width: 50px;
+  height: 50px;
   place-items: center;
-  border-radius: 14px;
+  border-radius: 13px;
   background: var(--lui-color-accent-soft);
   color: var(--lui-color-accent-label);
-  font-size: 25px;
+  font-size: 23px;
 }
 
 .subjectCopy {
@@ -40,7 +40,8 @@
 }
 
 .subjectCopy h2 {
-  font-size: 24px;
+  font-size: 23px;
+  font-weight: 680;
   letter-spacing: -0.035em;
 }
 
@@ -57,8 +58,9 @@
 
 .subjectStats span,
 .pending {
-  padding: 5px 9px;
-  border-radius: 7px;
+  padding: 5px 10px;
+  border: 1px solid var(--lui-color-separator);
+  border-radius: 8px;
   background: var(--lui-color-surface-muted);
   color: var(--lui-color-label-secondary);
   font-size: 12px;
@@ -76,8 +78,8 @@
 .method {
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 14px;
-  padding: 18px;
+  gap: 15px;
+  padding: 19px;
 }
 
 .method > svg {
@@ -103,7 +105,7 @@
 
 .unitList {
   display: grid;
-  padding: 4px 20px;
+  padding: 4px 22px;
 }
 
 .unitRow {
@@ -111,8 +113,8 @@
   grid-template-columns: minmax(0, 1fr) minmax(240px, 360px);
   align-items: center;
   gap: 28px;
-  min-height: 100px;
-  padding: 16px 0;
+  min-height: 104px;
+  padding: 18px 0;
   border-bottom: 1px solid var(--lui-color-separator);
 }
 
@@ -163,12 +165,12 @@
 .quickLinks {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  gap: 14px;
 }
 
 .quickLinks button {
   display: grid;
-  min-height: 72px;
+  min-height: 76px;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 12px;
@@ -180,12 +182,17 @@
   text-align: left;
   transition:
     border-color var(--lui-motion-control),
-    background-color var(--lui-motion-control);
+    background-color var(--lui-motion-control),
+    transform var(--lui-motion-control);
 }
 
 .quickLinks button:hover {
   border-color: var(--lui-color-separator-strong);
   background: var(--lui-color-surface-muted);
+}
+
+.quickLinks button:active {
+  transform: scale(0.985);
 }
 
 .quickLinks button > svg:first-child {
