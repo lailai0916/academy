@@ -26,9 +26,11 @@ standalone forms and never double as the product homepage.
 
 ## Public Website
 
-- Header height: `60px`; content width: `1120px` maximum.
+- Header height: `56px`; content width: `1120px` maximum.
+- Brand logos have no border, ring, or decorative shadow.
+- Inputs and selects use shared control geometry, a custom chevron, and unified states.
 - Keep the hero to a moderate two-column layout with a real product preview.
-- Headline maximum: `3.35rem` desktop and `2.75rem` mobile.
+- Headline maximum: `2.75rem` desktop and `2rem` mobile.
 - State product scope directly: textbook version, available subjects, and learning metrics.
 - Use sections only when they add new information.
 - Keep calls to action limited to login and invite registration.
@@ -40,7 +42,7 @@ standalone forms and never double as the product homepage.
 - Navigation labels are nouns: Today, Learn, Classmates, Profile, Admin, and Settings.
 - Dashboard prioritizes today's plan, long-term metrics, and recent results.
 - Theme preferences live in Settings; the sidebar does not contain a theme card.
-- Desktop uses the sidebar; mobile uses a `64px` header and four-item bottom navigation.
+- Desktop uses the sidebar; mobile uses a `56px` header and four-item bottom navigation.
 
 ## Components
 

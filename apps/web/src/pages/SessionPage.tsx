@@ -6,7 +6,7 @@ import {
   type FormEvent,
   type KeyboardEvent,
 } from 'react';
-import { Button, Panel, Progress } from '@lailai/ui';
+import { Button, IconButton, Panel, Progress } from '@lailai/ui';
 import { useNavigate, useParams } from 'react-router';
 import type { LearningAnswerResult, LearningPrompt } from '@lailai/academy-shared';
 import { Icon } from '../components/Icon';
@@ -131,9 +131,9 @@ export function SessionPage() {
   return (
     <div className={styles.page}>
       <header className={styles.header}>
-        <button type="button" onClick={() => navigate('/learn')} aria-label="结束本次学习">
+        <IconButton label="结束本次学习" onClick={() => navigate('/learn')}>
           <Icon icon="lucide:x" />
-        </button>
+        </IconButton>
         <Progress label="本组进度" value={progress} showValue={false} />
         <span>
           {prompt.progress.completed + (result ? 1 : 0)} / {prompt.progress.total}

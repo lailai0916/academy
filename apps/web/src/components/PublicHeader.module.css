@@ -2,7 +2,7 @@
   position: sticky;
   top: 0;
   z-index: 40;
-  height: 60px;
+  height: var(--lui-header-height);
   border-bottom: 1px solid var(--lui-color-separator);
   background: var(--lui-color-surface);
 }
@@ -18,7 +18,11 @@
 }
 
 .brand {
+  display: inline-flex;
   width: fit-content;
+  min-width: 44px;
+  min-height: 44px;
+  align-items: center;
   border-radius: var(--lui-radius-control);
 }
 
@@ -52,7 +56,7 @@
 .textAction,
 .primaryAction {
   display: inline-flex;
-  min-height: 34px;
+  min-height: var(--lui-control-height-compact);
   align-items: center;
   justify-content: center;
   padding: 0 11px;
@@ -61,17 +65,17 @@
 }
 
 .primaryAction {
-  background: var(--lui-color-label);
-  color: var(--lui-color-surface);
+  background: var(--lui-color-accent-fill);
+  color: #ffffff;
   font-size: 13px;
   font-weight: 650;
   transition:
-    opacity var(--lui-motion-control),
+    background-color var(--lui-motion-control),
     transform var(--lui-motion-control);
 }
 
 .primaryAction:hover {
-  opacity: 0.88;
+  background: var(--lui-color-accent-fill-hover);
 }
 
 .primaryAction:active {
@@ -80,7 +84,7 @@
 
 .actionPlaceholder {
   width: 124px;
-  height: 34px;
+  height: var(--lui-control-height-compact);
 }
 
 @media (max-width: 760px) {
@@ -96,6 +100,11 @@
 
   .actions {
     grid-column: 2;
+  }
+
+  .textAction,
+  .primaryAction {
+    min-height: 44px;
   }
 }
 

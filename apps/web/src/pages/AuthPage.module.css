@@ -5,7 +5,7 @@
 
 .content {
   display: grid;
-  min-height: calc(100vh - 60px);
+  min-height: calc(100vh - var(--lui-header-height));
   place-items: center;
   padding: 48px 20px;
 }
@@ -56,13 +56,16 @@
 }
 
 .switchMode a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
   color: var(--lui-color-accent-label);
   font-weight: 600;
 }
 
 @media (max-width: 520px) {
   .content {
-    min-height: calc(100vh - 60px);
+    min-height: calc(100vh - var(--lui-header-height));
     align-items: start;
     padding: 28px 12px;
   }

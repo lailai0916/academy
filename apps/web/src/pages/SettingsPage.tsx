@@ -117,17 +117,14 @@ export function SettingsPage() {
                   description="系统会优先安排到期复习。"
                 />
               </div>
-              <label className="lui-field">
-                <span className="lui-field__label">个人主页可见性</span>
-                <select
-                  className="lui-field__control"
-                  value={profile.isPublic ? 'public' : 'private'}
-                  onChange={(event) => update('isPublic', event.target.value === 'public')}
-                >
-                  <option value="public">平台用户可见</option>
-                  <option value="private">仅自己可见</option>
-                </select>
-              </label>
+              <SelectField
+                label="个人主页可见性"
+                value={profile.isPublic ? 'public' : 'private'}
+                onChange={(event) => update('isPublic', event.target.value === 'public')}
+              >
+                <option value="public">平台用户可见</option>
+                <option value="private">仅自己可见</option>
+              </SelectField>
               <div className={page.actions}>
                 <Button type="submit" disabled={saving}>
                   {saving ? '正在保存' : '保存设置'}

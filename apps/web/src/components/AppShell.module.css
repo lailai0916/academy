@@ -154,7 +154,7 @@
 
 @media (max-width: 820px) {
   .shell {
-    padding: 64px 0 72px;
+    padding: var(--lui-header-height) 0 72px;
   }
 
   .sidebar {
@@ -166,7 +166,7 @@
     inset: 0 0 auto;
     z-index: 20;
     display: flex;
-    height: 64px;
+    height: var(--lui-header-height);
     align-items: center;
     justify-content: space-between;
     padding: 0 16px;

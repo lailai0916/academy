@@ -81,13 +81,14 @@ p {
   z-index: 100;
   top: 8px;
   left: 8px;
+  min-height: 44px;
   padding: 8px 12px;
+  border: 1px solid var(--lui-color-separator);
   border-radius: var(--lui-radius-control);
   background: var(--lui-color-surface);
   color: var(--lui-color-label);
   font-size: 14px;
   font-weight: 650;
-  box-shadow: var(--lui-shadow-overlay);
   transform: translateY(-160%);
   transition: transform var(--lui-motion-control);
 }
