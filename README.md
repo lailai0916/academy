@@ -26,6 +26,9 @@ unit instead of being generated as an unverified exercise feed.
 🧠 **Adaptive review** — FSRS scheduling, active recall, delayed tests and varied question
 types adjust each learner's daily plan.
 
+🗂️ **Textbook and mistake loop** — learners can study by textbook unit, run diagnostics,
+reinforce mistakes, inspect session results and review 7–90 day learning analysis.
+
 🤖 **Configurable AI** — an administrator supplies an OpenAI-compatible service for error
 explanations and variations based on reviewed source content.
 
@@ -36,7 +39,7 @@ positive feedback support peer learning without public ranking pressure.
 invite code; sessions use HttpOnly cookies.
 
 🖥️ **Public website and study workspace** — visitors receive a clear product overview,
-while signed-in learners use a focused dashboard with light, dark and system themes.
+while signed-in learners use a grouped sidebar, top-bar search, notifications and theme controls.
 
 ## Getting Started
 

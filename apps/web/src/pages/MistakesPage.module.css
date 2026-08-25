@@ -1,0 +1,140 @@
+.tabs {
+  display: flex;
+  width: fit-content;
+  gap: 3px;
+  padding: 3px;
+  border: 1px solid var(--lui-color-separator);
+  border-radius: var(--lui-radius-control);
+  background: var(--lui-color-surface-muted);
+}
+
+.tabs button {
+  display: flex;
+  min-height: 36px;
+  align-items: center;
+  gap: 7px;
+  padding: 0 11px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--lui-color-label-secondary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.tabs button:hover {
+  color: var(--lui-color-label);
+}
+
+.tabs .active {
+  background: var(--lui-color-surface);
+  color: var(--lui-color-label);
+  box-shadow: var(--lui-shadow-control);
+}
+
+.tabs svg {
+  width: 16px;
+  height: 16px;
+}
+
+.tabs button > span {
+  min-width: 20px;
+  padding: 1px 5px;
+  border-radius: 8px;
+  background: var(--lui-color-surface-muted);
+  color: var(--lui-color-label-tertiary);
+  font-size: 10px;
+  text-align: center;
+}
+
+.list {
+  display: grid;
+  padding: 4px 20px;
+}
+
+.item {
+  display: grid;
+  min-height: 92px;
+  grid-template-columns: auto minmax(0, 1fr) minmax(220px, 320px);
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--lui-color-separator);
+}
+
+.item:last-child {
+  border-bottom: 0;
+}
+
+.icon {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--lui-color-danger-soft);
+  color: var(--lui-color-danger);
+}
+
+.icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.copy {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.copy strong,
+.copy span,
+.copy small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.copy strong {
+  font-size: 14px;
+}
+
+.copy span,
+.copy small,
+.progress > span {
+  color: var(--lui-color-label-secondary);
+  font-size: 12px;
+}
+
+.copy small {
+  color: var(--lui-color-label-tertiary);
+}
+
+.progress {
+  display: grid;
+  gap: 5px;
+}
+
+.progress > span {
+  color: var(--lui-color-label-tertiary);
+  text-align: right;
+}
+
+@media (max-width: 720px) {
+  .tabs {
+    width: 100%;
+  }
+
+  .tabs button {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .item {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .progress {
+    grid-column: 1 / -1;
+  }
+}

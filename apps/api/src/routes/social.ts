@@ -16,6 +16,7 @@ import {
   challenges,
   friendships,
   groupMembers,
+  notifications,
   postReactions,
   posts,
   profiles,
@@ -319,7 +320,18 @@ export async function socialRoutes(app: FastifyInstance) {
     if (existing) {
       return reply.status(409).send({ error: '好友关系或申请已经存在。' });
     }
-    await db.insert(friendships).values({ requesterId: request.user!.id, addresseeId: target.id });
+    await db.transaction(async (transaction) => {
+      await transaction
+        .insert(friendships)
+        .values({ requesterId: request.user!.id, addresseeId: target.id });
+      await transaction.insert(notifications).values({
+        userId: target.id,
+        kind: 'friend_request',
+        title: '新的好友申请',
+        body: `${request.user!.displayName} 请求添加你为好友。`,
+        link: '/social',
+      });
+    });
     return reply.status(201).send({ ok: true });
   });
 
@@ -327,16 +339,28 @@ export async function socialRoutes(app: FastifyInstance) {
     '/social/friends/:requesterId/accept',
     { preHandler: app.requireAuth },
     async (request, reply) => {
-      await db
-        .update(friendships)
-        .set({ status: 'accepted', updatedAt: new Date() })
-        .where(
-          and(
-            eq(friendships.requesterId, request.params.requesterId),
-            eq(friendships.addresseeId, request.user!.id),
-            eq(friendships.status, 'pending')
+      await db.transaction(async (transaction) => {
+        const [accepted] = await transaction
+          .update(friendships)
+          .set({ status: 'accepted', updatedAt: new Date() })
+          .where(
+            and(
+              eq(friendships.requesterId, request.params.requesterId),
+              eq(friendships.addresseeId, request.user!.id),
+              eq(friendships.status, 'pending')
+            )
           )
-        );
+          .returning({ requesterId: friendships.requesterId });
+        if (accepted) {
+          await transaction.insert(notifications).values({
+            userId: accepted.requesterId,
+            kind: 'friend_accepted',
+            title: '好友申请已通过',
+            body: `${request.user!.displayName} 已通过你的好友申请。`,
+            link: '/social',
+          });
+        }
+      });
       return reply.status(204).send();
     }
   );
@@ -396,6 +420,22 @@ export async function socialRoutes(app: FastifyInstance) {
       challengeId: challenge.id,
       userId: request.user!.id,
     });
+    const members = await db
+      .select({ userId: groupMembers.userId })
+      .from(groupMembers)
+      .where(eq(groupMembers.groupId, body.groupId));
+    const recipients = members.filter((member) => member.userId !== request.user!.id);
+    if (recipients.length > 0) {
+      await db.insert(notifications).values(
+        recipients.map((member) => ({
+          userId: member.userId,
+          kind: 'challenge_created',
+          title: '学习小组发起了新挑战',
+          body: body.title,
+          link: '/social',
+        }))
+      );
+    }
     return reply.status(201).send({ challenge });
   });
 

@@ -3,9 +3,13 @@ import type { FastifyInstance } from 'fastify';
 import {
   aiSettingsUpdateSchema,
   contentImportSchema,
+  contentStatusUpdateSchema,
   inviteCreateSchema,
+  type AdminContentItem,
   type AiSettings,
   type Invite,
+  type PoemPayload,
+  type WordPayload,
 } from '@lailai/academy-shared';
 import { db } from '../db/index.js';
 import { aiSettings, contentItems, invites, profiles, users } from '../db/schema.js';
@@ -198,4 +202,45 @@ export async function adminRoutes(app: FastifyInstance) {
     });
     return reply.status(201).send({ imported: body.items.length });
   });
+
+  app.get('/admin/content', { preHandler: app.requireAdmin }, async () => {
+    const rows = await db
+      .select()
+      .from(contentItems)
+      .orderBy(desc(contentItems.updatedAt))
+      .limit(300);
+    const content: AdminContentItem[] = rows.map((item) => ({
+      id: item.id,
+      key: item.key,
+      kind: item.kind,
+      grade: item.grade,
+      textbook: item.textbook,
+      unit: item.unit,
+      title:
+        item.kind === 'word'
+          ? (item.payload as WordPayload).headword
+          : `《${(item.payload as PoemPayload).title}》`,
+      status: item.status,
+      updatedAt: item.updatedAt.toISOString(),
+    }));
+    return { content };
+  });
+
+  app.patch<{ Params: { contentId: string } }>(
+    '/admin/content/:contentId/status',
+    { preHandler: app.requireAdmin },
+    async (request, reply) => {
+      const body = parseBody(contentStatusUpdateSchema, request.body, reply);
+      if (!body) return;
+      const [item] = await db
+        .update(contentItems)
+        .set({ status: body.status, updatedAt: new Date() })
+        .where(eq(contentItems.id, request.params.contentId))
+        .returning({ id: contentItems.id });
+      if (!item) {
+        return reply.status(404).send({ error: '教材内容不存在。' });
+      }
+      return { id: item.id, status: body.status };
+    }
+  );
 }

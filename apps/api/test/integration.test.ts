@@ -7,6 +7,7 @@ import { closeDatabase } from '../src/db/index.js';
 let app: FastifyInstance;
 let adminCookie = '';
 let userCookie = '';
+let userId = '';
 let sessionId = '';
 
 const mutationHeaders = (cookie = '') => ({
@@ -69,6 +70,7 @@ integrationDescribe('Academy API integration', () => {
     });
     expect(register.statusCode).toBe(201);
     userCookie = cookieFrom(register);
+    userId = register.json().user.id as string;
     expect(register.json().user.username).toBe(username);
 
     const reuse = await app.inject({
@@ -169,6 +171,57 @@ integrationDescribe('Academy API integration', () => {
       headers: { cookie: userCookie },
     });
     expect(afterDiagnostic.json().dashboard.plan.completed).toBe(0);
+
+    const overview = await app.inject({
+      method: 'GET',
+      url: '/api/learn/overview/word',
+      headers: { cookie: userCookie },
+    });
+    expect(overview.statusCode).toBe(200);
+    expect(overview.json().overview.units.length).toBeGreaterThan(0);
+
+    const focused = await app.inject({
+      method: 'POST',
+      url: '/api/learn/sessions',
+      headers: mutationHeaders(userCookie),
+      payload: { kind: 'word', mode: 'diagnostic', limit: 5 },
+    });
+    expect(focused.statusCode).toBe(201);
+    const focusedSessionId = focused.json().sessionId as string;
+    for (let index = 0; index < 5; index += 1) {
+      const current = await app.inject({
+        method: 'GET',
+        url: `/api/learn/sessions/${focusedSessionId}/next`,
+        headers: { cookie: userCookie },
+      });
+      expect(current.statusCode).toBe(200);
+      const contentId = current.json().prompt.contentId as string;
+      const answer = await app.inject({
+        method: 'POST',
+        url: `/api/learn/sessions/${focusedSessionId}/answer`,
+        headers: mutationHeaders(userCookie),
+        payload: { contentId, answer: '', responseMs: 1800, revealed: true },
+      });
+      expect(answer.statusCode).toBe(200);
+    }
+    const summary = await app.inject({
+      method: 'GET',
+      url: `/api/learn/sessions/${focusedSessionId}/summary`,
+      headers: { cookie: userCookie },
+    });
+    expect(summary.statusCode).toBe(200);
+    expect(summary.json().summary.status).toBe('completed');
+    expect(summary.json().summary.completedCount).toBe(5);
+    expect(summary.json().summary.mistakes).toHaveLength(5);
+
+    const insights = await app.inject({
+      method: 'GET',
+      url: '/api/learn/insights?days=14',
+      headers: { cookie: userCookie },
+    });
+    expect(insights.statusCode).toBe(200);
+    expect(insights.json().insights.daily).toHaveLength(14);
+    expect(insights.json().insights.metrics.reviewCount).toBeGreaterThanOrEqual(7);
   });
 
   it('updates the learning profile and supports social collaboration', async () => {
@@ -212,6 +265,37 @@ integrationDescribe('Academy API integration', () => {
     expect(social.statusCode).toBe(200);
     expect(social.json().feed[0].body).toBe('完成了第一轮延迟复习。');
     expect(social.json().groups.length).toBeGreaterThan(0);
+
+    const friendRequest = await app.inject({
+      method: 'POST',
+      url: '/api/social/friends',
+      headers: mutationHeaders(userCookie),
+      payload: { username: 'admin' },
+    });
+    expect(friendRequest.statusCode).toBe(201);
+
+    const adminNotifications = await app.inject({
+      method: 'GET',
+      url: '/api/notifications',
+      headers: { cookie: adminCookie },
+    });
+    expect(adminNotifications.statusCode).toBe(200);
+    expect(adminNotifications.json().unreadCount).toBeGreaterThan(0);
+
+    const accept = await app.inject({
+      method: 'POST',
+      url: `/api/social/friends/${userId}/accept`,
+      headers: mutationHeaders(adminCookie),
+    });
+    expect(accept.statusCode).toBe(204);
+
+    const search = await app.inject({
+      method: 'GET',
+      url: '/api/search?q=admin',
+      headers: { cookie: userCookie },
+    });
+    expect(search.statusCode).toBe(200);
+    expect(search.json().results.some((item: { type: string }) => item.type === 'user')).toBe(true);
   });
 
   it('protects administrator endpoints and rejects foreign origins', async () => {

@@ -7,8 +7,10 @@ import { AuthPage } from './pages/AuthPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { LearnPage } from './pages/LearnPage';
 import { LandingPage } from './pages/LandingPage';
+import { MistakesPage } from './pages/MistakesPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { ProfilePage } from './pages/ProfilePage';
+import { ProgressPage } from './pages/ProgressPage';
 import { SessionPage } from './pages/SessionPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { SocialPage } from './pages/SocialPage';
@@ -41,9 +43,12 @@ export function App() {
         <Route path="learn" element={<LearnPage />} />
         <Route path="learn/words" element={<LearnPage kind="word" />} />
         <Route path="learn/poems" element={<LearnPage kind="poem" />} />
+        <Route path="learn/mistakes" element={<MistakesPage />} />
         <Route path="learn/session/:sessionId" element={<SessionPage />} />
+        <Route path="progress" element={<ProgressPage />} />
         <Route path="social" element={<SocialPage />} />
         <Route path="profile" element={<ProfilePage />} />
+        <Route path="profile/:username" element={<ProfilePage />} />
         <Route path="settings" element={<SettingsPage />} />
         <Route path="admin" element={<AdminRoute />} />
       </Route>

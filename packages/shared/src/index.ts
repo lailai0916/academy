@@ -94,6 +94,21 @@ export const contentImportSchema = z.object({
 export const learningSessionCreateSchema = z.object({
   kind: contentKindSchema,
   mode: z.enum(['plan', 'review', 'diagnostic']).default('plan'),
+  focus: z.enum(['all', 'mistakes']).default('all'),
+  unit: z.string().trim().min(1).max(120).optional(),
+  limit: z.number().int().min(5).max(30).optional(),
+});
+
+export const contentKindQuerySchema = z.object({
+  kind: contentKindSchema,
+});
+
+export const learningInsightsQuerySchema = z.object({
+  days: z.coerce.number().int().min(7).max(90).default(30),
+});
+
+export const contentStatusUpdateSchema = z.object({
+  status: z.enum(['draft', 'published', 'archived']),
 });
 
 export const learningAnswerSchema = z.object({
@@ -217,6 +232,117 @@ export type LearningAnswerResult = {
   nextDueAt: string;
   rating: 'again' | 'hard' | 'good' | 'easy';
   sessionComplete: boolean;
+};
+
+export type LearningMistake = {
+  contentId: string;
+  kind: ContentKind;
+  title: string;
+  detail: string;
+  textbook: string;
+  unit: string;
+  mastery: number;
+  mistakeCount: number;
+  lastMistakeAt: string;
+  dueAt: string;
+};
+
+export type LearningUnitProgress = {
+  textbook: string;
+  unit: string;
+  total: number;
+  started: number;
+  due: number;
+  mastered: number;
+  mastery: number;
+};
+
+export type LearningOverview = {
+  kind: ContentKind;
+  summary: {
+    total: number;
+    newCount: number;
+    learning: number;
+    due: number;
+    mastered: number;
+    mastery: number;
+    delayedAccuracy: number;
+    mistakes: number;
+  };
+  units: LearningUnitProgress[];
+  mistakes: LearningMistake[];
+};
+
+export type LearningSessionSummary = {
+  id: string;
+  kind: ContentKind;
+  mode: 'plan' | 'review' | 'diagnostic';
+  status: 'active' | 'completed' | 'abandoned';
+  plannedCount: number;
+  completedCount: number;
+  correctCount: number;
+  accuracy: number;
+  averageResponseMs: number;
+  delayedAccuracy: number | null;
+  averageMastery: number;
+  startedAt: string;
+  completedAt: string | null;
+  mistakes: Pick<LearningMistake, 'contentId' | 'kind' | 'title' | 'detail' | 'unit'>[];
+};
+
+export type LearningInsights = {
+  periodDays: number;
+  metrics: {
+    reviewCount: number;
+    accuracy: number;
+    delayedAccuracy: number;
+    averageResponseMs: number;
+    activeDays: number;
+  };
+  daily: {
+    date: string;
+    reviews: number;
+    accuracy: number;
+  }[];
+  weakUnits: {
+    kind: ContentKind;
+    unit: string;
+    cardCount: number;
+    due: number;
+    mastery: number;
+    lapses: number;
+  }[];
+  recentSessions: Omit<LearningSessionSummary, 'mistakes'>[];
+};
+
+export type AdminContentItem = {
+  id: string;
+  key: string;
+  kind: ContentKind;
+  grade: Grade;
+  textbook: string;
+  unit: string;
+  title: string;
+  status: 'draft' | 'published' | 'archived';
+  updatedAt: string;
+};
+
+export type WorkspaceSearchResult = {
+  id: string;
+  type: 'content' | 'user';
+  title: string;
+  detail: string;
+  href: string;
+};
+
+export type NotificationItem = {
+  id: string;
+  kind: string;
+  title: string;
+  body: string;
+  link: string;
+  read: boolean;
+  createdAt: string;
 };
 
 export type SocialPost = {

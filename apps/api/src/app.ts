@@ -12,6 +12,7 @@ import { dashboardRoutes } from './routes/dashboard.js';
 import { learningRoutes } from './routes/learning.js';
 import { profileRoutes } from './routes/profile.js';
 import { socialRoutes } from './routes/social.js';
+import { workspaceRoutes } from './routes/workspace.js';
 
 export async function buildApp() {
   const app = Fastify({
@@ -56,6 +57,7 @@ export async function buildApp() {
       await api.register(aiRoutes);
       await api.register(socialRoutes);
       await api.register(adminRoutes);
+      await api.register(workspaceRoutes);
     },
     { prefix: '/api' }
   );

@@ -1,42 +1,59 @@
 import { useEffect, useState } from 'react';
-import { Button, Panel, Progress } from '@lailai/ui';
+import { Button, EmptyState, Panel, Progress } from '@lailai/ui';
 import { useNavigate } from 'react-router';
-import type { Dashboard } from '@lailai/academy-shared';
+import type { Dashboard, LearningInsights, LearningOverview } from '@lailai/academy-shared';
 import { Icon } from '../components/Icon';
 import { api, errorMessage } from '../lib/api';
 import page from './Page.module.css';
 import styles from './DashboardPage.module.css';
 
+type DashboardData = {
+  dashboard: Dashboard;
+  insights: LearningInsights;
+  words: LearningOverview;
+  poems: LearningOverview;
+};
+
 export function DashboardPage() {
   const navigate = useNavigate();
-  const [dashboard, setDashboard] = useState<Dashboard | null>(null);
+  const [data, setData] = useState<DashboardData | null>(null);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    api<{ dashboard: Dashboard }>('/dashboard')
-      .then((result) => setDashboard(result.dashboard))
+    Promise.all([
+      api<{ dashboard: Dashboard }>('/dashboard'),
+      api<{ insights: LearningInsights }>('/learn/insights?days=14'),
+      api<{ overview: LearningOverview }>('/learn/overview/word'),
+      api<{ overview: LearningOverview }>('/learn/overview/poem'),
+    ])
+      .then(([dashboard, insights, words, poems]) =>
+        setData({
+          dashboard: dashboard.dashboard,
+          insights: insights.insights,
+          words: words.overview,
+          poems: poems.overview,
+        })
+      )
       .catch((nextError) => setError(errorMessage(nextError)));
   }, []);
 
-  if (error) {
-    return <p className={page.error}>{error}</p>;
-  }
-  if (!dashboard) {
-    return <div className={page.empty}>正在生成今天的学习计划……</div>;
-  }
+  if (error) return <p className={page.error}>{error}</p>;
+  if (!data) return <div className={page.empty}>正在生成今天的学习计划……</div>;
 
-  const { plan, metrics, user } = dashboard;
+  const { plan, metrics, user } = data.dashboard;
   const completion = plan.total === 0 ? 0 : Math.round((plan.completed / plan.total) * 100);
+  const mistakeCount = data.words.summary.mistakes + data.poems.summary.mistakes;
+  const maxDaily = Math.max(1, ...data.insights.daily.map((day) => day.reviews));
 
   return (
     <div className={page.page}>
       <header className={page.pageHeader}>
         <div className={page.pageTitle}>
-          <p className={page.eyebrow}>{plan.date}</p>
-          <h1>今日学习</h1>
-          <p>
-            {user.displayName} · {plan.reason}
+          <p className={page.eyebrow}>
+            {plan.date} · {user.grade}
           </p>
+          <h1>今日学习</h1>
+          <p>{plan.reason}</p>
         </div>
         <Button size="large" onClick={() => navigate('/learn')}>
           <Icon icon="lucide:play" />
@@ -44,67 +61,118 @@ export function DashboardPage() {
         </Button>
       </header>
 
-      <section className={page.section}>
-        <div className={page.sectionHeader}>
-          <h2>学习计划</h2>
-          <p>
-            {plan.completed} / {plan.total} 项
-          </p>
-        </div>
-        <Panel feature>
-          <div className={styles.plan}>
-            <div className={styles.planProgress}>
-              <div className={styles.completion}>
-                <strong>{completion}%</strong>
-                <span>今日完成</span>
-              </div>
-              <Progress label="学习计划完成度" value={completion} showValue={false} />
-            </div>
-            <div className={styles.planItems}>
-              <button type="button" onClick={() => navigate('/learn/words')}>
-                <span className={page.iconChip}>
-                  <Icon icon="lucide:languages" />
-                </span>
-                <span>
-                  <strong>英语单词</strong>
-                  <small>
-                    {plan.wordsDue} 项复习 · {plan.wordsNew} 项新学
-                  </small>
-                </span>
-                <Icon icon="lucide:chevron-right" />
-              </button>
-              <button type="button" onClick={() => navigate('/learn/poems')}>
-                <span className={page.iconChip}>
-                  <Icon icon="lucide:feather" />
-                </span>
-                <span>
-                  <strong>古诗词</strong>
-                  <small>
-                    {plan.poemsDue} 项复习 · {plan.poemsNew} 项新学
-                  </small>
-                </span>
-                <Icon icon="lucide:chevron-right" />
-              </button>
-            </div>
+      <div className={styles.workspaceGrid}>
+        <section className={page.section}>
+          <div className={page.sectionHeader}>
+            <h2>今日计划</h2>
+            <p>
+              {plan.completed} / {plan.total} 项
+            </p>
           </div>
-        </Panel>
-      </section>
+          <Panel feature className={styles.planPanel}>
+            <div className={styles.plan}>
+              <div className={styles.planProgress}>
+                <div className={styles.completion}>
+                  <strong>{completion}%</strong>
+                  <span>已完成</span>
+                </div>
+                <Progress label="今日计划完成度" value={completion} showValue={false} />
+              </div>
+              <div className={styles.planItems}>
+                <button type="button" onClick={() => navigate('/learn/words')}>
+                  <span className={page.iconChip}>
+                    <Icon icon="lucide:languages" />
+                  </span>
+                  <span>
+                    <strong>英语单词</strong>
+                    <small>
+                      {plan.wordsDue} 项复习 · {plan.wordsNew} 项新学
+                    </small>
+                  </span>
+                  <Icon icon="lucide:chevron-right" />
+                </button>
+                <button type="button" onClick={() => navigate('/learn/poems')}>
+                  <span className={page.iconChip}>
+                    <Icon icon="lucide:feather" />
+                  </span>
+                  <span>
+                    <strong>古诗词</strong>
+                    <small>
+                      {plan.poemsDue} 项复习 · {plan.poemsNew} 项新学
+                    </small>
+                  </span>
+                  <Icon icon="lucide:chevron-right" />
+                </button>
+              </div>
+            </div>
+          </Panel>
+        </section>
+
+        <section className={page.section}>
+          <div className={page.sectionHeader}>
+            <h2>当前重点</h2>
+          </div>
+          <Panel className={styles.focusPanel}>
+            <div className={styles.focus}>
+              <article>
+                <span>
+                  <Icon icon="lucide:rotate-ccw" />
+                </span>
+                <div>
+                  <strong>{plan.wordsDue + plan.poemsDue}</strong>
+                  <small>项到期复习</small>
+                </div>
+              </article>
+              <article>
+                <span>
+                  <Icon icon="lucide:notebook-tabs" />
+                </span>
+                <div>
+                  <strong>{mistakeCount}</strong>
+                  <small>项历史错题</small>
+                </div>
+              </article>
+              <article>
+                <span>
+                  <Icon icon="lucide:target" />
+                </span>
+                <div>
+                  <strong>{metrics.longTermCards}</strong>
+                  <small>项长期记忆</small>
+                </div>
+              </article>
+              <div className={styles.focusActions}>
+                <Button
+                  variant="secondary"
+                  size="small"
+                  onClick={() => navigate('/learn/mistakes')}
+                >
+                  打开错题本
+                </Button>
+                <Button variant="quiet" size="small" onClick={() => navigate('/progress')}>
+                  查看分析
+                </Button>
+              </div>
+            </div>
+          </Panel>
+        </section>
+      </div>
 
       <section className={page.section}>
         <div className={page.sectionHeader}>
-          <h2>学习数据</h2>
+          <h2>学习结果</h2>
           <p>长期记忆指标</p>
         </div>
         <div className={page.grid4}>
           <article className={page.metric}>
             <span>综合掌握度</span>
             <strong>{metrics.mastery}%</strong>
-            <small>稳定性与当前可回忆概率</small>
+            <small>稳定性与可回忆概率</small>
           </article>
           <article className={page.metric}>
             <span>延迟测试正确率</span>
             <strong>{metrics.delayedAccuracy}%</strong>
-            <small>间隔至少 24 小时后的表现</small>
+            <small>间隔至少 24 小时</small>
           </article>
           <article className={page.metric}>
             <span>长期记忆项目</span>
@@ -119,17 +187,44 @@ export function DashboardPage() {
         </div>
       </section>
 
-      <section className={page.section}>
-        <div className={page.sectionHeader}>
-          <h2>最近完成</h2>
-        </div>
-        <Panel>
-          <div className={page.panelBody}>
-            {dashboard.recentActivity.length === 0 ? (
-              <p className={page.muted}>暂无完成记录。</p>
+      <div className={styles.lowerGrid}>
+        <section className={page.section}>
+          <div className={page.sectionHeader}>
+            <h2>近 14 天</h2>
+            <Button variant="quiet" size="small" onClick={() => navigate('/progress')}>
+              完整分析
+            </Button>
+          </div>
+          <Panel>
+            <div className={styles.miniChart}>
+              {data.insights.daily.map((day) => (
+                <div key={day.date} title={`${day.date} · ${day.reviews} 次`}>
+                  <span style={{ height: `${Math.max(3, (day.reviews / maxDaily) * 100)}%` }} />
+                </div>
+              ))}
+            </div>
+            <div className={styles.chartMeta}>
+              <span>{data.insights.metrics.reviewCount} 次有效复习</span>
+              <span>{data.insights.metrics.activeDays} 个学习日</span>
+              <span>{data.insights.metrics.accuracy}% 正确率</span>
+            </div>
+          </Panel>
+        </section>
+
+        <section className={page.section}>
+          <div className={page.sectionHeader}>
+            <h2>最近完成</h2>
+          </div>
+          <Panel>
+            {data.dashboard.recentActivity.length === 0 ? (
+              <EmptyState
+                title="暂无完成记录"
+                description="完成第一组学习后，这里会显示最近结果。"
+                icon={<Icon icon="lucide:list-checks" />}
+              />
             ) : (
-              <ul className={page.list}>
-                {dashboard.recentActivity.map((item) => (
+              <ul className={`${page.list} ${styles.activityList}`}>
+                {data.dashboard.recentActivity.map((item) => (
                   <li key={item.id} className={page.listItem}>
                     <span className={page.iconChip}>
                       <Icon
@@ -144,9 +239,9 @@ export function DashboardPage() {
                 ))}
               </ul>
             )}
-          </div>
-        </Panel>
-      </section>
+          </Panel>
+        </section>
+      </div>
     </div>
   );
 }

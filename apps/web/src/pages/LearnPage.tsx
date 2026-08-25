@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Button, Panel } from '@lailai/ui';
+import { Button, EmptyState, Panel, Progress } from '@lailai/ui';
 import { useNavigate } from 'react-router';
-import type { ContentKind, Dashboard } from '@lailai/academy-shared';
+import type { ContentKind, Dashboard, LearningOverview } from '@lailai/academy-shared';
 import { Icon } from '../components/Icon';
 import { api, errorMessage } from '../lib/api';
 import page from './Page.module.css';
@@ -22,40 +22,56 @@ const subjects = {
   },
 } as const;
 
+type SessionOptions = {
+  focus?: 'all' | 'mistakes';
+  unit?: string;
+  limit?: number;
+};
+
 export function LearnPage({ kind }: { kind?: ContentKind }) {
   const navigate = useNavigate();
   const [dashboard, setDashboard] = useState<Dashboard | null>(null);
-  const [starting, setStarting] = useState<string | null>(null);
+  const [overview, setOverview] = useState<LearningOverview | null>(null);
+  const [starting, setStarting] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    api<{ dashboard: Dashboard }>('/dashboard')
-      .then((result) => setDashboard(result.dashboard))
-      .catch((nextError) => setError(errorMessage(nextError)));
-  }, []);
-
-  const start = async (targetKind: ContentKind, mode: 'plan' | 'review' | 'diagnostic') => {
-    if (starting) {
-      return;
+    const requests: Promise<unknown>[] = [
+      api<{ dashboard: Dashboard }>('/dashboard').then((result) => setDashboard(result.dashboard)),
+    ];
+    if (kind) {
+      requests.push(
+        api<{ overview: LearningOverview }>(`/learn/overview/${kind}`).then((result) =>
+          setOverview(result.overview)
+        )
+      );
     }
-    setStarting(`${targetKind}-${mode}`);
+    Promise.all(requests).catch((nextError) => setError(errorMessage(nextError)));
+  }, [kind]);
+
+  const start = async (
+    targetKind: ContentKind,
+    mode: 'plan' | 'review' | 'diagnostic',
+    options: SessionOptions = {}
+  ) => {
+    if (starting) return;
+    setStarting(true);
     setError('');
     try {
       const result = await api<{ sessionId: string }>('/learn/sessions', {
         method: 'POST',
-        body: JSON.stringify({ kind: targetKind, mode }),
+        body: JSON.stringify({ kind: targetKind, mode, ...options }),
       });
       navigate(`/learn/session/${result.sessionId}`);
     } catch (nextError) {
       setError(errorMessage(nextError));
-      setStarting(null);
+      setStarting(false);
     }
   };
 
   if (kind) {
     const subject = subjects[kind];
-    const due = kind === 'word' ? dashboard?.plan.wordsDue : dashboard?.plan.poemsDue;
-    const fresh = kind === 'word' ? dashboard?.plan.wordsNew : dashboard?.plan.poemsNew;
+    const summary = overview?.summary;
     return (
       <div className={page.page}>
         <header className={page.pageHeader}>
@@ -64,29 +80,34 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
             <h1>{subject.title}</h1>
             <p>{subject.description}</p>
           </div>
-          <Button size="large" onClick={() => start(kind, 'plan')} disabled={Boolean(starting)}>
+          <Button size="large" onClick={() => start(kind, 'plan')} disabled={starting}>
             <Icon icon="lucide:play" />
-            开始计划
+            开始今日计划
           </Button>
         </header>
 
         {error && <p className={page.error}>{error}</p>}
 
-        <div className={page.grid3}>
+        <div className={page.grid4}>
           <article className={page.metric}>
-            <span>当前到期复习</span>
-            <strong>{due ?? '—'}</strong>
-            <small>FSRS 按遗忘概率安排</small>
+            <span>综合掌握度</span>
+            <strong>{summary ? `${summary.mastery}%` : '—'}</strong>
+            <small>{summary?.total ?? '—'} 项教材内容</small>
           </article>
           <article className={page.metric}>
-            <span>今天新学</span>
-            <strong>{fresh ?? '—'}</strong>
-            <small>避免新内容挤占到期复习</small>
+            <span>当前到期</span>
+            <strong>{summary?.due ?? '—'}</strong>
+            <small>优先恢复即将遗忘的内容</small>
           </article>
           <article className={page.metric}>
-            <span>目标留存率</span>
-            <strong>90%</strong>
-            <small>调度器目标，不等同于即时正确率</small>
+            <span>长期掌握</span>
+            <strong>{summary?.mastered ?? '—'}</strong>
+            <small>稳定期至少 21 天</small>
+          </article>
+          <article className={page.metric}>
+            <span>错题记录</span>
+            <strong>{summary?.mistakes ?? '—'}</strong>
+            <small>按掌握度优先巩固</small>
           </article>
         </div>
 
@@ -101,14 +122,10 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
                   <Icon icon="lucide:list-checks" />
                 </span>
                 <div className={page.panelTitleCopy}>
-                  <h3>按今日计划</h3>
-                  <p>先复习到期内容，再补充适量新内容。</p>
+                  <h3>今日计划</h3>
+                  <p>先处理到期内容，再按容量补充新内容。</p>
                 </div>
-                <Button
-                  variant="secondary"
-                  onClick={() => start(kind, 'plan')}
-                  disabled={Boolean(starting)}
-                >
+                <Button variant="secondary" onClick={() => start(kind, 'plan')} disabled={starting}>
                   开始
                 </Button>
               </div>
@@ -119,13 +136,13 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
                   <Icon icon="lucide:rotate-ccw" />
                 </span>
                 <div className={page.panelTitleCopy}>
-                  <h3>只复习</h3>
-                  <p>仅处理已经到期的内容，不引入新项目。</p>
+                  <h3>错题巩固</h3>
+                  <p>从历史错误中挑选尚未稳定掌握的内容。</p>
                 </div>
                 <Button
                   variant="secondary"
-                  onClick={() => start(kind, 'review')}
-                  disabled={Boolean(starting)}
+                  onClick={() => start(kind, 'review', { focus: 'mistakes' })}
+                  disabled={starting || summary?.mistakes === 0}
                 >
                   开始
                 </Button>
@@ -138,12 +155,12 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
                 </span>
                 <div className={page.panelTitleCopy}>
                   <h3>水平诊断</h3>
-                  <p>抽取内容建立初始难度和掌握度记录。</p>
+                  <p>随机抽取教材内容，重新估计当前基础。</p>
                 </div>
                 <Button
                   variant="secondary"
                   onClick={() => start(kind, 'diagnostic')}
-                  disabled={Boolean(starting)}
+                  disabled={starting}
                 >
                   开始
                 </Button>
@@ -152,15 +169,87 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
           </div>
         </section>
 
-        <Panel tone="muted">
-          <div className={styles.method}>
-            <Icon icon="lucide:info" />
-            <div>
-              <strong>题型调整</strong>
-              <p>系统根据复习间隔、历史错误、反应时间和记忆稳定性选择下一题。</p>
-            </div>
+        <section className={page.section}>
+          <div className={page.sectionHeader}>
+            <h2>教材进度</h2>
+            <p>{overview ? `${overview.units.length} 个单元` : '正在读取'}</p>
           </div>
-        </Panel>
+          <Panel>
+            <div className={styles.unitList}>
+              {overview?.units.map((unit) => {
+                const progress =
+                  unit.total === 0 ? 0 : Math.round((unit.started / unit.total) * 100);
+                return (
+                  <article key={`${unit.textbook}-${unit.unit}`} className={styles.unitRow}>
+                    <div className={styles.unitCopy}>
+                      <span>{unit.textbook}</span>
+                      <strong>{unit.unit}</strong>
+                      <small>
+                        已学 {unit.started}/{unit.total} · {unit.due} 项到期 · {unit.mastered}{' '}
+                        项长期掌握
+                      </small>
+                    </div>
+                    <div className={styles.unitProgress}>
+                      <Progress label={`教材覆盖 ${progress}%`} value={progress} />
+                      <Button
+                        size="small"
+                        variant="quiet"
+                        onClick={() => start(kind, 'plan', { unit: unit.unit, limit: 10 })}
+                        disabled={starting}
+                      >
+                        学习本单元
+                        <Icon icon="lucide:arrow-right" />
+                      </Button>
+                    </div>
+                  </article>
+                );
+              })}
+              {overview && overview.units.length === 0 && (
+                <EmptyState
+                  title="暂无教材内容"
+                  description="管理员发布对应年级的内容后，这里会按教材单元显示。"
+                  icon={<Icon icon="lucide:book-open" />}
+                />
+              )}
+            </div>
+          </Panel>
+        </section>
+
+        <section className={page.section}>
+          <div className={page.sectionHeader}>
+            <h2>最近错题</h2>
+            <Button variant="quiet" size="small" onClick={() => navigate('/learn/mistakes')}>
+              查看错题本
+              <Icon icon="lucide:arrow-right" />
+            </Button>
+          </div>
+          <Panel>
+            {overview && overview.mistakes.length > 0 ? (
+              <ul className={`${page.list} ${styles.mistakeList}`}>
+                {overview.mistakes.slice(0, 5).map((mistake) => (
+                  <li key={mistake.contentId} className={page.listItem}>
+                    <span className={page.iconChip}>
+                      <Icon icon={kind === 'word' ? 'lucide:languages' : 'lucide:feather'} />
+                    </span>
+                    <span className={page.listCopy}>
+                      <strong>{mistake.title}</strong>
+                      <span>
+                        {mistake.detail} · {mistake.unit}
+                      </span>
+                    </span>
+                    <span className={styles.mastery}>{mistake.mastery}%</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <EmptyState
+                title="还没有错题"
+                description="答错或查看答案后，相关内容会自动进入这里。"
+                icon={<Icon icon="lucide:notebook-tabs" />}
+              />
+            )}
+          </Panel>
+        </section>
       </div>
     );
   }
@@ -170,8 +259,8 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
       <header className={page.pageHeader}>
         <div className={page.pageTitle}>
           <p className={page.eyebrow}>学习</p>
-          <h1>学习内容</h1>
-          <p>英语单词和古诗词共用一套掌握度与长期记忆模型。</p>
+          <h1>学习中心</h1>
+          <p>按今日计划、教材单元或历史错题组织学习。</p>
         </div>
       </header>
 
@@ -203,7 +292,7 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
                   </span>
                 </div>
                 <div className={page.actions}>
-                  <Button onClick={() => start(subjectKind, 'plan')} disabled={Boolean(starting)}>
+                  <Button onClick={() => start(subjectKind, 'plan')} disabled={starting}>
                     开始计划
                   </Button>
                   <Button
@@ -220,32 +309,24 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
         })}
       </div>
 
-      <section className={page.section}>
-        <div className={page.sectionHeader}>
-          <h2>其他学科</h2>
-          <p>按教材学科与单元逐步加入</p>
-        </div>
-        <div className={page.grid3}>
-          {[
-            ['lucide:sigma', '数学', '知识点诊断、例题理解与变式训练'],
-            ['lucide:atom', '物理', '概念模型、实验与分层计算'],
-            ['lucide:flask-conical', '化学', '方程式、实验现象与推断'],
-          ].map(([icon, title, description]) => (
-            <Panel key={title} tone="muted">
-              <div className={page.panelBody}>
-                <span className={page.iconChip}>
-                  <Icon icon={icon} />
-                </span>
-                <div className={page.panelTitleCopy}>
-                  <h3>{title}</h3>
-                  <p>{description}</p>
-                </div>
-                <span className={styles.pending}>尚未开放</span>
-              </div>
-            </Panel>
-          ))}
-        </div>
-      </section>
+      <div className={styles.quickLinks}>
+        <button type="button" onClick={() => navigate('/learn/mistakes')}>
+          <Icon icon="lucide:notebook-tabs" />
+          <span>
+            <strong>错题本</strong>
+            <small>集中巩固历史错误</small>
+          </span>
+          <Icon icon="lucide:chevron-right" />
+        </button>
+        <button type="button" onClick={() => navigate('/progress')}>
+          <Icon icon="lucide:chart-no-axes-combined" />
+          <span>
+            <strong>学习分析</strong>
+            <small>查看准确率和薄弱单元</small>
+          </span>
+          <Icon icon="lucide:chevron-right" />
+        </button>
+      </div>
     </div>
   );
 }

@@ -1,20 +1,91 @@
-import { Avatar, Brand } from '@lailai/ui';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Avatar, Brand, ThemeControl } from '@lailai/ui';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router';
 import { useAuth } from '../auth/AuthProvider';
+import { GlobalSearch } from './GlobalSearch';
 import { Icon } from './Icon';
+import { NotificationsMenu } from './NotificationsMenu';
 import styles from './AppShell.module.css';
 
-const navigation = [
-  { to: '/dashboard', label: '今天', icon: 'lucide:house' },
-  { to: '/learn', label: '学习', icon: 'lucide:book-open' },
-  { to: '/social', label: '同学', icon: 'lucide:users' },
-  { to: '/profile', label: '我的', icon: 'lucide:user-round' },
+type NavigationItem = {
+  to: string;
+  label: string;
+  icon: string;
+  end?: boolean;
+};
+
+const navigation: { label: string; items: NavigationItem[] }[] = [
+  {
+    label: '学习',
+    items: [
+      { to: '/dashboard', label: '今日学习', icon: 'lucide:house', end: true },
+      { to: '/learn', label: '学习中心', icon: 'lucide:book-open', end: true },
+      { to: '/learn/words', label: 'AI 背单词', icon: 'lucide:languages', end: true },
+      { to: '/learn/poems', label: 'AI 背古诗词', icon: 'lucide:feather', end: true },
+      { to: '/learn/mistakes', label: '错题本', icon: 'lucide:notebook-tabs', end: true },
+      { to: '/progress', label: '学习分析', icon: 'lucide:chart-no-axes-combined', end: true },
+    ],
+  },
+  {
+    label: '社区',
+    items: [{ to: '/social', label: '同学', icon: 'lucide:users' }],
+  },
+  {
+    label: '账号',
+    items: [
+      { to: '/profile', label: '个人主页', icon: 'lucide:user-round', end: true },
+      { to: '/settings', label: '设置', icon: 'lucide:settings-2' },
+    ],
+  },
 ];
 
 export function AppShell() {
   const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const previousPath = useRef(location.pathname);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    setMenuOpen(false);
+    if (previousPath.current !== location.pathname) {
+      window.requestAnimationFrame(() =>
+        document.getElementById('main-content')?.focus({ preventScroll: true })
+      );
+      previousPath.current = location.pathname;
+    }
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    const closeWithEscape = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      setMenuOpen(false);
+      menuButtonRef.current?.focus();
+    };
+    document.body.style.overflow = 'hidden';
+    document.addEventListener('keydown', closeWithEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', closeWithEscape);
+    };
+  }, [menuOpen]);
+
+  const allItems = useMemo(() => navigation.flatMap((group) => group.items), []);
+  const current = [...allItems]
+    .sort((left, right) => right.to.length - left.to.length)
+    .find((item) =>
+      item.end ? location.pathname === item.to : location.pathname.startsWith(item.to)
+    );
+  const currentLabel = location.pathname.startsWith('/admin')
+    ? '管理'
+    : location.pathname.startsWith('/learn/session')
+      ? '学习任务'
+      : location.pathname.startsWith('/profile/')
+        ? '个人主页'
+        : (current?.label ?? 'Academy');
 
   const handleLogout = async () => {
     await logout();
@@ -26,92 +97,114 @@ export function AppShell() {
       <a className="skip-link" href="#main-content">
         跳到主要内容
       </a>
-      <aside className={styles.sidebar}>
-        <NavLink to="/dashboard" className={styles.brand} aria-label="返回今天">
-          <Brand logoSrc="/brand/logo.svg" name="lailai's Academy" />
-        </NavLink>
-        <nav className={styles.navigation} aria-label="主导航">
-          {navigation.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end
-              className={({ isActive }) => `${styles.navItem} ${isActive ? styles.active : ''}`}
-            >
-              <Icon icon={item.icon} />
-              <span>{item.label}</span>
-            </NavLink>
-          ))}
-          {user?.role === 'admin' && (
-            <NavLink
-              to="/admin"
-              className={({ isActive }) => `${styles.navItem} ${isActive ? styles.active : ''}`}
-            >
-              <Icon icon="lucide:shield-check" />
-              <span>管理</span>
-            </NavLink>
-          )}
-          <NavLink
-            to="/settings"
-            className={({ isActive }) => `${styles.navItem} ${isActive ? styles.active : ''}`}
+
+      <header className={styles.topbar}>
+        <div className={styles.brandArea}>
+          <button
+            ref={menuButtonRef}
+            type="button"
+            className={styles.menuButton}
+            aria-label={menuOpen ? '关闭主菜单' : '打开主菜单'}
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((currentOpen) => !currentOpen)}
           >
-            <Icon icon="lucide:settings-2" />
-            <span>设置</span>
+            <Icon icon={menuOpen ? 'lucide:x' : 'lucide:menu'} />
+          </button>
+          <NavLink to="/dashboard" aria-label="返回今日学习">
+            <Brand logoSrc="/brand/logo.svg" name="lailai's Academy" />
           </NavLink>
-        </nav>
-
-        <div className={styles.sidebarFooter}>
-          <div className={styles.account}>
-            <Avatar name={user?.displayName ?? '?'} alt="个人头像" size={36} />
-            <div className={styles.accountCopy}>
-              <strong>{user?.displayName}</strong>
-              <span>@{user?.username}</span>
-            </div>
-            <button
-              type="button"
-              className={styles.logout}
-              onClick={handleLogout}
-              aria-label="退出登录"
-            >
-              <Icon icon="lucide:log-out" />
-            </button>
-          </div>
         </div>
-      </aside>
 
-      <header className={styles.mobileHeader}>
-        <NavLink to="/dashboard" aria-label="返回今天">
-          <Brand logoSrc="/brand/logo.svg" name="Academy" />
-        </NavLink>
-        <div className={styles.mobileActions}>
-          {user?.role === 'admin' && (
-            <NavLink to="/admin" className={styles.mobileIcon} aria-label="打开管理控制台">
-              <Icon icon="lucide:shield-check" />
-            </NavLink>
-          )}
-          <NavLink to="/settings" className={styles.mobileAccount} aria-label="打开设置">
-            <Avatar name={user?.displayName ?? '?'} alt="个人头像" size={34} />
+        <div className={styles.location} aria-label="当前位置">
+          <span aria-hidden="true" />
+          <strong>{currentLabel}</strong>
+        </div>
+
+        <div className={styles.topbarTools}>
+          <GlobalSearch />
+          <NotificationsMenu />
+          <ThemeControl
+            variant="compact"
+            labels={{ system: '跟随系统', light: '浅色', dark: '深色' }}
+          />
+          <span className={styles.divider} aria-hidden="true" />
+          <NavLink className={styles.accountButton} to="/profile" aria-label="打开个人主页">
+            <Avatar name={user?.displayName ?? '?'} alt="个人头像" size={32} />
+            <span>{user?.displayName}</span>
           </NavLink>
         </div>
       </header>
 
-      <main id="main-content" className={styles.main} key={location.pathname}>
+      {menuOpen && (
+        <button
+          type="button"
+          className={styles.mobileBackdrop}
+          aria-label="关闭主菜单"
+          onClick={() => setMenuOpen(false)}
+        />
+      )}
+
+      <aside className={`${styles.sidebar} ${menuOpen ? styles.sidebarOpen : ''}`}>
+        <NavLink className={styles.userCard} to="/profile">
+          <Avatar name={user?.displayName ?? '?'} alt="个人头像" size={36} />
+          <span>
+            <strong>{user?.displayName}</strong>
+            <small>
+              @{user?.username} · {user?.grade}
+            </small>
+          </span>
+          <span className={styles.role}>{user?.role === 'admin' ? '管理员' : '学生'}</span>
+        </NavLink>
+
+        <nav className={styles.navigation} aria-label="主导航">
+          {navigation.map((group) => (
+            <div key={group.label} className={styles.navGroup}>
+              <p>{group.label}</p>
+              {group.items.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  end={item.end}
+                  className={({ isActive }) => `${styles.navItem} ${isActive ? styles.active : ''}`}
+                >
+                  <Icon icon={item.icon} />
+                  <span>{item.label}</span>
+                </NavLink>
+              ))}
+            </div>
+          ))}
+
+          {user?.role === 'admin' && (
+            <div className={styles.navGroup}>
+              <p>系统</p>
+              <NavLink
+                to="/admin"
+                className={({ isActive }) => `${styles.navItem} ${isActive ? styles.active : ''}`}
+              >
+                <Icon icon="lucide:shield-check" />
+                <span>管理</span>
+              </NavLink>
+            </div>
+          )}
+        </nav>
+
+        <div className={styles.sidebarFooter}>
+          <button type="button" onClick={handleLogout}>
+            <Icon icon="lucide:log-out" />
+            <span>退出登录</span>
+          </button>
+          <span>Academy · 高中 AI 自学平台</span>
+        </div>
+      </aside>
+
+      <main
+        id="main-content"
+        className={styles.main}
+        tabIndex={-1}
+        inert={menuOpen ? true : undefined}
+      >
         <Outlet />
       </main>
-
-      <nav className={styles.bottomNav} aria-label="移动端主导航">
-        {navigation.map((item) => (
-          <NavLink
-            key={item.to}
-            to={item.to}
-            end
-            className={({ isActive }) => `${styles.bottomItem} ${isActive ? styles.active : ''}`}
-          >
-            <Icon icon={item.icon} />
-            <span>{item.label}</span>
-          </NavLink>
-        ))}
-      </nav>
     </div>
   );
 }

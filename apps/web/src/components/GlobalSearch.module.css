@@ -1,0 +1,217 @@
+.trigger {
+  display: flex;
+  width: min(360px, 34vw);
+  height: 36px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  border: 1px solid var(--lui-color-separator);
+  border-radius: var(--lui-radius-control);
+  background: var(--lui-color-surface-muted);
+  color: var(--lui-color-label-tertiary);
+  font-size: 13px;
+  transition:
+    border-color var(--lui-motion-control),
+    background-color var(--lui-motion-control);
+}
+
+.trigger:hover {
+  border-color: var(--lui-color-separator-strong);
+  background: var(--lui-color-surface);
+}
+
+.trigger svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+.trigger span {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.trigger kbd {
+  padding: 1px 5px;
+  border: 1px solid var(--lui-color-separator);
+  border-radius: 5px;
+  background: var(--lui-color-surface);
+  color: var(--lui-color-label-tertiary);
+  font: inherit;
+  font-size: 11px;
+}
+
+.backdrop {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  display: grid;
+  place-items: start center;
+  padding: min(15vh, 128px) 16px 24px;
+  background: rgb(0 0 0 / 45%);
+}
+
+.dialog {
+  width: min(100%, 600px);
+  overflow: hidden;
+  border: 1px solid var(--lui-color-separator-strong);
+  border-radius: 16px;
+  background: var(--lui-color-surface);
+  box-shadow: var(--lui-shadow-overlay);
+  animation: search-enter var(--lui-motion-surface) both;
+}
+
+.searchBox {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 56px;
+  padding: 0 12px 0 16px;
+  border-bottom: 1px solid var(--lui-color-separator);
+}
+
+.searchBox > svg {
+  width: 19px;
+  height: 19px;
+  color: var(--lui-color-label-tertiary);
+}
+
+.searchBox input {
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--lui-color-label);
+  font-size: 16px;
+}
+
+.searchBox button {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  border-radius: var(--lui-radius-control);
+  background: transparent;
+  color: var(--lui-color-label-tertiary);
+}
+
+.searchBox button:hover {
+  background: var(--lui-color-surface-muted);
+  color: var(--lui-color-label);
+}
+
+.results {
+  max-height: min(520px, calc(100vh - 220px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 8px;
+}
+
+.group + .group {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--lui-color-separator);
+}
+
+.group > p {
+  padding: 4px 8px 6px;
+  color: var(--lui-color-label-tertiary);
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.group a {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 7px 9px;
+  border-radius: var(--lui-radius-control);
+}
+
+.group a:hover,
+.group a:focus-visible {
+  background: var(--lui-color-surface-muted);
+}
+
+.resultIcon {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 9px;
+  background: var(--lui-color-accent-soft);
+  color: var(--lui-color-accent-label);
+}
+
+.resultIcon svg {
+  width: 17px;
+  height: 17px;
+}
+
+.group a > span:last-child {
+  display: grid;
+  min-width: 0;
+  gap: 1px;
+}
+
+.group strong,
+.group small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.group strong {
+  font-size: 13px;
+}
+
+.group small,
+.status {
+  color: var(--lui-color-label-secondary);
+  font-size: 12px;
+}
+
+.status {
+  padding: 28px 16px;
+  text-align: center;
+}
+
+@keyframes search-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.99);
+  }
+}
+
+@media (max-width: 720px) {
+  .trigger {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    justify-content: center;
+    border-color: transparent;
+    background: transparent;
+  }
+
+  .trigger span,
+  .trigger kbd {
+    display: none;
+  }
+
+  .backdrop {
+    padding-top: 68px;
+  }
+
+  .results {
+    max-height: calc(100vh - 150px);
+  }
+}

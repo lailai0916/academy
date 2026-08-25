@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { Button, Panel, TextAreaField, TextField } from '@lailai/ui';
-import type { AiSettings, Invite } from '@lailai/academy-shared';
+import type { AdminContentItem, AiSettings, Invite } from '@lailai/academy-shared';
 import { api, errorMessage } from '../lib/api';
 import page from './Page.module.css';
 import styles from './FeaturePages.module.css';
@@ -41,6 +41,7 @@ export function AdminPage() {
   const [summary, setSummary] = useState({ users: 0, content: 0, invites: 0 });
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [invites, setInvites] = useState<Invite[]>([]);
+  const [content, setContent] = useState<AdminContentItem[]>([]);
   const [ai, setAi] = useState<AiSettings>({
     provider: 'OpenAI Compatible',
     baseUrl: 'https://api.openai.com/v1',
@@ -59,16 +60,18 @@ export function AdminPage() {
   const [busy, setBusy] = useState(false);
 
   const load = useCallback(async () => {
-    const [summaryResult, userResult, inviteResult, aiResult] = await Promise.all([
+    const [summaryResult, userResult, inviteResult, aiResult, contentResult] = await Promise.all([
       api<{ summary: typeof summary }>('/admin/summary'),
       api<{ users: AdminUser[] }>('/admin/users'),
       api<{ invites: Invite[] }>('/admin/invites'),
       api<{ settings: AiSettings }>('/admin/ai'),
+      api<{ content: AdminContentItem[] }>('/admin/content'),
     ]);
     setSummary(summaryResult.summary);
     setUsers(userResult.users);
     setInvites(inviteResult.invites);
     setAi(aiResult.settings);
+    setContent(contentResult.content);
   }, []);
 
   useEffect(() => {
@@ -232,6 +235,67 @@ export function AdminPage() {
                           撤销
                         </Button>
                       )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Panel>
+      </section>
+
+      <section className={page.section}>
+        <div className={page.sectionHeader}>
+          <h2>内容库</h2>
+          <p>最近更新的 {content.length} 项</p>
+        </div>
+        <Panel>
+          <div className={`${styles.adminSection} ${styles.tableWrap}`}>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>内容</th>
+                  <th>教材单元</th>
+                  <th>年级</th>
+                  <th>状态</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                {content.map((item) => (
+                  <tr key={item.id}>
+                    <td>
+                      {item.title}{' '}
+                      <span className={page.muted}>{item.kind === 'word' ? '单词' : '古诗词'}</span>
+                    </td>
+                    <td>{item.unit}</td>
+                    <td>{item.grade}</td>
+                    <td>
+                      {item.status === 'published'
+                        ? '已发布'
+                        : item.status === 'draft'
+                          ? '草稿'
+                          : '已归档'}
+                    </td>
+                    <td>
+                      <Button
+                        size="small"
+                        variant="quiet"
+                        disabled={busy}
+                        onClick={() =>
+                          run(async () => {
+                            const status = item.status === 'published' ? 'archived' : 'published';
+                            await api(`/admin/content/${item.id}/status`, {
+                              method: 'PATCH',
+                              body: JSON.stringify({ status }),
+                            });
+                            await load();
+                            return status === 'published' ? '内容已发布。' : '内容已归档。';
+                          })
+                        }
+                      >
+                        {item.status === 'published' ? '归档' : '发布'}
+                      </Button>
                     </td>
                   </tr>
                 ))}

@@ -1,3 +1,16 @@
+.workspaceGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(260px, 0.7fr);
+  gap: 16px;
+  align-items: stretch;
+}
+
+.workspaceGrid > section,
+.planPanel,
+.focusPanel {
+  height: 100%;
+}
+
 .plan {
   display: grid;
   grid-template-columns: minmax(200px, 0.62fr) minmax(0, 1.38fr);
@@ -74,6 +87,128 @@
   color: var(--lui-color-label-tertiary);
 }
 
+.focus {
+  display: grid;
+  padding: 9px 18px 14px;
+}
+
+.focus article {
+  display: grid;
+  min-height: 64px;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 11px;
+  border-bottom: 1px solid var(--lui-color-separator);
+}
+
+.focus article > span {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 9px;
+  background: var(--lui-color-accent-soft);
+  color: var(--lui-color-accent-label);
+}
+
+.focus article > span svg {
+  width: 16px;
+  height: 16px;
+}
+
+.focus article > div {
+  display: grid;
+  line-height: 1.25;
+}
+
+.focus article strong {
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+}
+
+.focus article small {
+  color: var(--lui-color-label-secondary);
+  font-size: 11px;
+}
+
+.focusActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding-top: 13px;
+}
+
+.lowerGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.miniChart {
+  display: grid;
+  height: 164px;
+  grid-template-columns: repeat(14, minmax(5px, 1fr));
+  align-items: end;
+  gap: 7px;
+  padding: 22px 22px 14px;
+  border-bottom: 1px solid var(--lui-color-separator);
+}
+
+.miniChart > div {
+  display: flex;
+  height: 100%;
+  align-items: end;
+}
+
+.miniChart span {
+  width: 100%;
+  min-height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: var(--lui-color-accent);
+}
+
+.chartMeta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 22px;
+  color: var(--lui-color-label-secondary);
+  font-size: 11px;
+}
+
+.activityList {
+  padding: 2px 18px;
+}
+
+@media (max-width: 1120px) {
+  .workspaceGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .focus {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    padding-top: 14px;
+  }
+
+  .focus article {
+    border-bottom: 0;
+  }
+
+  .focusActions {
+    grid-column: 1 / -1;
+    padding-top: 2px;
+  }
+}
+
+@media (max-width: 840px) {
+  .lowerGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 720px) {
   .plan {
     grid-template-columns: 1fr;
@@ -85,5 +220,23 @@
     padding: 0 0 22px;
     border-right: 0;
     border-bottom: 1px solid var(--lui-color-separator);
+  }
+
+  .focus {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .focus article {
+    border-bottom: 1px solid var(--lui-color-separator);
+  }
+
+  .miniChart {
+    gap: 4px;
+    padding-inline: 14px;
+  }
+
+  .chartMeta {
+    padding-inline: 14px;
   }
 }

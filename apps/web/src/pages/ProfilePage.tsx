@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Avatar, Button, Panel } from '@lailai/ui';
-import { useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import type { Profile } from '@lailai/academy-shared';
 import { Icon } from '../components/Icon';
 import { api, errorMessage } from '../lib/api';
@@ -9,14 +9,15 @@ import styles from './FeaturePages.module.css';
 
 export function ProfilePage() {
   const navigate = useNavigate();
+  const { username } = useParams();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    api<{ profile: Profile }>('/profile/me')
+    api<{ profile: Profile }>(username ? `/profile/${encodeURIComponent(username)}` : '/profile/me')
       .then((result) => setProfile(result.profile))
       .catch((nextError) => setError(errorMessage(nextError)));
-  }, []);
+  }, [username]);
 
   if (error) return <p className={page.error}>{error}</p>;
   if (!profile) return <div className={page.empty}>正在载入个人主页……</div>;
@@ -25,7 +26,7 @@ export function ProfilePage() {
     <div className={page.page}>
       <header className={page.pageHeader}>
         <div className={page.pageTitle}>
-          <p className={page.eyebrow}>我的</p>
+          <p className={page.eyebrow}>{username ? '同学' : '我的'}</p>
           <h1>个人主页</h1>
           <p>个人资料与学习结果。</p>
         </div>
@@ -53,9 +54,11 @@ export function ProfilePage() {
               </div>
             </div>
           </div>
-          <Button variant="secondary" onClick={() => navigate('/settings')}>
-            <Icon icon="lucide:settings-2" /> 编辑资料
-          </Button>
+          {!username && (
+            <Button variant="secondary" onClick={() => navigate('/settings')}>
+              <Icon icon="lucide:settings-2" /> 编辑资料
+            </Button>
+          )}
         </div>
       </Panel>
 

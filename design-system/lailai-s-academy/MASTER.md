@@ -37,12 +37,18 @@ standalone forms and never double as the product homepage.
 
 ## Authenticated Application
 
-- Sidebar width: `220px`; application content width: `1080px` maximum.
+- The `56px` top bar spans the viewport. It contains location, global search, notifications, theme,
+  and account access; it never becomes a second primary navigation row.
+- Sidebar width: `240px`; application content width: `1280px` maximum.
 - Page titles use `1.75–2.1rem`; section titles use `17px`.
-- Navigation labels are nouns: Today, Learn, Classmates, Profile, Admin, and Settings.
-- Dashboard prioritizes today's plan, long-term metrics, and recent results.
-- Theme preferences live in Settings; the sidebar does not contain a theme card.
-- Desktop uses the sidebar; mobile uses a `56px` header and four-item bottom navigation.
+- Group primary navigation by Learning, Community, Account, and System. Do not mix global actions
+  into the sidebar.
+- Dashboard prioritizes today's plan, current review focus, long-term metrics, recent results, and a
+  compact activity trend.
+- Global search must return real routes, textbook content, and public profiles. Empty search buttons
+  are not permitted.
+- Desktop uses the fixed sidebar. Mobile keeps the top bar and opens the same grouped navigation in
+  a drawer; do not duplicate page content or force all functions into a bottom bar.
 
 ## Components
 

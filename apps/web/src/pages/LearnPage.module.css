@@ -101,6 +101,119 @@
   font-size: 13px;
 }
 
+.unitList {
+  display: grid;
+  padding: 4px 20px;
+}
+
+.unitRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 360px);
+  align-items: center;
+  gap: 28px;
+  min-height: 100px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--lui-color-separator);
+}
+
+.unitRow:last-child {
+  border-bottom: 0;
+}
+
+.unitCopy {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.unitCopy > span,
+.unitCopy small {
+  color: var(--lui-color-label-secondary);
+  font-size: 12px;
+}
+
+.unitCopy strong {
+  overflow: hidden;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.unitProgress {
+  display: grid;
+  justify-items: end;
+  gap: 7px;
+}
+
+.unitProgress > :first-child {
+  width: 100%;
+}
+
+.mistakeList {
+  padding: 4px 20px;
+}
+
+.mastery {
+  flex: none;
+  color: var(--lui-color-label-secondary);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.quickLinks {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.quickLinks button {
+  display: grid;
+  min-height: 72px;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 15px;
+  border: 1px solid var(--lui-color-separator);
+  border-radius: var(--lui-radius-panel);
+  background: var(--lui-color-surface);
+  color: var(--lui-color-label-secondary);
+  text-align: left;
+  transition:
+    border-color var(--lui-motion-control),
+    background-color var(--lui-motion-control);
+}
+
+.quickLinks button:hover {
+  border-color: var(--lui-color-separator-strong);
+  background: var(--lui-color-surface-muted);
+}
+
+.quickLinks button > svg:first-child {
+  width: 20px;
+  height: 20px;
+  color: var(--lui-color-accent-label);
+}
+
+.quickLinks button > svg:last-child {
+  width: 17px;
+  height: 17px;
+}
+
+.quickLinks button > span {
+  display: grid;
+  gap: 1px;
+}
+
+.quickLinks strong {
+  color: var(--lui-color-label);
+  font-size: 14px;
+}
+
+.quickLinks small {
+  color: var(--lui-color-label-secondary);
+  font-size: 12px;
+}
+
 @media (max-width: 720px) {
   .subjectGrid {
     grid-template-columns: 1fr;
@@ -108,5 +221,18 @@
 
   .subject {
     min-height: 300px;
+  }
+
+  .unitRow {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .unitProgress {
+    justify-items: start;
+  }
+
+  .quickLinks {
+    grid-template-columns: 1fr;
   }
 }

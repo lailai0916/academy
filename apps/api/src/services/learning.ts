@@ -1,9 +1,13 @@
-import { and, asc, eq, inArray, lte, notExists, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, gte, inArray, lte, notExists, sql } from 'drizzle-orm';
 import { fsrs, Rating, type Card, type Grade } from 'ts-fsrs';
 import type {
   ContentKind,
   LearningAnswerResult,
+  LearningInsights,
+  LearningMistake,
+  LearningOverview,
   LearningPrompt,
+  LearningSessionSummary,
   PoemPayload,
   SessionUser,
   WordPayload,
@@ -30,6 +34,13 @@ const scheduler = fsrs({
 
 type StoredCard = typeof learningCards.$inferSelect;
 type StoredContent = typeof contentItems.$inferSelect;
+
+type SessionOptions = {
+  mode: 'plan' | 'review' | 'diagnostic';
+  focus: 'all' | 'mistakes';
+  unit?: string;
+  limit?: number;
+};
 
 function toFsrsCard(card: StoredCard): Card {
   return {
@@ -102,6 +113,19 @@ function maskPoemLine(line: string, seed: number) {
     answer,
     masked: line.replace(answer, '＿'.repeat(Array.from(answer).length)),
   };
+}
+
+function presentContent(content: StoredContent) {
+  if (content.kind === 'word') {
+    const payload = content.payload as WordPayload;
+    return { title: payload.headword, detail: payload.meanings[0] ?? '' };
+  }
+  const payload = content.payload as PoemPayload;
+  return { title: `《${payload.title}》`, detail: `${payload.dynasty} · ${payload.author}` };
+}
+
+function percentage(value: number, total: number) {
+  return total === 0 ? 0 : Math.round((value / total) * 100);
 }
 
 async function buildPrompt(
@@ -210,8 +234,9 @@ async function ensureCard(userId: string, contentId: string) {
 export async function createLearningSession(
   user: SessionUser,
   kind: ContentKind,
-  mode: 'plan' | 'review' | 'diagnostic'
+  options: SessionOptions
 ) {
+  const { mode, focus, unit } = options;
   const plan = await getOrCreateDailyPlan(user);
   const desired =
     mode === 'diagnostic'
@@ -219,7 +244,72 @@ export async function createLearningSession(
       : kind === 'word'
         ? plan.wordsDue + (mode === 'plan' ? plan.wordsNew : 0)
         : plan.poemsDue + (mode === 'plan' ? plan.poemsNew : 0);
-  const limit = Math.max(1, Math.min(desired || 10, 30));
+  const limit = Math.max(1, Math.min(options.limit ?? (desired || 10), 30));
+
+  if (focus === 'mistakes') {
+    const mistakes = await db
+      .select({ id: contentItems.id })
+      .from(reviewEvents)
+      .innerJoin(learningCards, eq(learningCards.id, reviewEvents.cardId))
+      .innerJoin(contentItems, eq(contentItems.id, learningCards.contentId))
+      .where(
+        and(
+          eq(reviewEvents.userId, user.id),
+          eq(reviewEvents.correct, false),
+          eq(contentItems.kind, kind),
+          eq(contentItems.grade, user.grade),
+          eq(contentItems.status, 'published'),
+          unit ? eq(contentItems.unit, unit) : undefined
+        )
+      )
+      .groupBy(contentItems.id, learningCards.mastery, learningCards.due)
+      .orderBy(asc(learningCards.mastery), desc(sql`max(${reviewEvents.createdAt})`))
+      .limit(limit);
+    if (mistakes.length === 0) {
+      return null;
+    }
+    const [session] = await db
+      .insert(studySessions)
+      .values({
+        userId: user.id,
+        kind,
+        mode: 'review',
+        plannedCount: mistakes.length,
+        contentQueue: mistakes.map((item) => item.id),
+      })
+      .returning();
+    return session;
+  }
+
+  if (mode === 'diagnostic') {
+    const diagnostic = await db
+      .select({ id: contentItems.id })
+      .from(contentItems)
+      .where(
+        and(
+          eq(contentItems.kind, kind),
+          eq(contentItems.grade, user.grade),
+          eq(contentItems.status, 'published'),
+          unit ? eq(contentItems.unit, unit) : undefined
+        )
+      )
+      .orderBy(sql`random()`)
+      .limit(limit);
+    if (diagnostic.length === 0) {
+      return null;
+    }
+    const [session] = await db
+      .insert(studySessions)
+      .values({
+        userId: user.id,
+        kind,
+        mode,
+        plannedCount: diagnostic.length,
+        contentQueue: diagnostic.map((item) => item.id),
+      })
+      .returning();
+    return session;
+  }
 
   const due = await db
     .select({ id: contentItems.id })
@@ -229,6 +319,9 @@ export async function createLearningSession(
       and(
         eq(learningCards.userId, user.id),
         eq(contentItems.kind, kind),
+        eq(contentItems.grade, user.grade),
+        eq(contentItems.status, 'published'),
+        unit ? eq(contentItems.unit, unit) : undefined,
         lte(learningCards.due, new Date())
       )
     )
@@ -246,6 +339,7 @@ export async function createLearningSession(
               eq(contentItems.kind, kind),
               eq(contentItems.grade, user.grade),
               eq(contentItems.status, 'published'),
+              unit ? eq(contentItems.unit, unit) : undefined,
               notExists(
                 db
                   .select({ id: learningCards.id })
@@ -259,7 +353,7 @@ export async function createLearningSession(
               )
             )
           )
-          .orderBy(mode === 'diagnostic' ? sql`random()` : asc(contentItems.key))
+          .orderBy(asc(contentItems.key))
           .limit(remaining);
   const queue = [...due, ...fresh].map((item) => item.id);
   if (queue.length === 0) {
@@ -458,4 +552,313 @@ export async function getContentForAi(userId: string, contentId: string) {
     .where(and(eq(learningCards.userId, userId), eq(learningCards.contentId, contentId)))
     .limit(1);
   return { content, card: card ?? null };
+}
+
+export async function getLearningOverview(
+  user: SessionUser,
+  kind: ContentKind
+): Promise<LearningOverview> {
+  const rows = await db
+    .select({
+      content: contentItems,
+      cardId: learningCards.id,
+      due: learningCards.due,
+      mastery: learningCards.mastery,
+      reps: learningCards.reps,
+      stability: learningCards.stability,
+      delayedCorrect: learningCards.delayedCorrect,
+      delayedAttempts: learningCards.delayedAttempts,
+    })
+    .from(contentItems)
+    .leftJoin(
+      learningCards,
+      and(eq(learningCards.contentId, contentItems.id), eq(learningCards.userId, user.id))
+    )
+    .where(
+      and(
+        eq(contentItems.kind, kind),
+        eq(contentItems.grade, user.grade),
+        eq(contentItems.status, 'published')
+      )
+    )
+    .orderBy(asc(contentItems.textbook), asc(contentItems.unit), asc(contentItems.key));
+
+  const mistakeRows = await db
+    .select({
+      cardId: reviewEvents.cardId,
+      mistakeCount: sql<number>`count(*)`,
+      lastMistakeAt: sql<Date>`max(${reviewEvents.createdAt})`,
+    })
+    .from(reviewEvents)
+    .where(and(eq(reviewEvents.userId, user.id), eq(reviewEvents.correct, false)))
+    .groupBy(reviewEvents.cardId);
+  const mistakesByCard = new Map(mistakeRows.map((row) => [row.cardId, row]));
+  const now = Date.now();
+  const startedRows = rows.filter((row) => row.cardId && row.reps && row.reps > 0);
+  const masteredRows = startedRows.filter(
+    (row) => Number(row.mastery) >= 0.8 && Number(row.stability) >= 21
+  );
+  const dueRows = startedRows.filter((row) => row.due && row.due.getTime() <= now);
+  const delayedCorrect = startedRows.reduce((sum, row) => sum + Number(row.delayedCorrect ?? 0), 0);
+  const delayedAttempts = startedRows.reduce(
+    (sum, row) => sum + Number(row.delayedAttempts ?? 0),
+    0
+  );
+
+  const units = new Map<string, LearningOverview['units'][number]>();
+  for (const row of rows) {
+    const key = `${row.content.textbook}\u0000${row.content.unit}`;
+    const current = units.get(key) ?? {
+      textbook: row.content.textbook,
+      unit: row.content.unit,
+      total: 0,
+      started: 0,
+      due: 0,
+      mastered: 0,
+      mastery: 0,
+    };
+    current.total += 1;
+    if (row.cardId && Number(row.reps) > 0) {
+      current.started += 1;
+      current.mastery += Number(row.mastery ?? 0);
+      if (row.due && row.due.getTime() <= now) current.due += 1;
+      if (Number(row.mastery) >= 0.8 && Number(row.stability) >= 21) current.mastered += 1;
+    }
+    units.set(key, current);
+  }
+
+  const mistakes: LearningMistake[] = rows
+    .flatMap((row) => {
+      if (!row.cardId) return [];
+      const mistake = mistakesByCard.get(row.cardId);
+      if (!mistake || !row.due) return [];
+      const content = presentContent(row.content);
+      return [
+        {
+          contentId: row.content.id,
+          kind: row.content.kind,
+          title: content.title,
+          detail: content.detail,
+          textbook: row.content.textbook,
+          unit: row.content.unit,
+          mastery: Math.round(Number(row.mastery ?? 0) * 100),
+          mistakeCount: Number(mistake.mistakeCount),
+          lastMistakeAt: new Date(mistake.lastMistakeAt).toISOString(),
+          dueAt: row.due.toISOString(),
+        },
+      ];
+    })
+    .sort(
+      (left, right) =>
+        left.mastery - right.mastery ||
+        new Date(right.lastMistakeAt).getTime() - new Date(left.lastMistakeAt).getTime()
+    );
+
+  return {
+    kind,
+    summary: {
+      total: rows.length,
+      newCount: rows.length - startedRows.length,
+      learning: startedRows.length - masteredRows.length,
+      due: dueRows.length,
+      mastered: masteredRows.length,
+      mastery:
+        startedRows.length === 0
+          ? 0
+          : Math.round(
+              (startedRows.reduce((sum, row) => sum + Number(row.mastery ?? 0), 0) /
+                startedRows.length) *
+                100
+            ),
+      delayedAccuracy: percentage(delayedCorrect, delayedAttempts),
+      mistakes: mistakes.length,
+    },
+    units: [...units.values()].map((unit) => ({
+      ...unit,
+      mastery: unit.started === 0 ? 0 : Math.round((unit.mastery / unit.started) * 100),
+    })),
+    mistakes,
+  };
+}
+
+export async function getLearningSessionSummary(
+  userId: string,
+  sessionId: string
+): Promise<LearningSessionSummary | null> {
+  const [session] = await db
+    .select()
+    .from(studySessions)
+    .where(and(eq(studySessions.id, sessionId), eq(studySessions.userId, userId)))
+    .limit(1);
+  if (!session) return null;
+
+  const events = await db
+    .select({
+      event: reviewEvents,
+      cardMastery: learningCards.mastery,
+      content: contentItems,
+    })
+    .from(reviewEvents)
+    .innerJoin(learningCards, eq(learningCards.id, reviewEvents.cardId))
+    .innerJoin(contentItems, eq(contentItems.id, learningCards.contentId))
+    .where(and(eq(reviewEvents.userId, userId), eq(reviewEvents.sessionId, sessionId)))
+    .orderBy(asc(reviewEvents.createdAt));
+  const correctCount = events.filter((row) => row.event.correct).length;
+  const delayedEvents = events.filter((row) => row.event.delayed);
+  const mistakeMap = new Map<string, LearningSessionSummary['mistakes'][number]>();
+  for (const row of events) {
+    if (row.event.correct) continue;
+    const content = presentContent(row.content);
+    mistakeMap.set(row.content.id, {
+      contentId: row.content.id,
+      kind: row.content.kind,
+      title: content.title,
+      detail: content.detail,
+      unit: row.content.unit,
+    });
+  }
+
+  return {
+    id: session.id,
+    kind: session.kind,
+    mode: session.mode,
+    status: session.status,
+    plannedCount: session.plannedCount,
+    completedCount: session.completedCount,
+    correctCount,
+    accuracy: percentage(correctCount, events.length),
+    averageResponseMs:
+      events.length === 0
+        ? 0
+        : Math.round(events.reduce((sum, row) => sum + row.event.responseMs, 0) / events.length),
+    delayedAccuracy:
+      delayedEvents.length === 0
+        ? null
+        : percentage(delayedEvents.filter((row) => row.event.correct).length, delayedEvents.length),
+    averageMastery:
+      events.length === 0
+        ? 0
+        : Math.round(
+            (events.reduce((sum, row) => sum + Number(row.cardMastery), 0) / events.length) * 100
+          ),
+    startedAt: session.startedAt.toISOString(),
+    completedAt: session.completedAt?.toISOString() ?? null,
+    mistakes: [...mistakeMap.values()],
+  };
+}
+
+export async function getLearningInsights(userId: string, days: number): Promise<LearningInsights> {
+  const since = new Date(Date.now() - (days - 1) * 86_400_000);
+  since.setHours(0, 0, 0, 0);
+  const events = await db
+    .select({
+      createdAt: reviewEvents.createdAt,
+      correct: reviewEvents.correct,
+      delayed: reviewEvents.delayed,
+      responseMs: reviewEvents.responseMs,
+    })
+    .from(reviewEvents)
+    .where(and(eq(reviewEvents.userId, userId), gte(reviewEvents.createdAt, since)))
+    .orderBy(asc(reviewEvents.createdAt));
+  const byDate = new Map<string, { reviews: number; correct: number }>();
+  for (const event of events) {
+    const date = currentStudyDate(event.createdAt);
+    const current = byDate.get(date) ?? { reviews: 0, correct: 0 };
+    current.reviews += 1;
+    if (event.correct) current.correct += 1;
+    byDate.set(date, current);
+  }
+  const daily = Array.from({ length: days }, (_, index) => {
+    const date = currentStudyDate(new Date(Date.now() - (days - index - 1) * 86_400_000));
+    const value = byDate.get(date) ?? { reviews: 0, correct: 0 };
+    return { date, reviews: value.reviews, accuracy: percentage(value.correct, value.reviews) };
+  });
+  const delayedEvents = events.filter((event) => event.delayed);
+
+  const weakRows = await db
+    .select({
+      kind: contentItems.kind,
+      unit: contentItems.unit,
+      cardCount: sql<number>`count(*)`,
+      due: sql<number>`count(*) filter (where ${learningCards.due} <= now())`,
+      mastery: sql<number>`coalesce(avg(${learningCards.mastery}), 0)`,
+      lapses: sql<number>`coalesce(sum(${learningCards.lapses}), 0)`,
+    })
+    .from(learningCards)
+    .innerJoin(contentItems, eq(contentItems.id, learningCards.contentId))
+    .where(eq(learningCards.userId, userId))
+    .groupBy(contentItems.kind, contentItems.unit)
+    .orderBy(asc(sql`avg(${learningCards.mastery})`), desc(sql`sum(${learningCards.lapses})`))
+    .limit(6);
+
+  const sessionRows = await db
+    .select({
+      id: studySessions.id,
+      kind: studySessions.kind,
+      mode: studySessions.mode,
+      status: studySessions.status,
+      plannedCount: studySessions.plannedCount,
+      completedCount: studySessions.completedCount,
+      startedAt: studySessions.startedAt,
+      completedAt: studySessions.completedAt,
+      eventCount: sql<number>`count(${reviewEvents.id})`,
+      correctCount: sql<number>`count(${reviewEvents.id}) filter (where ${reviewEvents.correct} = true)`,
+      delayedCount: sql<number>`count(${reviewEvents.id}) filter (where ${reviewEvents.delayed} = true)`,
+      delayedCorrect: sql<number>`count(${reviewEvents.id}) filter (where ${reviewEvents.delayed} = true and ${reviewEvents.correct} = true)`,
+      averageResponseMs: sql<number>`coalesce(avg(${reviewEvents.responseMs}), 0)`,
+      averageMastery: sql<number>`coalesce(avg(${learningCards.mastery}), 0)`,
+    })
+    .from(studySessions)
+    .leftJoin(reviewEvents, eq(reviewEvents.sessionId, studySessions.id))
+    .leftJoin(learningCards, eq(learningCards.id, reviewEvents.cardId))
+    .where(eq(studySessions.userId, userId))
+    .groupBy(studySessions.id)
+    .orderBy(desc(studySessions.startedAt))
+    .limit(8);
+
+  return {
+    periodDays: days,
+    metrics: {
+      reviewCount: events.length,
+      accuracy: percentage(events.filter((event) => event.correct).length, events.length),
+      delayedAccuracy: percentage(
+        delayedEvents.filter((event) => event.correct).length,
+        delayedEvents.length
+      ),
+      averageResponseMs:
+        events.length === 0
+          ? 0
+          : Math.round(events.reduce((sum, event) => sum + event.responseMs, 0) / events.length),
+      activeDays: byDate.size,
+    },
+    daily,
+    weakUnits: weakRows.map((row) => ({
+      kind: row.kind,
+      unit: row.unit,
+      cardCount: Number(row.cardCount),
+      due: Number(row.due),
+      mastery: Math.round(Number(row.mastery) * 100),
+      lapses: Number(row.lapses),
+    })),
+    recentSessions: sessionRows.map((session) => {
+      const eventCount = Number(session.eventCount);
+      const delayedCount = Number(session.delayedCount);
+      return {
+        id: session.id,
+        kind: session.kind,
+        mode: session.mode,
+        status: session.status,
+        plannedCount: session.plannedCount,
+        completedCount: session.completedCount,
+        correctCount: Number(session.correctCount),
+        accuracy: percentage(Number(session.correctCount), eventCount),
+        averageResponseMs: Math.round(Number(session.averageResponseMs)),
+        delayedAccuracy:
+          delayedCount === 0 ? null : percentage(Number(session.delayedCorrect), delayedCount),
+        averageMastery: Math.round(Number(session.averageMastery) * 100),
+        startedAt: session.startedAt.toISOString(),
+        completedAt: session.completedAt?.toISOString() ?? null,
+      };
+    }),
+  };
 }
