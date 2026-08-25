@@ -29,8 +29,9 @@ types adjust each learner's daily plan.
 🗂️ **Textbook and mistake loop** — learners can study by textbook unit, run diagnostics,
 reinforce mistakes, inspect session results and review 7–90 day learning analysis.
 
-🤖 **Configurable AI** — an administrator supplies an OpenAI-compatible service for error
-explanations and variations based on reviewed source content.
+🤖 **Configurable AI** — `gpt-5.6-sol` is the default model. An administrator supplies an
+OpenAI-compatible endpoint and encrypted API key for explanations and variations based on reviewed
+source content.
 
 👥 **Learning community** — profiles, friends, activity, groups, challenges and restrained
 positive feedback support peer learning without public ranking pressure.

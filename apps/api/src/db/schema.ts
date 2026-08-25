@@ -104,7 +104,7 @@ export const aiSettings = pgTable('ai_settings', {
   id: smallint('id').primaryKey().default(1),
   provider: varchar('provider', { length: 40 }).notNull().default('OpenAI Compatible'),
   baseUrl: varchar('base_url', { length: 300 }).notNull().default('https://api.openai.com/v1'),
-  model: varchar('model', { length: 120 }).notNull().default('gpt-5-mini'),
+  model: varchar('model', { length: 120 }).notNull().default('gpt-5.6-sol'),
   encryptedApiKey: text('encrypted_api_key').notNull().default(''),
   updatedBy: uuid('updated_by').references(() => users.id, { onDelete: 'set null' }),
   ...timestamps,

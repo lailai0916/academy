@@ -51,6 +51,17 @@ integrationDescribe('Academy API integration', () => {
     expect(login.statusCode).toBe(200);
     adminCookie = cookieFrom(login);
 
+    const aiSettings = await app.inject({
+      method: 'GET',
+      url: '/api/admin/ai',
+      headers: { cookie: adminCookie },
+    });
+    expect(aiSettings.statusCode).toBe(200);
+    expect(aiSettings.json().settings).toMatchObject({
+      model: 'gpt-5.6-sol',
+      hasApiKey: false,
+    });
+
     const invite = await app.inject({
       method: 'POST',
       url: '/api/admin/invites',

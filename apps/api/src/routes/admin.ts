@@ -21,7 +21,7 @@ function presentAiSettings(settings: typeof aiSettings.$inferSelect | undefined)
   return {
     provider: settings?.provider ?? 'OpenAI Compatible',
     baseUrl: settings?.baseUrl ?? 'https://api.openai.com/v1',
-    model: settings?.model ?? 'gpt-5-mini',
+    model: settings?.model ?? 'gpt-5.6-sol',
     hasApiKey: Boolean(settings?.encryptedApiKey),
     updatedAt: settings?.updatedAt.toISOString() ?? null,
   };

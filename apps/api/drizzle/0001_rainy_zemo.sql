@@ -1,0 +1,1 @@
+ALTER TABLE "ai_settings" ALTER COLUMN "model" SET DEFAULT 'gpt-5.6-sol';

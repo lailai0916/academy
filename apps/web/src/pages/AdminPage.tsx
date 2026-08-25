@@ -45,7 +45,7 @@ export function AdminPage() {
   const [ai, setAi] = useState<AiSettings>({
     provider: 'OpenAI Compatible',
     baseUrl: 'https://api.openai.com/v1',
-    model: 'gpt-5-mini',
+    model: 'gpt-5.6-sol',
     hasApiKey: false,
     updatedAt: null,
   });
