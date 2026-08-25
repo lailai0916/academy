@@ -1,8 +1,8 @@
 import { useState, type FormEvent } from 'react';
-import { Icon } from '@iconify/react';
 import { Brand, Button, Panel, TextField } from '@lailai/ui';
 import { Link, useNavigate } from 'react-router';
 import { useAuth } from '../auth/AuthProvider';
+import { Icon } from '../components/Icon';
 import { errorMessage } from '../lib/api';
 import styles from './AuthPage.module.css';
 

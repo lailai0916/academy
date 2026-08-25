@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
-import { Icon } from '@iconify/react';
 import { Avatar, Button, Panel, SelectField, TextAreaField, TextField } from '@lailai/ui';
 import type { Challenge, SocialPost, StudyGroup } from '@lailai/academy-shared';
+import { Icon } from '../components/Icon';
 import { api, errorMessage } from '../lib/api';
 import page from './Page.module.css';
 import styles from './FeaturePages.module.css';

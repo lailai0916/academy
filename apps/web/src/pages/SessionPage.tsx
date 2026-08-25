@@ -6,10 +6,10 @@ import {
   type FormEvent,
   type KeyboardEvent,
 } from 'react';
-import { Icon } from '@iconify/react';
 import { Button, Panel, Progress } from '@lailai/ui';
 import { useNavigate, useParams } from 'react-router';
 import type { LearningAnswerResult, LearningPrompt } from '@lailai/academy-shared';
+import { Icon } from '../components/Icon';
 import { api, errorMessage } from '../lib/api';
 import page from './Page.module.css';
 import styles from './SessionPage.module.css';

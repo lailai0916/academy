@@ -10,9 +10,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@iconify/react": "^6.0.0",
     "@lailai/academy-shared": "*",
     "@lailai/ui": "github:lailai0916/ui#v0.1.1",
+    "lucide-react": "^0.468.0",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "react-router": "^8.3.0"

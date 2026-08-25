@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Icon } from '@iconify/react';
 import { Button, Panel, Progress } from '@lailai/ui';
 import { useNavigate } from 'react-router';
 import type { Dashboard } from '@lailai/academy-shared';
+import { Icon } from '../components/Icon';
 import { api, errorMessage } from '../lib/api';
 import page from './Page.module.css';
 import styles from './DashboardPage.module.css';

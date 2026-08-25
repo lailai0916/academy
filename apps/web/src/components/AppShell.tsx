@@ -1,7 +1,7 @@
-import { Icon } from '@iconify/react';
 import { Avatar, Brand, ThemeControl } from '@lailai/ui';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router';
 import { useAuth } from '../auth/AuthProvider';
+import { Icon } from './Icon';
 import styles from './AppShell.module.css';
 
 const navigation = [
