@@ -87,8 +87,45 @@ export const contentImportItemSchema = z.discriminatedUnion('kind', [
   contentImportBaseSchema.extend({ kind: z.literal('poem'), payload: poemPayloadSchema }),
 ]);
 
-export const contentImportSchema = z.object({
-  items: z.array(contentImportItemSchema).min(1).max(500),
+const contentImportItemsSchema = z
+  .array(contentImportItemSchema)
+  .min(1)
+  .max(500)
+  .superRefine((items, context) => {
+    const keys = new Set<string>();
+    for (const [index, item] of items.entries()) {
+      if (keys.has(item.key)) {
+        context.addIssue({
+          code: 'custom',
+          message: `批次内存在重复 key：${item.key}。`,
+          path: [index, 'key'],
+        });
+      }
+      keys.add(item.key);
+    }
+  });
+
+const contentImportRequestShape = {
+  source: z.string().trim().min(1, '请填写内容来源。').max(120),
+  version: z.string().trim().max(80).default(''),
+  status: z.enum(['draft', 'published']).default('draft'),
+  items: contentImportItemsSchema,
+};
+
+export const contentImportSchema = z.object(contentImportRequestShape);
+
+export const contentImportApplySchema = z.object({
+  ...contentImportRequestShape,
+  fingerprint: z.string().regex(/^[a-f0-9]{64}$/, '导入预检凭据无效。'),
+});
+
+export const adminContentQuerySchema = z.object({
+  q: z.string().trim().max(80).optional(),
+  kind: contentKindSchema.optional(),
+  grade: gradeSchema.optional(),
+  status: z.enum(['draft', 'published', 'archived']).optional(),
+  limit: z.coerce.number().int().min(1).max(200).default(100),
+  offset: z.coerce.number().int().min(0).default(0),
 });
 
 export const learningSessionCreateSchema = z.object({
@@ -157,6 +194,7 @@ export type Grade = z.infer<typeof gradeSchema>;
 export type WordPayload = z.infer<typeof wordPayloadSchema>;
 export type PoemPayload = z.infer<typeof poemPayloadSchema>;
 export type ContentImportItem = z.infer<typeof contentImportItemSchema>;
+export type ContentImportRequest = z.infer<typeof contentImportSchema>;
 
 export type SessionUser = {
   id: string;
@@ -334,7 +372,61 @@ export type AdminContentItem = {
   unit: string;
   title: string;
   status: 'draft' | 'published' | 'archived';
+  source: string;
+  sourceVersion: string;
   updatedAt: string;
+};
+
+export type AdminSummary = {
+  users: number;
+  content: number;
+  invites: number;
+  imports: number;
+  published: number;
+  draft: number;
+  archived: number;
+};
+
+export type AdminUser = {
+  id: string;
+  username: string;
+  displayName: string;
+  role: 'admin' | 'user';
+  status: 'active' | 'disabled';
+  grade: Grade;
+  createdAt: string;
+  lastLoginAt: string | null;
+};
+
+export type ContentImportIssue = {
+  key: string;
+  field: string;
+  message: string;
+};
+
+export type ContentImportPreview = {
+  fingerprint: string;
+  total: number;
+  created: number;
+  updated: number;
+  unchanged: number;
+  words: number;
+  poems: number;
+  grades: Record<Grade, number>;
+  units: number;
+  issues: ContentImportIssue[];
+};
+
+export type ContentImportBatch = {
+  id: string;
+  source: string;
+  version: string;
+  status: 'draft' | 'published' | 'archived';
+  itemCount: number;
+  createdCount: number;
+  updatedCount: number;
+  unchangedCount: number;
+  createdAt: string;
 };
 
 export type WorkspaceSearchResult = {

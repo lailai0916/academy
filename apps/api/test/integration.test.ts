@@ -92,11 +92,164 @@ integrationDescribe('Academy API integration', () => {
     });
     expect(reuse.statusCode).toBe(400);
 
+    const importKey = `word-import-${Date.now()}`;
+    const importPayload = {
+      source: '自动化测试教材',
+      version: '2026.1',
+      status: 'draft',
+      items: [
+        {
+          key: importKey,
+          kind: 'word',
+          grade: '高一',
+          textbook: '测试教材',
+          unit: '测试单元',
+          tags: ['测试'],
+          payload: {
+            headword: 'verification',
+            phonetic: '/ˌverɪfɪˈkeɪʃn/',
+            meanings: ['验证'],
+            example: 'Verification protects content quality.',
+            exampleTranslation: '验证用于保障内容质量。',
+            aliases: [],
+          },
+        },
+      ],
+    };
+    const preview = await app.inject({
+      method: 'POST',
+      url: '/api/admin/content/import/preview',
+      headers: mutationHeaders(adminCookie),
+      payload: importPayload,
+    });
+    expect(preview.statusCode).toBe(200);
+    expect(preview.json().preview).toMatchObject({
+      total: 1,
+      created: 1,
+      updated: 0,
+      unchanged: 0,
+      issues: [],
+    });
+    const imported = await app.inject({
+      method: 'POST',
+      url: '/api/admin/content/import',
+      headers: mutationHeaders(adminCookie),
+      payload: { ...importPayload, fingerprint: preview.json().preview.fingerprint },
+    });
+    expect(imported.statusCode).toBe(201);
+    expect(imported.json().batch).toMatchObject({
+      source: importPayload.source,
+      status: 'draft',
+      createdCount: 1,
+    });
+    const unchangedPreview = await app.inject({
+      method: 'POST',
+      url: '/api/admin/content/import/preview',
+      headers: mutationHeaders(adminCookie),
+      payload: importPayload,
+    });
+    expect(unchangedPreview.json().preview).toMatchObject({ created: 0, unchanged: 1 });
+    const contentSearch = await app.inject({
+      method: 'GET',
+      url: `/api/admin/content?q=${importKey}&status=draft`,
+      headers: { cookie: adminCookie },
+    });
+    expect(contentSearch.statusCode).toBe(200);
+    expect(contentSearch.json().content[0]).toMatchObject({
+      key: importKey,
+      source: importPayload.source,
+      sourceVersion: importPayload.version,
+    });
+    const fieldNameSearch = await app.inject({
+      method: 'GET',
+      url: '/api/admin/content?q=example',
+      headers: { cookie: adminCookie },
+    });
+    expect(fieldNameSearch.statusCode).toBe(200);
+    expect(fieldNameSearch.json().total).toBe(0);
+
+    const incompleteKey = `word-incomplete-${Date.now()}`;
+    const incompleteDraft = {
+      source: '自动化质量门禁',
+      version: '2026.1',
+      status: 'draft',
+      items: [
+        {
+          key: incompleteKey,
+          kind: 'word',
+          grade: '高一',
+          textbook: '测试教材',
+          unit: '质量门禁',
+          tags: [],
+          payload: {
+            headword: 'incomplete',
+            phonetic: '',
+            meanings: ['不完整的'],
+            example: '',
+            exampleTranslation: '',
+            aliases: [],
+          },
+        },
+      ],
+    };
+    const incompletePreview = await app.inject({
+      method: 'POST',
+      url: '/api/admin/content/import/preview',
+      headers: mutationHeaders(adminCookie),
+      payload: incompleteDraft,
+    });
+    expect(incompletePreview.statusCode).toBe(200);
+    expect(incompletePreview.json().preview.issues).toHaveLength(2);
+    const incompleteImport = await app.inject({
+      method: 'POST',
+      url: '/api/admin/content/import',
+      headers: mutationHeaders(adminCookie),
+      payload: {
+        ...incompleteDraft,
+        fingerprint: incompletePreview.json().preview.fingerprint,
+      },
+    });
+    expect(incompleteImport.statusCode).toBe(201);
+    const incompleteSearch = await app.inject({
+      method: 'GET',
+      url: `/api/admin/content?q=${incompleteKey}`,
+      headers: { cookie: adminCookie },
+    });
+    const incompleteId = incompleteSearch.json().content[0].id as string;
+    const blockedPublication = await app.inject({
+      method: 'PATCH',
+      url: `/api/admin/content/${incompleteId}/status`,
+      headers: mutationHeaders(adminCookie),
+      payload: { status: 'published' },
+    });
+    expect(blockedPublication.statusCode).toBe(422);
+
+    const directPublicationPreview = await app.inject({
+      method: 'POST',
+      url: '/api/admin/content/import/preview',
+      headers: mutationHeaders(adminCookie),
+      payload: { ...incompleteDraft, status: 'published' },
+    });
+    const blockedDirectPublication = await app.inject({
+      method: 'POST',
+      url: '/api/admin/content/import',
+      headers: mutationHeaders(adminCookie),
+      payload: {
+        ...incompleteDraft,
+        status: 'published',
+        fingerprint: directPublicationPreview.json().preview.fingerprint,
+      },
+    });
+    expect(blockedDirectPublication.statusCode).toBe(422);
+
     const mismatchedContent = await app.inject({
       method: 'POST',
       url: '/api/admin/content/import',
       headers: mutationHeaders(adminCookie),
       payload: {
+        source: '自动化测试教材',
+        version: '2026.1',
+        status: 'draft',
         items: [
           {
             key: 'invalid-mismatched-content',

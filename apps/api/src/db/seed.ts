@@ -200,7 +200,12 @@ export async function seedDatabase() {
   for (const item of starterContent) {
     await db
       .insert(contentItems)
-      .values({ ...item, status: 'published' })
+      .values({
+        ...item,
+        status: 'published',
+        source: 'Academy 内置示例',
+        sourceVersion: '1',
+      })
       .onConflictDoUpdate({
         target: contentItems.key,
         set: {
@@ -210,6 +215,8 @@ export async function seedDatabase() {
           tags: item.tags,
           textbook: item.textbook,
           unit: item.unit,
+          source: 'Academy 内置示例',
+          sourceVersion: '1',
           updatedAt: new Date(),
         },
       });

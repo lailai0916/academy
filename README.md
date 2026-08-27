@@ -23,6 +23,10 @@ test accuracy and long-term retention.
 📚 **Structured learning** — reviewed content is organised by grade, textbook, volume and
 unit instead of being generated as an unverified exercise feed.
 
+🧾 **Reviewed content operations** — administrators preview every import, inspect quality issues,
+stage drafts, filter the library and retain source, edition and batch history before publication.
+Content with unresolved completeness issues cannot be published.
+
 🧠 **Adaptive review** — FSRS scheduling, active recall, delayed tests and varied question
 types adjust each learner's daily plan.
 

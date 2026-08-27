@@ -71,19 +71,29 @@ function answerMatches(answer: string, accepted: string[]) {
   return accepted.some((item) => normalizeAnswer(item) === normalized);
 }
 
+const responseBenchmarks: Record<LearningPrompt['promptType'], { easy: number; hard: number }> = {
+  meaning_choice: { easy: 4_000, hard: 14_000 },
+  spelling: { easy: 7_000, hard: 25_000 },
+  context: { easy: 9_000, hard: 30_000 },
+  fill_blank: { easy: 8_000, hard: 28_000 },
+  next_line: { easy: 10_000, hard: 35_000 },
+};
+
 function chooseRating(
   correct: boolean,
   revealed: boolean,
   responseMs: number,
-  reps: number
+  reps: number,
+  promptType: LearningPrompt['promptType']
 ): Grade {
   if (!correct || revealed) {
     return Rating.Again;
   }
-  if (responseMs > 18_000) {
+  const benchmark = responseBenchmarks[promptType];
+  if (responseMs > benchmark.hard) {
     return Rating.Hard;
   }
-  if (responseMs < 5_000 && reps > 1) {
+  if (responseMs < benchmark.easy && reps > 1) {
     return Rating.Easy;
   }
   return Rating.Good;
@@ -130,6 +140,58 @@ function percentage(value: number, total: number) {
   return total === 0 ? 0 : Math.round((value / total) * 100);
 }
 
+function hashString(value: string) {
+  let hash = 2_166_136_261;
+  for (const character of value) {
+    hash ^= character.codePointAt(0) ?? 0;
+    hash = Math.imul(hash, 16_777_619);
+  }
+  return hash >>> 0;
+}
+
+export function selectDiagnosticContent<T extends { id: string; textbook: string; unit: string }>(
+  items: T[],
+  limit: number,
+  seed: string
+) {
+  const groups = new Map<string, T[]>();
+  for (const item of items) {
+    const key = `${item.textbook}\u0000${item.unit}`;
+    const group = groups.get(key) ?? [];
+    group.push(item);
+    groups.set(key, group);
+  }
+  const orderedGroups = [...groups.entries()]
+    .sort(([left], [right]) => hashString(`${seed}:${left}`) - hashString(`${seed}:${right}`))
+    .map(([, group]) =>
+      group.sort(
+        (left, right) => hashString(`${seed}:${left.id}`) - hashString(`${seed}:${right.id}`)
+      )
+    );
+  const selected: T[] = [];
+  for (let round = 0; selected.length < limit; round += 1) {
+    let added = false;
+    for (const group of orderedGroups) {
+      const item = group[round];
+      if (!item) continue;
+      selected.push(item);
+      added = true;
+      if (selected.length === limit) break;
+    }
+    if (!added) break;
+  }
+  return selected;
+}
+
+function shuffle<T>(items: T[]) {
+  const shuffled = [...items];
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const target = Math.floor(Math.random() * (index + 1));
+    [shuffled[index], shuffled[target]] = [shuffled[target]!, shuffled[index]!];
+  }
+  return shuffled;
+}
+
 async function buildPrompt(
   sessionId: string,
   content: StoredContent,
@@ -144,13 +206,27 @@ async function buildPrompt(
       const alternatives = await db
         .select({ payload: contentItems.payload })
         .from(contentItems)
-        .where(and(eq(contentItems.kind, 'word'), sql`${contentItems.id} <> ${content.id}`))
-        .orderBy(sql`random()`)
-        .limit(3);
-      const options = [
-        payload.meanings[0],
-        ...alternatives.map((item) => (item.payload as WordPayload).meanings[0]),
-      ].sort(() => Math.random() - 0.5);
+        .where(
+          and(
+            eq(contentItems.kind, 'word'),
+            eq(contentItems.grade, content.grade),
+            eq(contentItems.status, 'published'),
+            sql`${contentItems.id} <> ${content.id}`
+          )
+        )
+        .orderBy(
+          sql`case when ${contentItems.unit} = ${content.unit} then 0 else 1 end`,
+          sql`random()`
+        )
+        .limit(12);
+      const correctMeaning = payload.meanings[0];
+      const distractors = alternatives
+        .map((item) => (item.payload as WordPayload).meanings[0])
+        .filter(
+          (meaning, index, all) => meaning !== correctMeaning && all.indexOf(meaning) === index
+        )
+        .slice(0, 3);
+      const options = shuffle([correctMeaning, ...distractors]);
       return {
         sessionId,
         contentId: content.id,
@@ -184,7 +260,7 @@ async function buildPrompt(
 
   const payload = content.payload as PoemPayload;
   const lineIndex = card.reps % Math.max(1, payload.lines.length - 1);
-  if (card.reps >= 2) {
+  if (card.mastery >= 0.62) {
     return {
       sessionId,
       contentId: content.id,
@@ -316,8 +392,12 @@ export async function createLearningSession(
   }
 
   if (mode === 'diagnostic') {
-    const diagnostic = await db
-      .select({ id: contentItems.id })
+    const diagnosticPool = await db
+      .select({
+        id: contentItems.id,
+        textbook: contentItems.textbook,
+        unit: contentItems.unit,
+      })
       .from(contentItems)
       .where(
         and(
@@ -326,9 +406,12 @@ export async function createLearningSession(
           eq(contentItems.status, 'published'),
           unit ? eq(contentItems.unit, unit) : undefined
         )
-      )
-      .orderBy(sql`random()`)
-      .limit(limit);
+      );
+    const diagnostic = selectDiagnosticContent(
+      diagnosticPool,
+      limit,
+      `${user.id}:${kind}:${unit ?? 'all'}`
+    );
     if (diagnostic.length === 0) {
       return null;
     }
@@ -459,7 +542,13 @@ export async function answerPrompt(
     total: session.plannedCount,
   });
   const correct = answerMatches(input.answer, prompt.acceptedAnswers) && !input.revealed;
-  const rating = chooseRating(correct, input.revealed, input.responseMs, card.reps);
+  const rating = chooseRating(
+    correct,
+    input.revealed,
+    input.responseMs,
+    card.reps,
+    prompt.promptType
+  );
   const now = new Date();
   const result = scheduler.next(toFsrsCard(card), now, rating);
   const mastery = computeMastery(result.card, now);

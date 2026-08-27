@@ -111,6 +111,24 @@ export const aiSettings = pgTable('ai_settings', {
   ...timestamps,
 });
 
+export const contentImports = pgTable(
+  'content_imports',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    createdBy: uuid('created_by').references(() => users.id, { onDelete: 'set null' }),
+    source: varchar('source', { length: 120 }).notNull(),
+    sourceVersion: varchar('source_version', { length: 80 }).notNull().default(''),
+    targetStatus: contentStatus('target_status').notNull(),
+    fingerprint: varchar('fingerprint', { length: 64 }).notNull(),
+    itemCount: integer('item_count').notNull(),
+    createdCount: integer('created_count').notNull(),
+    updatedCount: integer('updated_count').notNull(),
+    unchangedCount: integer('unchanged_count').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [index('content_imports_created_idx').on(table.createdAt)]
+);
+
 export const contentItems = pgTable(
   'content_items',
   {
@@ -123,6 +141,13 @@ export const contentItems = pgTable(
     tags: text('tags').array().notNull().default([]),
     payload: jsonb('payload').$type<WordPayload | PoemPayload>().notNull(),
     status: contentStatus('status').notNull().default('published'),
+    source: varchar('source', { length: 120 }).notNull().default('manual'),
+    sourceVersion: varchar('source_version', { length: 80 }).notNull().default(''),
+    importBatchId: uuid('import_batch_id').references(() => contentImports.id, {
+      onDelete: 'set null',
+    }),
+    importedBy: uuid('imported_by').references(() => users.id, { onDelete: 'set null' }),
+    importedAt: timestamp('imported_at', { withTimezone: true }).notNull().defaultNow(),
     ...timestamps,
   },
   (table) => [

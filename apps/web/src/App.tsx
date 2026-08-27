@@ -50,7 +50,7 @@ export function App() {
         <Route path="profile" element={<ProfilePage />} />
         <Route path="profile/:username" element={<ProfilePage />} />
         <Route path="settings" element={<SettingsPage />} />
-        <Route path="admin" element={<AdminRoute />} />
+        <Route path="admin/*" element={<AdminRoute />} />
       </Route>
       <Route path="*" element={<NotFoundPage />} />
     </Routes>

@@ -50,6 +50,8 @@ standalone forms and never double as the product homepage.
 - Page titles use `1.75–2.1rem`; section titles use `17px`.
 - Group primary navigation by Learning, Community, Account, and System. Do not mix global actions
   into the sidebar.
+- Administrator pages use stable URL-backed sections for overview, content, invites, AI, and users;
+  avoid one long page containing every management form.
 - The sidebar footer contains the logout action only; do not repeat the product description there.
 - Dashboard prioritizes today's plan, current review focus, long-term metrics, recent results, and a
   compact activity trend.
@@ -72,6 +74,9 @@ standalone forms and never double as the product homepage.
 - Metrics use tabular numerals and short definitions.
 - Learning-session exit distinguishes pause from end. Ending requires a focused confirmation;
   pausing keeps the remaining queue available from the dashboard.
+- Content import always exposes a preview before mutation. Show create, update, unchanged, unit and
+  quality counts together; imported content defaults to draft unless the administrator explicitly
+  chooses publication. Content with unresolved completeness issues cannot enter the published state.
 
 ## Motion
 

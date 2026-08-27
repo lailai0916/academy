@@ -37,6 +37,7 @@ import {
   Target,
   UserRound,
   Users,
+  Upload,
   X,
   type LucideIcon,
   type LucideProps,
@@ -81,6 +82,7 @@ const icons: Record<string, LucideIcon> = {
   'lucide:target': Target,
   'lucide:user-round': UserRound,
   'lucide:users': Users,
+  'lucide:upload': Upload,
   'lucide:x': X,
 };
 

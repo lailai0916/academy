@@ -1,7 +1,9 @@
-import { count, desc, eq } from 'drizzle-orm';
+import { and, count, desc, eq, ilike, or, sql } from 'drizzle-orm';
 import type { FastifyInstance } from 'fastify';
 import {
+  adminContentQuerySchema,
   aiSettingsUpdateSchema,
+  contentImportApplySchema,
   contentImportSchema,
   contentStatusUpdateSchema,
   inviteCreateSchema,
@@ -12,10 +14,22 @@ import {
   type WordPayload,
 } from '@lailai/academy-shared';
 import { db } from '../db/index.js';
-import { aiSettings, contentItems, invites, profiles, users } from '../db/schema.js';
+import {
+  aiSettings,
+  contentImports,
+  contentItems,
+  invites,
+  profiles,
+  users,
+} from '../db/schema.js';
 import { createInviteCode, decryptSecret, encryptSecret, sha256 } from '../lib/crypto.js';
 import { parseBody } from '../lib/http.js';
 import { testAiConnection } from '../services/ai.js';
+import {
+  applyContentImport,
+  listContentImportBatches,
+  previewContentImport,
+} from '../services/content-imports.js';
 
 function presentAiSettings(settings: typeof aiSettings.$inferSelect | undefined): AiSettings {
   return {
@@ -29,16 +43,28 @@ function presentAiSettings(settings: typeof aiSettings.$inferSelect | undefined)
 
 export async function adminRoutes(app: FastifyInstance) {
   app.get('/admin/summary', { preHandler: app.requireAdmin }, async () => {
-    const [[userCount], [contentCount], [inviteCount]] = await Promise.all([
+    const [[userCount], [contentSummary], [inviteCount], [importCount]] = await Promise.all([
       db.select({ value: count() }).from(users),
-      db.select({ value: count() }).from(contentItems),
+      db
+        .select({
+          value: count(),
+          published: sql<number>`count(*) filter (where ${contentItems.status} = 'published')`,
+          draft: sql<number>`count(*) filter (where ${contentItems.status} = 'draft')`,
+          archived: sql<number>`count(*) filter (where ${contentItems.status} = 'archived')`,
+        })
+        .from(contentItems),
       db.select({ value: count() }).from(invites),
+      db.select({ value: count() }).from(contentImports),
     ]);
     return {
       summary: {
         users: Number(userCount?.value ?? 0),
-        content: Number(contentCount?.value ?? 0),
+        content: Number(contentSummary?.value ?? 0),
         invites: Number(inviteCount?.value ?? 0),
+        imports: Number(importCount?.value ?? 0),
+        published: Number(contentSummary?.published ?? 0),
+        draft: Number(contentSummary?.draft ?? 0),
+        archived: Number(contentSummary?.archived ?? 0),
       },
     };
   });
@@ -175,40 +201,80 @@ export async function adminRoutes(app: FastifyInstance) {
     }
   });
 
+  app.post(
+    '/admin/content/import/preview',
+    { preHandler: app.requireAdmin },
+    async (request, reply) => {
+      const body = parseBody(contentImportSchema, request.body, reply);
+      if (!body) {
+        return;
+      }
+      return { preview: await previewContentImport(body) };
+    }
+  );
+
   app.post('/admin/content/import', { preHandler: app.requireAdmin }, async (request, reply) => {
-    const body = parseBody(contentImportSchema, request.body, reply);
+    const body = parseBody(contentImportApplySchema, request.body, reply);
     if (!body) {
       return;
     }
-    await db.transaction(async (transaction) => {
-      for (const item of body.items) {
-        await transaction
-          .insert(contentItems)
-          .values({ ...item, status: 'published' })
-          .onConflictDoUpdate({
-            target: contentItems.key,
-            set: {
-              grade: item.grade,
-              kind: item.kind,
-              payload: item.payload,
-              status: 'published',
-              tags: item.tags,
-              textbook: item.textbook,
-              unit: item.unit,
-              updatedAt: new Date(),
-            },
-          });
-      }
-    });
-    return reply.status(201).send({ imported: body.items.length });
+    const { fingerprint, ...input } = body;
+    const preview = await previewContentImport(input);
+    if (input.status === 'published' && preview.issues.length > 0) {
+      return reply
+        .status(422)
+        .send({ error: '内容存在完整性问题，请修正后再发布。', issues: preview.issues });
+    }
+    const result = await applyContentImport(request.user!.id, input, fingerprint);
+    if (!result) {
+      return reply.status(409).send({ error: '导入内容在预检后发生变化，请重新检查。' });
+    }
+    return reply.status(201).send(result);
   });
 
-  app.get('/admin/content', { preHandler: app.requireAdmin }, async () => {
-    const rows = await db
-      .select()
-      .from(contentItems)
-      .orderBy(desc(contentItems.updatedAt))
-      .limit(300);
+  app.get('/admin/content/imports', { preHandler: app.requireAdmin }, async () => ({
+    imports: await listContentImportBatches(),
+  }));
+
+  app.get<{
+    Querystring: {
+      q?: string;
+      kind?: string;
+      grade?: string;
+      status?: string;
+      limit?: string;
+      offset?: string;
+    };
+  }>('/admin/content', { preHandler: app.requireAdmin }, async (request, reply) => {
+    const query = adminContentQuerySchema.safeParse(request.query);
+    if (!query.success) {
+      return reply.status(400).send({ error: '内容筛选条件不受支持。' });
+    }
+    const pattern = query.data.q ? `%${query.data.q}%` : null;
+    const where = and(
+      query.data.kind ? eq(contentItems.kind, query.data.kind) : undefined,
+      query.data.grade ? eq(contentItems.grade, query.data.grade) : undefined,
+      query.data.status ? eq(contentItems.status, query.data.status) : undefined,
+      pattern
+        ? or(
+            ilike(contentItems.key, pattern),
+            ilike(contentItems.textbook, pattern),
+            ilike(contentItems.unit, pattern),
+            ilike(contentItems.source, pattern),
+            sql`coalesce(${contentItems.payload}->>'headword', ${contentItems.payload}->>'title', '') ilike ${pattern}`
+          )
+        : undefined
+    );
+    const [[total], rows] = await Promise.all([
+      db.select({ value: count() }).from(contentItems).where(where),
+      db
+        .select()
+        .from(contentItems)
+        .where(where)
+        .orderBy(desc(contentItems.updatedAt))
+        .limit(query.data.limit)
+        .offset(query.data.offset),
+    ]);
     const content: AdminContentItem[] = rows.map((item) => ({
       id: item.id,
       key: item.key,
@@ -221,9 +287,11 @@ export async function adminRoutes(app: FastifyInstance) {
           ? (item.payload as WordPayload).headword
           : `《${(item.payload as PoemPayload).title}》`,
       status: item.status,
+      source: item.source,
+      sourceVersion: item.sourceVersion,
       updatedAt: item.updatedAt.toISOString(),
     }));
-    return { content };
+    return { content, total: Number(total?.value ?? 0) };
   });
 
   app.patch<{ Params: { contentId: string } }>(
@@ -232,14 +300,52 @@ export async function adminRoutes(app: FastifyInstance) {
     async (request, reply) => {
       const body = parseBody(contentStatusUpdateSchema, request.body, reply);
       if (!body) return;
+      const [existing] = await db
+        .select()
+        .from(contentItems)
+        .where(eq(contentItems.id, request.params.contentId))
+        .limit(1);
+      if (!existing) {
+        return reply.status(404).send({ error: '教材内容不存在。' });
+      }
+      if (body.status === 'published') {
+        const item =
+          existing.kind === 'word'
+            ? {
+                key: existing.key,
+                kind: 'word' as const,
+                grade: existing.grade,
+                textbook: existing.textbook,
+                unit: existing.unit,
+                tags: existing.tags,
+                payload: existing.payload as WordPayload,
+              }
+            : {
+                key: existing.key,
+                kind: 'poem' as const,
+                grade: existing.grade,
+                textbook: existing.textbook,
+                unit: existing.unit,
+                tags: existing.tags,
+                payload: existing.payload as PoemPayload,
+              };
+        const preview = await previewContentImport({
+          source: existing.source,
+          version: existing.sourceVersion,
+          status: 'published',
+          items: [item],
+        });
+        if (preview.issues.length > 0) {
+          return reply
+            .status(422)
+            .send({ error: '内容存在完整性问题，请修正后再发布。', issues: preview.issues });
+        }
+      }
       const [item] = await db
         .update(contentItems)
         .set({ status: body.status, updatedAt: new Date() })
         .where(eq(contentItems.id, request.params.contentId))
         .returning({ id: contentItems.id });
-      if (!item) {
-        return reply.status(404).send({ error: '教材内容不存在。' });
-      }
       return { id: item.id, status: body.status };
     }
   );
