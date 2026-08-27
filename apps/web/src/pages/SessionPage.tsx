@@ -135,6 +135,7 @@ export function SessionPage() {
         method: 'POST',
         body: JSON.stringify({
           contentId: prompt.contentId,
+          sessionId,
           previousAnswer: answer,
           prompt: result.correct ? '生成一道更难的变式题' : '解释错误并生成同知识点变式题',
         }),
@@ -431,6 +432,11 @@ export function SessionPage() {
                   </div>
                 </div>
                 <p className={styles.explanation}>{result.explanation}</p>
+                {result.contentUpdated && (
+                  <p className={styles.versionNotice}>
+                    本题使用开始学习时的内容版本，结果已保留，但不会改变当前掌握度。
+                  </p>
+                )}
                 <div className={styles.feedbackMeta}>
                   <span>掌握度 {result.mastery}%</span>
                   <span>{ratingLabels[result.rating]}</span>

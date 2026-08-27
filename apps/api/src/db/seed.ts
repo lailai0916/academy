@@ -2,8 +2,12 @@ import argon2 from 'argon2';
 import { eq } from 'drizzle-orm';
 import type { ContentImportItem } from '@lailai/academy-shared';
 import { config } from '../config.js';
+import {
+  normalizeLegacyContentVersionFingerprints,
+  upsertSeedContent,
+} from '../services/content-lifecycle.js';
 import { closeDatabase, db } from './index.js';
-import { contentItems, profiles, users } from './schema.js';
+import { profiles, users } from './schema.js';
 
 const starterContent: ContentImportItem[] = [
   {
@@ -197,29 +201,9 @@ const starterContent: ContentImportItem[] = [
 ];
 
 export async function seedDatabase() {
+  await normalizeLegacyContentVersionFingerprints();
   for (const item of starterContent) {
-    await db
-      .insert(contentItems)
-      .values({
-        ...item,
-        status: 'published',
-        source: 'Academy 内置示例',
-        sourceVersion: '1',
-      })
-      .onConflictDoUpdate({
-        target: contentItems.key,
-        set: {
-          grade: item.grade,
-          kind: item.kind,
-          payload: item.payload,
-          tags: item.tags,
-          textbook: item.textbook,
-          unit: item.unit,
-          source: 'Academy 内置示例',
-          sourceVersion: '1',
-          updatedAt: new Date(),
-        },
-      });
+    await upsertSeedContent(item);
   }
 
   if (!config.BOOTSTRAP_ADMIN_PASSWORD) {

@@ -146,6 +146,29 @@ export const learningInsightsQuerySchema = z.object({
 
 export const contentStatusUpdateSchema = z.object({
   status: z.enum(['draft', 'published', 'archived']),
+  expectedUpdatedAt: z.iso.datetime(),
+  note: z.string().trim().max(300).default(''),
+});
+
+const adminContentMutationShape = {
+  grade: gradeSchema,
+  textbook: z.string().trim().min(1).max(80),
+  unit: z.string().trim().min(1).max(120),
+  tags: z.array(z.string().trim().min(1).max(40)).max(20).default([]),
+  source: z.string().trim().min(1).max(120),
+  version: z.string().trim().max(80).default(''),
+  status: z.enum(['draft', 'published', 'archived']),
+  expectedUpdatedAt: z.iso.datetime(),
+  note: z.string().trim().max(300).default(''),
+};
+
+export const adminContentUpdateSchema = z.discriminatedUnion('kind', [
+  z.object({ ...adminContentMutationShape, kind: z.literal('word'), payload: wordPayloadSchema }),
+  z.object({ ...adminContentMutationShape, kind: z.literal('poem'), payload: poemPayloadSchema }),
+]);
+
+export const contentImportRollbackSchema = z.object({
+  note: z.string().trim().max(300).default(''),
 });
 
 export const learningAnswerSchema = z.object({
@@ -157,6 +180,7 @@ export const learningAnswerSchema = z.object({
 
 export const explanationRequestSchema = z.object({
   contentId: z.uuid(),
+  sessionId: z.uuid().optional(),
   prompt: z.string().trim().max(500).default(''),
   previousAnswer: z.string().trim().max(500).default(''),
 });
@@ -280,6 +304,7 @@ export type LearningAnswerResult = {
   nextDueAt: string;
   rating: 'again' | 'hard' | 'good' | 'easy';
   sessionComplete: boolean;
+  contentUpdated: boolean;
 };
 
 export type LearningMistake = {
@@ -374,6 +399,9 @@ export type AdminContentItem = {
   status: 'draft' | 'published' | 'archived';
   source: string;
   sourceVersion: string;
+  issueCount: number;
+  versionNumber: number;
+  hasPublishedVersion: boolean;
   updatedAt: string;
 };
 
@@ -399,6 +427,8 @@ export type AdminUser = {
 };
 
 export type ContentImportIssue = {
+  code: string;
+  severity: 'warning' | 'blocker';
   key: string;
   field: string;
   message: string;
@@ -426,7 +456,29 @@ export type ContentImportBatch = {
   createdCount: number;
   updatedCount: number;
   unchangedCount: number;
+  rolledBackAt: string | null;
+  rollbackRevertedCount: number;
+  rollbackSkippedCount: number;
   createdAt: string;
+};
+
+export type ContentRevision = {
+  id: string;
+  versionNumber: number;
+  status: 'draft' | 'published' | 'archived';
+  changeKind: 'imported' | 'edited' | 'published' | 'archived' | 'restored' | 'seeded';
+  note: string;
+  actorName: string;
+  semanticChange: boolean;
+  createdAt: string;
+};
+
+export type AdminContentDetail = AdminContentItem & {
+  tags: string[];
+  payload: WordPayload | PoemPayload;
+  issues: ContentImportIssue[];
+  revisions: ContentRevision[];
+  publishedVersionId: string | null;
 };
 
 export type WorkspaceSearchResult = {

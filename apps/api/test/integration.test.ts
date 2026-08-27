@@ -160,6 +160,62 @@ integrationDescribe('Academy API integration', () => {
       source: importPayload.source,
       sourceVersion: importPayload.version,
     });
+    const importedContentId = contentSearch.json().content[0].id as string;
+    const importedDetail = await app.inject({
+      method: 'GET',
+      url: `/api/admin/content/${importedContentId}`,
+      headers: { cookie: adminCookie },
+    });
+    expect(importedDetail.statusCode).toBe(200);
+    expect(importedDetail.json().content).toMatchObject({
+      versionNumber: 1,
+      status: 'draft',
+      issueCount: 0,
+    });
+    const rollback = await app.inject({
+      method: 'POST',
+      url: `/api/admin/content/imports/${imported.json().batch.id}/rollback`,
+      headers: mutationHeaders(adminCookie),
+      payload: { note: '集成测试回滚' },
+    });
+    expect(rollback.statusCode).toBe(200);
+    expect(rollback.json().batch).toMatchObject({
+      rollbackRevertedCount: 1,
+      rollbackSkippedCount: 0,
+    });
+    const rolledBackDetail = await app.inject({
+      method: 'GET',
+      url: `/api/admin/content/${importedContentId}`,
+      headers: { cookie: adminCookie },
+    });
+    expect(rolledBackDetail.json().content).toMatchObject({
+      status: 'archived',
+      versionNumber: 2,
+    });
+    const stalePreview = await app.inject({
+      method: 'POST',
+      url: '/api/admin/content/import/preview',
+      headers: mutationHeaders(adminCookie),
+      payload: importPayload,
+    });
+    const publishRolledBackContent = await app.inject({
+      method: 'PATCH',
+      url: `/api/admin/content/${importedContentId}/status`,
+      headers: mutationHeaders(adminCookie),
+      payload: {
+        status: 'published',
+        expectedUpdatedAt: rolledBackDetail.json().content.updatedAt,
+        note: '制造预检基线变化',
+      },
+    });
+    expect(publishRolledBackContent.statusCode).toBe(200);
+    const staleApply = await app.inject({
+      method: 'POST',
+      url: '/api/admin/content/import',
+      headers: mutationHeaders(adminCookie),
+      payload: { ...importPayload, fingerprint: stalePreview.json().preview.fingerprint },
+    });
+    expect(staleApply.statusCode).toBe(409);
     const fieldNameSearch = await app.inject({
       method: 'GET',
       url: '/api/admin/content?q=example',
@@ -216,13 +272,56 @@ integrationDescribe('Academy API integration', () => {
       headers: { cookie: adminCookie },
     });
     const incompleteId = incompleteSearch.json().content[0].id as string;
+    const incompleteUpdatedAt = incompleteSearch.json().content[0].updatedAt as string;
     const blockedPublication = await app.inject({
       method: 'PATCH',
       url: `/api/admin/content/${incompleteId}/status`,
       headers: mutationHeaders(adminCookie),
-      payload: { status: 'published' },
+      payload: {
+        status: 'published',
+        expectedUpdatedAt: incompleteUpdatedAt,
+        note: '验证质量门禁',
+      },
     });
     expect(blockedPublication.statusCode).toBe(422);
+
+    const incompleteDetail = await app.inject({
+      method: 'GET',
+      url: `/api/admin/content/${incompleteId}`,
+      headers: { cookie: adminCookie },
+    });
+    const fixedPublication = await app.inject({
+      method: 'PUT',
+      url: `/api/admin/content/${incompleteId}`,
+      headers: mutationHeaders(adminCookie),
+      payload: {
+        kind: 'word',
+        grade: '高一',
+        textbook: '测试教材',
+        unit: '质量门禁',
+        tags: [],
+        source: '自动化质量门禁',
+        version: '2026.2',
+        status: 'published',
+        expectedUpdatedAt: incompleteDetail.json().content.updatedAt,
+        note: '补全音标和例句后发布',
+        payload: {
+          headword: 'incomplete',
+          phonetic: '/ˌɪnkəmˈpliːt/',
+          meanings: ['不完整的'],
+          example: 'The record is incomplete.',
+          exampleTranslation: '这份记录并不完整。',
+          aliases: [],
+        },
+      },
+    });
+    expect(fixedPublication.statusCode).toBe(200);
+    expect(fixedPublication.json().content).toMatchObject({
+      status: 'published',
+      issueCount: 0,
+      versionNumber: 2,
+    });
+    expect(fixedPublication.json().content.revisions).toHaveLength(2);
 
     const directPublicationPreview = await app.inject({
       method: 'POST',
@@ -301,6 +400,33 @@ integrationDescribe('Academy API integration', () => {
     const prompt = next.json().prompt;
     expect(prompt.kind).toBe('word');
 
+    const promptContent = await app.inject({
+      method: 'GET',
+      url: `/api/admin/content/${prompt.contentId}`,
+      headers: { cookie: adminCookie },
+    });
+    const currentContent = promptContent.json().content;
+    const contentUpdate = await app.inject({
+      method: 'PUT',
+      url: `/api/admin/content/${prompt.contentId}`,
+      headers: mutationHeaders(adminCookie),
+      payload: {
+        kind: currentContent.kind,
+        grade: currentContent.grade,
+        textbook: currentContent.textbook,
+        unit: currentContent.unit,
+        tags: currentContent.tags,
+        source: currentContent.source,
+        version: `${currentContent.sourceVersion}-reviewed`,
+        status: 'published',
+        expectedUpdatedAt: currentContent.updatedAt,
+        note: '验证学习会话固定内容版本',
+        payload: currentContent.payload,
+      },
+    });
+    expect(contentUpdate.statusCode).toBe(200);
+    expect(contentUpdate.json().resetCards).toBe(0);
+
     const answer = await app.inject({
       method: 'POST',
       url: `/api/learn/sessions/${sessionId}/answer`,
@@ -310,6 +436,7 @@ integrationDescribe('Academy API integration', () => {
     expect(answer.statusCode).toBe(200);
     expect(answer.json().result.rating).toBe('again');
     expect(answer.json().result.nextDueAt).toBeTypeOf('string');
+    expect(answer.json().result.contentUpdated).toBe(true);
 
     const secondPrompt = await app.inject({
       method: 'GET',
@@ -328,6 +455,36 @@ integrationDescribe('Academy API integration', () => {
       app.inject(duplicatePayload),
     ]);
     expect(duplicateResults.map((result) => result.statusCode).sort()).toEqual([200, 409]);
+
+    const secondContent = await app.inject({
+      method: 'GET',
+      url: `/api/admin/content/${secondContentId}`,
+      headers: { cookie: adminCookie },
+    });
+    const secondCurrent = secondContent.json().content;
+    const semanticUpdate = await app.inject({
+      method: 'PUT',
+      url: `/api/admin/content/${secondContentId}`,
+      headers: mutationHeaders(adminCookie),
+      payload: {
+        kind: 'word',
+        grade: secondCurrent.grade,
+        textbook: secondCurrent.textbook,
+        unit: secondCurrent.unit,
+        tags: secondCurrent.tags,
+        source: secondCurrent.source,
+        version: secondCurrent.sourceVersion,
+        status: 'published',
+        expectedUpdatedAt: secondCurrent.updatedAt,
+        note: '验证答案变化后重置学习卡',
+        payload: {
+          ...secondCurrent.payload,
+          headword: `${secondCurrent.payload.headword}-updated`,
+        },
+      },
+    });
+    expect(semanticUpdate.statusCode).toBe(200);
+    expect(semanticUpdate.json().resetCards).toBe(1);
 
     const afterDiagnostic = await app.inject({
       method: 'GET',

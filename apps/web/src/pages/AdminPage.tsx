@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
 import { Button, Panel, SelectField, TextAreaField, TextField } from '@lailai/ui';
-import { NavLink, useLocation } from 'react-router';
+import { Link, NavLink, useLocation, useSearchParams } from 'react-router';
 import type {
   AdminContentItem,
   AdminSummary,
@@ -16,6 +16,7 @@ import { api, errorMessage } from '../lib/api';
 import feature from './FeaturePages.module.css';
 import page from './Page.module.css';
 import styles from './AdminPage.module.css';
+import { AdminContentDetailPage } from './AdminContentDetailPage';
 
 type AdminSection = 'overview' | 'content' | 'invites' | 'ai' | 'users';
 type ContentStatus = AdminContentItem['status'];
@@ -76,7 +77,9 @@ function currentSection(pathname: string): AdminSection {
 
 export function AdminPage() {
   const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const section = currentSection(location.pathname);
+  const contentId = section === 'content' ? location.pathname.split('/')[3] : undefined;
   const [summary, setSummary] = useState<AdminSummary>(emptySummary);
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [invites, setInvites] = useState<Invite[]>([]);
@@ -101,10 +104,10 @@ export function AdminPage() {
   const [importJson, setImportJson] = useState(importExample);
   const [importPreview, setImportPreview] = useState<ContentImportPreview | null>(null);
   const [pendingImport, setPendingImport] = useState<ContentImportRequest | null>(null);
-  const [contentQuery, setContentQuery] = useState('');
-  const [contentKind, setContentKind] = useState('');
-  const [contentGrade, setContentGrade] = useState('');
-  const [contentStatus, setContentStatus] = useState('');
+  const contentQuery = searchParams.get('q') ?? '';
+  const contentKind = searchParams.get('kind') ?? '';
+  const contentGrade = searchParams.get('grade') ?? '';
+  const contentStatus = searchParams.get('status') ?? '';
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
@@ -175,6 +178,18 @@ export function AdminPage() {
   const invalidatePreview = () => {
     setImportPreview(null);
     setPendingImport(null);
+  };
+
+  const updateContentFilter = (key: 'q' | 'kind' | 'grade' | 'status', value: string) => {
+    setSearchParams(
+      (current) => {
+        const next = new URLSearchParams(current);
+        if (value) next.set(key, value);
+        else next.delete(key);
+        return next;
+      },
+      { replace: true }
+    );
   };
 
   const createInvite = (event: FormEvent) => {
@@ -303,7 +318,11 @@ export function AdminPage() {
 
       {section === 'overview' && <AdminOverview summary={summary} />}
 
-      {section === 'content' && (
+      {section === 'content' && contentId && (
+        <AdminContentDetailPage contentId={contentId} onUpdated={refreshAdmin} />
+      )}
+
+      {section === 'content' && !contentId && (
         <AdminContent
           busy={busy}
           content={content}
@@ -319,10 +338,11 @@ export function AdminPage() {
           importVersion={importVersion}
           imports={imports}
           onApplyImport={applyImport}
-          onChangeContentGrade={setContentGrade}
-          onChangeContentKind={setContentKind}
-          onChangeContentQuery={setContentQuery}
-          onChangeContentStatus={setContentStatus}
+          contentSearch={searchParams.toString()}
+          onChangeContentGrade={(value) => updateContentFilter('grade', value)}
+          onChangeContentKind={(value) => updateContentFilter('kind', value)}
+          onChangeContentQuery={(value) => updateContentFilter('q', value)}
+          onChangeContentStatus={(value) => updateContentFilter('status', value)}
           onChangeImportJson={(value) => {
             setImportJson(value);
             invalidatePreview();
@@ -342,12 +362,26 @@ export function AdminPage() {
           onInvalidatePreview={invalidatePreview}
           onPreviewImport={previewImport}
           onReadImportFile={readImportFile}
+          onRollbackImport={(importId) =>
+            run(async () => {
+              const result = await api<{ batch: ContentImportBatch }>(
+                `/admin/content/imports/${importId}/rollback`,
+                { method: 'POST', body: JSON.stringify({ note: '管理员从导入记录执行回滚' }) }
+              );
+              await refreshAdmin();
+              return `回滚完成：恢复 ${result.batch.rollbackRevertedCount} 项，跳过 ${result.batch.rollbackSkippedCount} 项。`;
+            })
+          }
           onToggleStatus={(item) =>
             run(async () => {
               const status = item.status === 'published' ? 'archived' : 'published';
               await api(`/admin/content/${item.id}/status`, {
                 method: 'PATCH',
-                body: JSON.stringify({ status }),
+                body: JSON.stringify({
+                  status,
+                  expectedUpdatedAt: item.updatedAt,
+                  note: status === 'published' ? '从内容库快速发布' : '从内容库快速归档',
+                }),
               });
               await refreshAdmin();
               return status === 'published' ? '内容已发布。' : '内容已归档。';
@@ -462,6 +496,7 @@ type AdminContentProps = {
   contentKind: string;
   contentQuery: string;
   contentStatus: string;
+  contentSearch: string;
   contentTotal: number;
   importJson: string;
   importPreview: ContentImportPreview | null;
@@ -481,10 +516,13 @@ type AdminContentProps = {
   onInvalidatePreview: () => void;
   onPreviewImport: () => void;
   onReadImportFile: (event: ChangeEvent<HTMLInputElement>) => void;
+  onRollbackImport: (importId: string) => void;
   onToggleStatus: (item: AdminContentItem) => void;
 };
 
 function AdminContent(props: AdminContentProps) {
+  const [rollbackCandidate, setRollbackCandidate] = useState<string | null>(null);
+  const [statusCandidate, setStatusCandidate] = useState<string | null>(null);
   return (
     <>
       <section className={page.section}>
@@ -546,10 +584,19 @@ function AdminContent(props: AdminContentProps) {
                 {props.content.map((item) => (
                   <tr key={item.id}>
                     <td>
-                      <strong>{item.title}</strong>{' '}
+                      <Link
+                        className={styles.contentLink}
+                        to={`/admin/content/${item.id}${props.contentSearch ? `?${props.contentSearch}` : ''}`}
+                      >
+                        {item.title}
+                      </Link>{' '}
                       <span className={page.muted}>
-                        {item.kind === 'word' ? '单词' : '古诗词'} · {item.grade}
+                        {item.kind === 'word' ? '单词' : '古诗词'} · {item.grade} · v
+                        {item.versionNumber}
                       </span>
+                      {item.issueCount > 0 && (
+                        <span className={styles.issueCount}>{item.issueCount} 项待完善</span>
+                      )}
                     </td>
                     <td>
                       {item.textbook}
@@ -566,16 +613,44 @@ function AdminContent(props: AdminContentProps) {
                       <span className={styles.status} data-status={item.status}>
                         {contentStatusLabels[item.status]}
                       </span>
+                      {item.status === 'draft' && item.hasPublishedVersion && (
+                        <span className={styles.liveVersion}>线上版本保留</span>
+                      )}
                     </td>
                     <td>
-                      <Button
-                        size="small"
-                        variant="quiet"
-                        disabled={props.busy}
-                        onClick={() => props.onToggleStatus(item)}
-                      >
-                        {item.status === 'published' ? '归档' : '发布'}
-                      </Button>
+                      {statusCandidate === item.id ? (
+                        <span className={styles.inlineConfirm}>
+                          <span>{item.status === 'published' ? '确认归档？' : '确认发布？'}</span>
+                          <Button
+                            size="small"
+                            variant={item.status === 'published' ? 'danger' : 'primary'}
+                            disabled={props.busy}
+                            onClick={() => {
+                              props.onToggleStatus(item);
+                              setStatusCandidate(null);
+                            }}
+                          >
+                            确认
+                          </Button>
+                          <Button
+                            size="small"
+                            variant="quiet"
+                            disabled={props.busy}
+                            onClick={() => setStatusCandidate(null)}
+                          >
+                            取消
+                          </Button>
+                        </span>
+                      ) : (
+                        <Button
+                          size="small"
+                          variant="quiet"
+                          disabled={props.busy}
+                          onClick={() => setStatusCandidate(item.id)}
+                        >
+                          {item.status === 'published' ? '归档' : '发布'}
+                        </Button>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -668,6 +743,7 @@ function AdminContent(props: AdminContentProps) {
                   <th>导入结果</th>
                   <th>状态</th>
                   <th>时间</th>
+                  <th>操作</th>
                 </tr>
               </thead>
               <tbody>
@@ -681,8 +757,53 @@ function AdminContent(props: AdminContentProps) {
                       新增 {item.createdCount} · 更新 {item.updatedCount} · 无变化{' '}
                       {item.unchangedCount}
                     </td>
-                    <td>{contentStatusLabels[item.status]}</td>
+                    <td>
+                      {item.rolledBackAt ? (
+                        <span className={styles.status}>已回滚</span>
+                      ) : (
+                        contentStatusLabels[item.status]
+                      )}
+                    </td>
                     <td>{new Date(item.createdAt).toLocaleString('zh-CN')}</td>
+                    <td>
+                      {item.rolledBackAt ? (
+                        <span className={page.muted}>
+                          恢复 {item.rollbackRevertedCount} · 跳过 {item.rollbackSkippedCount}
+                        </span>
+                      ) : rollbackCandidate === item.id ? (
+                        <span className={styles.inlineConfirm}>
+                          <span>恢复到导入前？</span>
+                          <Button
+                            size="small"
+                            variant="danger"
+                            disabled={props.busy}
+                            onClick={() => {
+                              props.onRollbackImport(item.id);
+                              setRollbackCandidate(null);
+                            }}
+                          >
+                            确认回滚
+                          </Button>
+                          <Button
+                            size="small"
+                            variant="quiet"
+                            disabled={props.busy}
+                            onClick={() => setRollbackCandidate(null)}
+                          >
+                            取消
+                          </Button>
+                        </span>
+                      ) : (
+                        <Button
+                          size="small"
+                          variant="quiet"
+                          disabled={props.busy}
+                          onClick={() => setRollbackCandidate(item.id)}
+                        >
+                          回滚
+                        </Button>
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>

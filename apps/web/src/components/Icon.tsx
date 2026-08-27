@@ -1,6 +1,8 @@
 import {
+  ArrowLeft,
   ArrowRight,
   Atom,
+  BadgeCheck,
   Bell,
   BookOpen,
   Brain,
@@ -16,6 +18,7 @@ import {
   FlaskConical,
   Globe2,
   Heart,
+  History,
   House,
   Info,
   Languages,
@@ -28,6 +31,7 @@ import {
   Pause,
   Play,
   RotateCcw,
+  Save,
   ScanSearch,
   Search,
   Settings2,
@@ -44,8 +48,10 @@ import {
 } from 'lucide-react';
 
 const icons: Record<string, LucideIcon> = {
+  'lucide:arrow-left': ArrowLeft,
   'lucide:arrow-right': ArrowRight,
   'lucide:atom': Atom,
+  'lucide:badge-check': BadgeCheck,
   'lucide:bell': Bell,
   'lucide:book-open': BookOpen,
   'lucide:brain': Brain,
@@ -61,6 +67,7 @@ const icons: Record<string, LucideIcon> = {
   'lucide:flask-conical': FlaskConical,
   'lucide:globe-2': Globe2,
   'lucide:heart': Heart,
+  'lucide:history': History,
   'lucide:house': House,
   'lucide:info': Info,
   'lucide:languages': Languages,
@@ -73,6 +80,7 @@ const icons: Record<string, LucideIcon> = {
   'lucide:pause': Pause,
   'lucide:play': Play,
   'lucide:rotate-ccw': RotateCcw,
+  'lucide:save': Save,
   'lucide:scan-search': ScanSearch,
   'lucide:search': Search,
   'lucide:settings-2': Settings2,

@@ -28,6 +28,14 @@ export const userStatus = pgEnum('user_status', ['active', 'disabled']);
 export const grade = pgEnum('grade', ['高一', '高二', '高三']);
 export const contentKind = pgEnum('content_kind', ['word', 'poem']);
 export const contentStatus = pgEnum('content_status', ['draft', 'published', 'archived']);
+export const contentChangeKind = pgEnum('content_change_kind', [
+  'imported',
+  'edited',
+  'published',
+  'archived',
+  'restored',
+  'seeded',
+]);
 export const sessionStatus = pgEnum('study_session_status', ['active', 'completed', 'abandoned']);
 export const sessionMode = pgEnum('study_session_mode', ['plan', 'review', 'diagnostic']);
 export const friendshipStatus = pgEnum('friendship_status', ['pending', 'accepted', 'declined']);
@@ -124,9 +132,16 @@ export const contentImports = pgTable(
     createdCount: integer('created_count').notNull(),
     updatedCount: integer('updated_count').notNull(),
     unchangedCount: integer('unchanged_count').notNull(),
+    rolledBackAt: timestamp('rolled_back_at', { withTimezone: true }),
+    rolledBackBy: uuid('rolled_back_by').references(() => users.id, { onDelete: 'set null' }),
+    rollbackRevertedCount: integer('rollback_reverted_count').notNull().default(0),
+    rollbackSkippedCount: integer('rollback_skipped_count').notNull().default(0),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   },
-  (table) => [index('content_imports_created_idx').on(table.createdAt)]
+  (table) => [
+    uniqueIndex('content_imports_fingerprint_unique').on(table.fingerprint),
+    index('content_imports_created_idx').on(table.createdAt),
+  ]
 );
 
 export const contentItems = pgTable(
@@ -148,11 +163,46 @@ export const contentItems = pgTable(
     }),
     importedBy: uuid('imported_by').references(() => users.id, { onDelete: 'set null' }),
     importedAt: timestamp('imported_at', { withTimezone: true }).notNull().defaultNow(),
+    currentVersionId: uuid('current_version_id'),
+    publishedVersionId: uuid('published_version_id'),
     ...timestamps,
   },
   (table) => [
     uniqueIndex('content_items_key_unique').on(table.key),
     index('content_items_kind_grade_idx').on(table.kind, table.grade),
+  ]
+);
+
+export const contentVersions = pgTable(
+  'content_versions',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    contentId: uuid('content_id')
+      .notNull()
+      .references(() => contentItems.id, { onDelete: 'cascade' }),
+    versionNumber: integer('version_number').notNull(),
+    kind: contentKind('kind').notNull(),
+    grade: grade('grade').notNull(),
+    textbook: varchar('textbook', { length: 80 }).notNull(),
+    unit: varchar('unit', { length: 120 }).notNull(),
+    tags: text('tags').array().notNull().default([]),
+    payload: jsonb('payload').$type<WordPayload | PoemPayload>().notNull(),
+    status: contentStatus('status').notNull(),
+    source: varchar('source', { length: 120 }).notNull(),
+    sourceVersion: varchar('source_version', { length: 80 }).notNull().default(''),
+    semanticFingerprint: varchar('semantic_fingerprint', { length: 64 }).notNull(),
+    semanticChange: boolean('semantic_change').notNull().default(false),
+    changeKind: contentChangeKind('change_kind').notNull(),
+    changeNote: varchar('change_note', { length: 300 }).notNull().default(''),
+    createdBy: uuid('created_by').references(() => users.id, { onDelete: 'set null' }),
+    importBatchId: uuid('import_batch_id').references(() => contentImports.id, {
+      onDelete: 'set null',
+    }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex('content_versions_number_unique').on(table.contentId, table.versionNumber),
+    index('content_versions_content_created_idx').on(table.contentId, table.createdAt),
   ]
 );
 
@@ -200,6 +250,7 @@ export const studySessions = pgTable(
     plannedCount: integer('planned_count').notNull(),
     completedCount: integer('completed_count').notNull().default(0),
     contentQueue: uuid('content_queue').array().notNull().default([]),
+    contentVersionQueue: uuid('content_version_queue').array().notNull().default([]),
     startedAt: timestamp('started_at', { withTimezone: true }).notNull().defaultNow(),
     completedAt: timestamp('completed_at', { withTimezone: true }),
   },
@@ -222,11 +273,15 @@ export const reviewEvents = pgTable(
       .notNull()
       .references(() => learningCards.id, { onDelete: 'cascade' }),
     sessionId: uuid('session_id').references(() => studySessions.id, { onDelete: 'set null' }),
+    contentVersionId: uuid('content_version_id')
+      .notNull()
+      .references(() => contentVersions.id, { onDelete: 'restrict' }),
     rating: smallint('rating').notNull(),
     correct: boolean('correct').notNull(),
     responseMs: integer('response_ms').notNull(),
     promptType: varchar('prompt_type', { length: 30 }).notNull(),
     delayed: boolean('delayed').notNull().default(false),
+    countsForMastery: boolean('counts_for_mastery').notNull().default(true),
     stabilityBefore: doublePrecision('stability_before').notNull(),
     stabilityAfter: doublePrecision('stability_after').notNull(),
     difficultyBefore: doublePrecision('difficulty_before').notNull(),

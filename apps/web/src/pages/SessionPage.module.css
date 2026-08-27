@@ -221,6 +221,16 @@
   color: var(--lui-color-label);
 }
 
+.versionNotice {
+  padding: 10px 12px;
+  border: 1px solid var(--lui-color-separator);
+  border-radius: 10px;
+  background: var(--lui-color-surface);
+  color: var(--lui-color-label-secondary);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
 .feedbackMeta {
   display: flex;
   flex-wrap: wrap;

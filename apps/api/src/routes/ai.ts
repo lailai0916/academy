@@ -16,7 +16,7 @@ export async function aiRoutes(app: FastifyInstance) {
       if (!body) {
         return;
       }
-      const learning = await getContentForAi(request.user!.id, body.contentId);
+      const learning = await getContentForAi(request.user!.id, body.contentId, body.sessionId);
       if (!learning) {
         return reply.status(404).send({ error: '学习内容不存在。' });
       }

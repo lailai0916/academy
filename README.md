@@ -23,9 +23,9 @@ test accuracy and long-term retention.
 📚 **Structured learning** — reviewed content is organised by grade, textbook, volume and
 unit instead of being generated as an unverified exercise feed.
 
-🧾 **Reviewed content operations** — administrators preview every import, inspect quality issues,
-stage drafts, filter the library and retain source, edition and batch history before publication.
-Content with unresolved completeness issues cannot be published.
+🧾 **Reviewed content operations** — administrators preview imports, edit content in a dedicated
+workspace and retain immutable revisions, sources and editions before publication. Quality blockers
+prevent publication, and import batches can be rolled back without deleting their audit history.
 
 🧠 **Adaptive review** — FSRS scheduling, active recall, delayed tests and varied question
 types adjust each learner's daily plan.
@@ -81,6 +81,7 @@ academy/
 ├── packages/                       # Internal packages
 │   └── shared/                     # Shared Zod models and TypeScript types
 ├── brand-spec.md                   # Brand rules
+├── CONTEXT.md                      # Content and learning domain language
 ├── package-lock.json               # Locked workspace dependency graph
 ├── package.json                    # Workspace scripts and dependencies
 └── tsconfig.json                   # Shared TypeScript configuration

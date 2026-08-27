@@ -4,6 +4,7 @@ import { db } from '../db/index.js';
 import {
   activities,
   contentItems,
+  contentVersions,
   dailyPlans,
   learningCards,
   profiles,
@@ -78,26 +79,26 @@ export async function getOrCreateDailyPlan(user: SessionUser): Promise<DailyPlan
 
   const [profile] = await db.select().from(profiles).where(eq(profiles.userId, user.id)).limit(1);
   const dueCounts = await db
-    .select({ kind: contentItems.kind, value: count() })
+    .select({ kind: contentVersions.kind, value: count() })
     .from(learningCards)
     .innerJoin(contentItems, eq(contentItems.id, learningCards.contentId))
+    .innerJoin(contentVersions, eq(contentVersions.id, contentItems.publishedVersionId))
     .where(
       and(
         eq(learningCards.userId, user.id),
-        eq(contentItems.grade, user.grade),
-        eq(contentItems.status, 'published'),
+        eq(contentVersions.grade, user.grade),
         lte(learningCards.due, new Date())
       )
     )
-    .groupBy(contentItems.kind)
-    .orderBy(asc(contentItems.kind));
+    .groupBy(contentVersions.kind)
+    .orderBy(asc(contentVersions.kind));
   const newCounts = await db
-    .select({ kind: contentItems.kind, value: count() })
+    .select({ kind: contentVersions.kind, value: count() })
     .from(contentItems)
+    .innerJoin(contentVersions, eq(contentVersions.id, contentItems.publishedVersionId))
     .where(
       and(
-        eq(contentItems.status, 'published'),
-        eq(contentItems.grade, profile.grade),
+        eq(contentVersions.grade, profile.grade),
         notExists(
           db
             .select({ id: learningCards.id })
@@ -108,8 +109,8 @@ export async function getOrCreateDailyPlan(user: SessionUser): Promise<DailyPlan
         )
       )
     )
-    .groupBy(contentItems.kind)
-    .orderBy(asc(contentItems.kind));
+    .groupBy(contentVersions.kind)
+    .orderBy(asc(contentVersions.kind));
 
   const due = Object.fromEntries(dueCounts.map((row) => [row.kind, Number(row.value)]));
   const available = Object.fromEntries(newCounts.map((row) => [row.kind, Number(row.value)]));
@@ -167,6 +168,8 @@ export async function getDashboard(user: SessionUser): Promise<Dashboard> {
       longTermCards: sql<number>`count(*) filter (where ${learningCards.stability} >= 21)`,
     })
     .from(learningCards)
+    .innerJoin(contentItems, eq(contentItems.id, learningCards.contentId))
+    .innerJoin(contentVersions, eq(contentVersions.id, contentItems.publishedVersionId))
     .where(eq(learningCards.userId, user.id));
   const reviews = await db
     .select({ createdAt: reviewEvents.createdAt })

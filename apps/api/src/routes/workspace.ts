@@ -7,7 +7,7 @@ import type {
   WorkspaceSearchResult,
 } from '@lailai/academy-shared';
 import { db } from '../db/index.js';
-import { contentItems, notifications, profiles, users } from '../db/schema.js';
+import { contentItems, contentVersions, notifications, profiles, users } from '../db/schema.js';
 
 export async function workspaceRoutes(app: FastifyInstance) {
   app.get<{ Querystring: { q?: string } }>(
@@ -19,21 +19,21 @@ export async function workspaceRoutes(app: FastifyInstance) {
       const pattern = `%${query}%`;
       const [contentRows, userRows] = await Promise.all([
         db
-          .select()
+          .select({ identity: contentItems, version: contentVersions })
           .from(contentItems)
+          .innerJoin(contentVersions, eq(contentVersions.id, contentItems.publishedVersionId))
           .where(
             and(
-              eq(contentItems.status, 'published'),
-              eq(contentItems.grade, request.user!.grade),
+              eq(contentVersions.grade, request.user!.grade),
               or(
                 ilike(contentItems.key, pattern),
-                ilike(contentItems.textbook, pattern),
-                ilike(contentItems.unit, pattern),
-                sql`${contentItems.payload}::text ilike ${pattern}`
+                ilike(contentVersions.textbook, pattern),
+                ilike(contentVersions.unit, pattern),
+                sql`${contentVersions.payload}::text ilike ${pattern}`
               )
             )
           )
-          .orderBy(contentItems.unit, contentItems.key)
+          .orderBy(contentVersions.unit, contentItems.key)
           .limit(8),
         db
           .select({
@@ -55,13 +55,13 @@ export async function workspaceRoutes(app: FastifyInstance) {
           .limit(6),
       ]);
       const results: WorkspaceSearchResult[] = [
-        ...contentRows.map((item) => {
+        ...contentRows.map(({ identity, version: item }) => {
           const title =
             item.kind === 'word'
               ? (item.payload as WordPayload).headword
               : `《${(item.payload as PoemPayload).title}》`;
           return {
-            id: item.id,
+            id: identity.id,
             type: 'content' as const,
             title,
             detail: `${item.unit} · ${item.kind === 'word' ? '英语单词' : '古诗词'}`,

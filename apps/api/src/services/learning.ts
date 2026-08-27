@@ -17,6 +17,7 @@ import { db } from '../db/index.js';
 import {
   activities,
   contentItems,
+  contentVersions,
   dailyPlans,
   learningCards,
   reviewEvents,
@@ -35,7 +36,13 @@ const scheduler = fsrs({
 });
 
 type StoredCard = typeof learningCards.$inferSelect;
-type StoredContent = typeof contentItems.$inferSelect;
+type StoredVersion = typeof contentVersions.$inferSelect;
+type LearningContent = StoredVersion & {
+  id: string;
+  versionId: string;
+  key: string;
+  publishedVersionId: string | null;
+};
 
 type SessionOptions = {
   mode: 'plan' | 'review' | 'diagnostic';
@@ -127,13 +134,39 @@ function maskPoemLine(line: string, seed: number) {
   };
 }
 
-function presentContent(content: StoredContent) {
+function presentContent(content: Pick<LearningContent, 'kind' | 'payload'>) {
   if (content.kind === 'word') {
     const payload = content.payload as WordPayload;
     return { title: payload.headword, detail: payload.meanings[0] ?? '' };
   }
   const payload = content.payload as PoemPayload;
   return { title: `《${payload.title}》`, detail: `${payload.dynasty} · ${payload.author}` };
+}
+
+function presentLearningContent(
+  identity: Pick<typeof contentItems.$inferSelect, 'id' | 'key' | 'publishedVersionId'>,
+  version: StoredVersion
+): LearningContent {
+  return {
+    ...version,
+    id: identity.id,
+    versionId: version.id,
+    key: identity.key,
+    publishedVersionId: identity.publishedVersionId,
+  };
+}
+
+async function getPinnedLearningContent(contentId: string, versionId: string) {
+  const [row] = await db
+    .select({ identity: contentItems, version: contentVersions })
+    .from(contentItems)
+    .innerJoin(
+      contentVersions,
+      and(eq(contentVersions.id, versionId), eq(contentVersions.contentId, contentItems.id))
+    )
+    .where(eq(contentItems.id, contentId))
+    .limit(1);
+  return row ? presentLearningContent(row.identity, row.version) : null;
 }
 
 function percentage(value: number, total: number) {
@@ -194,7 +227,7 @@ function shuffle<T>(items: T[]) {
 
 async function buildPrompt(
   sessionId: string,
-  content: StoredContent,
+  content: LearningContent,
   card: StoredCard,
   progress: LearningPrompt['progress']
 ): Promise<LearningPrompt & { acceptedAnswers: string[]; explanation: string }> {
@@ -204,18 +237,18 @@ async function buildPrompt(
       card.reps === 0 ? 'meaning_choice' : card.mastery < 0.55 ? 'spelling' : 'context';
     if (promptType === 'meaning_choice') {
       const alternatives = await db
-        .select({ payload: contentItems.payload })
+        .select({ payload: contentVersions.payload })
         .from(contentItems)
+        .innerJoin(contentVersions, eq(contentVersions.id, contentItems.publishedVersionId))
         .where(
           and(
-            eq(contentItems.kind, 'word'),
-            eq(contentItems.grade, content.grade),
-            eq(contentItems.status, 'published'),
+            eq(contentVersions.kind, 'word'),
+            eq(contentVersions.grade, content.grade),
             sql`${contentItems.id} <> ${content.id}`
           )
         )
         .orderBy(
-          sql`case when ${contentItems.unit} = ${content.unit} then 0 else 1 end`,
+          sql`case when ${contentVersions.unit} = ${content.unit} then 0 else 1 end`,
           sql`random()`
         )
         .limit(12);
@@ -315,6 +348,7 @@ type LearningSessionDraft = {
   mode: SessionOptions['mode'];
   plannedCount: number;
   contentQueue: string[];
+  contentVersionQueue: string[];
 };
 
 function isUniqueViolation(error: unknown) {
@@ -362,21 +396,22 @@ export async function createLearningSession(
 
   if (focus === 'mistakes') {
     const mistakes = await db
-      .select({ id: contentItems.id })
+      .select({ id: contentItems.id, versionId: contentVersions.id })
       .from(reviewEvents)
       .innerJoin(learningCards, eq(learningCards.id, reviewEvents.cardId))
       .innerJoin(contentItems, eq(contentItems.id, learningCards.contentId))
+      .innerJoin(contentVersions, eq(contentVersions.id, contentItems.publishedVersionId))
       .where(
         and(
           eq(reviewEvents.userId, user.id),
           eq(reviewEvents.correct, false),
-          eq(contentItems.kind, kind),
-          eq(contentItems.grade, user.grade),
-          eq(contentItems.status, 'published'),
-          unit ? eq(contentItems.unit, unit) : undefined
+          eq(reviewEvents.countsForMastery, true),
+          eq(contentVersions.kind, kind),
+          eq(contentVersions.grade, user.grade),
+          unit ? eq(contentVersions.unit, unit) : undefined
         )
       )
-      .groupBy(contentItems.id, learningCards.mastery, learningCards.due)
+      .groupBy(contentItems.id, contentVersions.id, learningCards.mastery, learningCards.due)
       .orderBy(asc(learningCards.mastery), desc(sql`max(${reviewEvents.createdAt})`))
       .limit(limit);
     if (mistakes.length === 0) {
@@ -388,6 +423,7 @@ export async function createLearningSession(
       mode: 'review',
       plannedCount: mistakes.length,
       contentQueue: mistakes.map((item) => item.id),
+      contentVersionQueue: mistakes.map((item) => item.versionId),
     });
   }
 
@@ -395,16 +431,17 @@ export async function createLearningSession(
     const diagnosticPool = await db
       .select({
         id: contentItems.id,
-        textbook: contentItems.textbook,
-        unit: contentItems.unit,
+        versionId: contentVersions.id,
+        textbook: contentVersions.textbook,
+        unit: contentVersions.unit,
       })
       .from(contentItems)
+      .innerJoin(contentVersions, eq(contentVersions.id, contentItems.publishedVersionId))
       .where(
         and(
-          eq(contentItems.kind, kind),
-          eq(contentItems.grade, user.grade),
-          eq(contentItems.status, 'published'),
-          unit ? eq(contentItems.unit, unit) : undefined
+          eq(contentVersions.kind, kind),
+          eq(contentVersions.grade, user.grade),
+          unit ? eq(contentVersions.unit, unit) : undefined
         )
       );
     const diagnostic = selectDiagnosticContent(
@@ -421,20 +458,21 @@ export async function createLearningSession(
       mode,
       plannedCount: diagnostic.length,
       contentQueue: diagnostic.map((item) => item.id),
+      contentVersionQueue: diagnostic.map((item) => item.versionId),
     });
   }
 
   const due = await db
-    .select({ id: contentItems.id })
+    .select({ id: contentItems.id, versionId: contentVersions.id })
     .from(learningCards)
     .innerJoin(contentItems, eq(contentItems.id, learningCards.contentId))
+    .innerJoin(contentVersions, eq(contentVersions.id, contentItems.publishedVersionId))
     .where(
       and(
         eq(learningCards.userId, user.id),
-        eq(contentItems.kind, kind),
-        eq(contentItems.grade, user.grade),
-        eq(contentItems.status, 'published'),
-        unit ? eq(contentItems.unit, unit) : undefined,
+        eq(contentVersions.kind, kind),
+        eq(contentVersions.grade, user.grade),
+        unit ? eq(contentVersions.unit, unit) : undefined,
         lte(learningCards.due, new Date())
       )
     )
@@ -445,14 +483,14 @@ export async function createLearningSession(
     mode === 'review' || remaining === 0
       ? []
       : await db
-          .select({ id: contentItems.id })
+          .select({ id: contentItems.id, versionId: contentVersions.id })
           .from(contentItems)
+          .innerJoin(contentVersions, eq(contentVersions.id, contentItems.publishedVersionId))
           .where(
             and(
-              eq(contentItems.kind, kind),
-              eq(contentItems.grade, user.grade),
-              eq(contentItems.status, 'published'),
-              unit ? eq(contentItems.unit, unit) : undefined,
+              eq(contentVersions.kind, kind),
+              eq(contentVersions.grade, user.grade),
+              unit ? eq(contentVersions.unit, unit) : undefined,
               notExists(
                 db
                   .select({ id: learningCards.id })
@@ -468,7 +506,8 @@ export async function createLearningSession(
           )
           .orderBy(asc(contentItems.key))
           .limit(remaining);
-  const queue = [...due, ...fresh].map((item) => item.id);
+  const selected = [...due, ...fresh];
+  const queue = selected.map((item) => item.id);
   if (queue.length === 0) {
     return null;
   }
@@ -478,6 +517,7 @@ export async function createLearningSession(
     mode,
     plannedCount: queue.length,
     contentQueue: queue,
+    contentVersionQueue: selected.map((item) => item.versionId),
   });
 }
 
@@ -491,16 +531,13 @@ export async function getNextPrompt(userId: string, sessionId: string) {
     return null;
   }
   const contentId = session.contentQueue[session.completedCount];
-  if (!contentId) {
+  const contentVersionId = session.contentVersionQueue[session.completedCount];
+  if (!contentId || !contentVersionId) {
     return null;
   }
-  const [content] = await db
-    .select()
-    .from(contentItems)
-    .where(eq(contentItems.id, contentId))
-    .limit(1);
+  const content = await getPinnedLearningContent(contentId, contentVersionId);
   if (!content) {
-    throw new Error('Session content is missing.');
+    throw new Error('Session content version is missing.');
   }
   const card = await ensureCard(userId, content.id);
   const prompt = await buildPrompt(session.id, content, card, {
@@ -524,18 +561,17 @@ export async function answerPrompt(
   if (
     !session ||
     session.status !== 'active' ||
-    session.contentQueue[session.completedCount] !== input.contentId
+    session.contentQueue[session.completedCount] !== input.contentId ||
+    !session.contentVersionQueue[session.completedCount]
   ) {
     return null;
   }
-  const [content] = await db
-    .select()
-    .from(contentItems)
-    .where(eq(contentItems.id, input.contentId))
-    .limit(1);
+  const contentVersionId = session.contentVersionQueue[session.completedCount]!;
+  const content = await getPinnedLearningContent(input.contentId, contentVersionId);
   if (!content) {
     return null;
   }
+  const contentUpdated = content.publishedVersionId !== content.versionId;
   const card = await ensureCard(user.id, content.id);
   const prompt = await buildPrompt(session.id, content, card, {
     completed: session.completedCount,
@@ -578,38 +614,42 @@ export async function answerPrompt(
       if (!claimedSession) {
         throw new Error('PROMPT_ALREADY_ANSWERED');
       }
-      await transaction
-        .update(learningCards)
-        .set({
-          due: result.card.due,
-          stability: result.card.stability,
-          difficulty: result.card.difficulty,
-          elapsedDays: result.card.elapsed_days,
-          scheduledDays: result.card.scheduled_days,
-          learningSteps: result.card.learning_steps,
-          reps: result.card.reps,
-          lapses: result.card.lapses,
-          state: result.card.state,
-          lastReview: result.card.last_review ?? null,
-          mastery,
-          delayedAttempts: delayed ? card.delayedAttempts + 1 : card.delayedAttempts,
-          delayedCorrect: delayed && correct ? card.delayedCorrect + 1 : card.delayedCorrect,
-          updatedAt: now,
-        })
-        .where(eq(learningCards.id, card.id));
+      if (!contentUpdated) {
+        await transaction
+          .update(learningCards)
+          .set({
+            due: result.card.due,
+            stability: result.card.stability,
+            difficulty: result.card.difficulty,
+            elapsedDays: result.card.elapsed_days,
+            scheduledDays: result.card.scheduled_days,
+            learningSteps: result.card.learning_steps,
+            reps: result.card.reps,
+            lapses: result.card.lapses,
+            state: result.card.state,
+            lastReview: result.card.last_review ?? null,
+            mastery,
+            delayedAttempts: delayed ? card.delayedAttempts + 1 : card.delayedAttempts,
+            delayedCorrect: delayed && correct ? card.delayedCorrect + 1 : card.delayedCorrect,
+            updatedAt: now,
+          })
+          .where(eq(learningCards.id, card.id));
+      }
       await transaction.insert(reviewEvents).values({
         userId: user.id,
         cardId: card.id,
         sessionId: session.id,
+        contentVersionId: content.versionId,
         rating,
         correct,
         responseMs: input.responseMs,
         promptType: prompt.promptType,
         delayed,
+        countsForMastery: !contentUpdated,
         stabilityBefore: card.stability,
-        stabilityAfter: result.card.stability,
+        stabilityAfter: contentUpdated ? card.stability : result.card.stability,
         difficultyBefore: card.difficulty,
-        difficultyAfter: result.card.difficulty,
+        difficultyAfter: contentUpdated ? card.difficulty : result.card.difficulty,
       });
       if (session.mode === 'plan') {
         await transaction
@@ -645,19 +685,39 @@ export async function answerPrompt(
     expectedAnswer: prompt.acceptedAnswers[0],
     acceptedAnswers: prompt.acceptedAnswers,
     explanation: prompt.explanation,
-    mastery: Math.round(mastery * 100),
-    nextDueAt: result.card.due.toISOString(),
+    mastery: Math.round((contentUpdated ? card.mastery : mastery) * 100),
+    nextDueAt: (contentUpdated ? card.due : result.card.due).toISOString(),
     rating: ratingName(rating),
     sessionComplete,
+    contentUpdated,
   };
 }
 
-export async function getContentForAi(userId: string, contentId: string) {
-  const [content] = await db
-    .select()
-    .from(contentItems)
-    .where(eq(contentItems.id, contentId))
-    .limit(1);
+export async function getContentForAi(userId: string, contentId: string, sessionId?: string) {
+  let content: LearningContent | null = null;
+  if (sessionId) {
+    const [session] = await db
+      .select()
+      .from(studySessions)
+      .where(and(eq(studySessions.id, sessionId), eq(studySessions.userId, userId)))
+      .limit(1);
+    const queueIndex = session?.contentQueue.indexOf(contentId) ?? -1;
+    const versionId = queueIndex >= 0 ? session?.contentVersionQueue[queueIndex] : undefined;
+    if (versionId) content = await getPinnedLearningContent(contentId, versionId);
+  } else {
+    const [identity] = await db
+      .select({
+        id: contentItems.id,
+        key: contentItems.key,
+        publishedVersionId: contentItems.publishedVersionId,
+      })
+      .from(contentItems)
+      .where(eq(contentItems.id, contentId))
+      .limit(1);
+    if (identity?.publishedVersionId) {
+      content = await getPinnedLearningContent(contentId, identity.publishedVersionId);
+    }
+  }
   if (!content) {
     return null;
   }
@@ -675,7 +735,8 @@ export async function getLearningOverview(
 ): Promise<LearningOverview> {
   const rows = await db
     .select({
-      content: contentItems,
+      content: contentVersions,
+      contentId: contentItems.id,
       cardId: learningCards.id,
       due: learningCards.due,
       mastery: learningCards.mastery,
@@ -685,18 +746,13 @@ export async function getLearningOverview(
       delayedAttempts: learningCards.delayedAttempts,
     })
     .from(contentItems)
+    .innerJoin(contentVersions, eq(contentVersions.id, contentItems.publishedVersionId))
     .leftJoin(
       learningCards,
       and(eq(learningCards.contentId, contentItems.id), eq(learningCards.userId, user.id))
     )
-    .where(
-      and(
-        eq(contentItems.kind, kind),
-        eq(contentItems.grade, user.grade),
-        eq(contentItems.status, 'published')
-      )
-    )
-    .orderBy(asc(contentItems.textbook), asc(contentItems.unit), asc(contentItems.key));
+    .where(and(eq(contentVersions.kind, kind), eq(contentVersions.grade, user.grade)))
+    .orderBy(asc(contentVersions.textbook), asc(contentVersions.unit), asc(contentItems.key));
 
   const mistakeRows = await db
     .select({
@@ -705,7 +761,13 @@ export async function getLearningOverview(
       lastMistakeAt: sql<Date>`max(${reviewEvents.createdAt})`,
     })
     .from(reviewEvents)
-    .where(and(eq(reviewEvents.userId, user.id), eq(reviewEvents.correct, false)))
+    .where(
+      and(
+        eq(reviewEvents.userId, user.id),
+        eq(reviewEvents.correct, false),
+        eq(reviewEvents.countsForMastery, true)
+      )
+    )
     .groupBy(reviewEvents.cardId);
   const mistakesByCard = new Map(mistakeRows.map((row) => [row.cardId, row]));
   const now = Date.now();
@@ -750,7 +812,7 @@ export async function getLearningOverview(
       const content = presentContent(row.content);
       return [
         {
-          contentId: row.content.id,
+          contentId: row.contentId,
           kind: row.content.kind,
           title: content.title,
           detail: content.detail,
@@ -811,11 +873,13 @@ export async function getLearningSessionSummary(
     .select({
       event: reviewEvents,
       cardMastery: learningCards.mastery,
-      content: contentItems,
+      content: contentVersions,
+      contentId: contentItems.id,
     })
     .from(reviewEvents)
     .innerJoin(learningCards, eq(learningCards.id, reviewEvents.cardId))
-    .innerJoin(contentItems, eq(contentItems.id, learningCards.contentId))
+    .innerJoin(contentVersions, eq(contentVersions.id, reviewEvents.contentVersionId))
+    .innerJoin(contentItems, eq(contentItems.id, contentVersions.contentId))
     .where(and(eq(reviewEvents.userId, userId), eq(reviewEvents.sessionId, sessionId)))
     .orderBy(asc(reviewEvents.createdAt));
   const correctCount = events.filter((row) => row.event.correct).length;
@@ -824,8 +888,8 @@ export async function getLearningSessionSummary(
   for (const row of events) {
     if (row.event.correct) continue;
     const content = presentContent(row.content);
-    mistakeMap.set(row.content.id, {
-      contentId: row.content.id,
+    mistakeMap.set(row.contentId, {
+      contentId: row.contentId,
       kind: row.content.kind,
       title: content.title,
       detail: content.detail,
@@ -892,8 +956,8 @@ export async function getLearningInsights(userId: string, days: number): Promise
 
   const weakRows = await db
     .select({
-      kind: contentItems.kind,
-      unit: contentItems.unit,
+      kind: contentVersions.kind,
+      unit: contentVersions.unit,
       cardCount: sql<number>`count(*)`,
       due: sql<number>`count(*) filter (where ${learningCards.due} <= now())`,
       mastery: sql<number>`coalesce(avg(${learningCards.mastery}), 0)`,
@@ -901,8 +965,9 @@ export async function getLearningInsights(userId: string, days: number): Promise
     })
     .from(learningCards)
     .innerJoin(contentItems, eq(contentItems.id, learningCards.contentId))
+    .innerJoin(contentVersions, eq(contentVersions.id, contentItems.publishedVersionId))
     .where(eq(learningCards.userId, userId))
-    .groupBy(contentItems.kind, contentItems.unit)
+    .groupBy(contentVersions.kind, contentVersions.unit)
     .orderBy(asc(sql`avg(${learningCards.mastery})`), desc(sql`sum(${learningCards.lapses})`))
     .limit(6);
 
