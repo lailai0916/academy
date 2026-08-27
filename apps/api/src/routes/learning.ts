@@ -43,10 +43,13 @@ export async function learningRoutes(app: FastifyInstance) {
     { preHandler: app.requireAuth },
     async (request, reply) => {
       const prompt = await getNextPrompt(request.user!.id, request.params.sessionId);
-      if (!prompt) {
-        return reply.status(404).send({ error: '学习会话不存在或已经结束。' });
+      if (prompt) return { prompt, summary: null };
+      const summary = await getLearningSessionSummary(request.user!.id, request.params.sessionId);
+      if (!summary) return reply.status(404).send({ error: '学习会话不存在。' });
+      if (summary.status === 'active') {
+        return reply.status(409).send({ error: '当前学习任务暂时无法继续。' });
       }
-      return { prompt };
+      return { prompt: null, summary };
     }
   );
 

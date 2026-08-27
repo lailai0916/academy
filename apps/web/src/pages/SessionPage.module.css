@@ -231,6 +231,21 @@
   line-height: 1.6;
 }
 
+.reinforcementNotice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--lui-color-label-secondary);
+  font-size: 12px;
+}
+
+.reinforcementNotice svg {
+  width: 15px;
+  height: 15px;
+  flex: none;
+  stroke-width: 1.8;
+}
+
 .feedbackMeta {
   display: flex;
   flex-wrap: wrap;
@@ -337,7 +352,8 @@
 
 .summaryTitle p,
 .summaryTitle span,
-.delayedResult {
+.delayedResult,
+.reinforcementResult {
   color: var(--lui-color-label-secondary);
   font-size: 12px;
 }

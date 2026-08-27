@@ -27,8 +27,9 @@ unit instead of being generated as an unverified exercise feed.
 workspace and retain immutable revisions, sources and editions before publication. Quality blockers
 prevent publication, and import batches can be rolled back without deleting their audit history.
 
-🧠 **Adaptive review** — FSRS scheduling, active recall, delayed tests and varied question
-types adjust each learner's daily plan.
+🧠 **Adaptive review** — FSRS handles longer-term scheduling while incorrect items return after
+intervening retrievals in the current session. Active recall, delayed tests and varied question types
+adjust each learner's daily plan.
 
 🗂️ **Textbook and mistake loop** — learners can study by textbook unit, run diagnostics,
 reinforce mistakes, resume an unfinished session, inspect session results and review 7–90 day

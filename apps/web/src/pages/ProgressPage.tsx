@@ -158,8 +158,9 @@ export function ProgressPage() {
                     <span>
                       <strong>{sessionModeLabels[session.mode]}</strong>
                       <small>
-                        {session.completedCount}/{session.plannedCount} 项 · 正确率{' '}
-                        {session.accuracy}%
+                        {session.completedCount}/{session.plannedCount} 项 · 首轮正确率{' '}
+                        {session.firstPassAccuracy}%
+                        {session.recoveredCount > 0 ? ` · 纠正 ${session.recoveredCount} 项` : ''}
                       </small>
                     </span>
                     <span className={styles.sessionMeta}>

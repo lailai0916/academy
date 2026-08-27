@@ -326,6 +326,8 @@ export type LearningAnswerResult = {
   nextDueAt: string;
   rating: 'again' | 'hard' | 'good' | 'easy';
   sessionComplete: boolean;
+  sessionTotal: number;
+  reinforcementScheduled: boolean;
   contentUpdated: boolean;
 };
 
@@ -377,6 +379,9 @@ export type LearningSessionSummary = {
   completedCount: number;
   correctCount: number;
   accuracy: number;
+  firstPassAccuracy: number;
+  reinforcementCount: number;
+  recoveredCount: number;
   averageResponseMs: number;
   delayedAccuracy: number | null;
   averageMastery: number;

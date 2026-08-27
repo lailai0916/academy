@@ -14,7 +14,7 @@ import type {
   LearningSessionSummary,
 } from '@lailai/academy-shared';
 import { Icon } from '../components/Icon';
-import { api, ApiRequestError, errorMessage } from '../lib/api';
+import { api, errorMessage } from '../lib/api';
 import {
   formatNextReview,
   promptTypeLabels,
@@ -55,7 +55,15 @@ export function SessionPage() {
     setResult(null);
     setAiResponse(null);
     try {
-      const response = await api<{ prompt: LearningPrompt }>(`/learn/sessions/${sessionId}/next`);
+      const response = await api<{
+        prompt: LearningPrompt | null;
+        summary: LearningSessionSummary | null;
+      }>(`/learn/sessions/${sessionId}/next`);
+      if (!response.prompt && response.summary) {
+        setSummary(response.summary);
+        setPrompt(null);
+        return;
+      }
       setPrompt(response.prompt);
       startedAt.current = Date.now();
       window.setTimeout(() => inputRef.current?.focus(), 0);
@@ -74,14 +82,8 @@ export function SessionPage() {
   }, [sessionId]);
 
   useEffect(() => {
-    loadNext().catch((nextError) => {
-      if (nextError instanceof ApiRequestError && nextError.status === 404) {
-        loadSummary().catch((summaryError) => setError(errorMessage(summaryError)));
-        return;
-      }
-      setError(errorMessage(nextError));
-    });
-  }, [loadNext, loadSummary]);
+    loadNext().catch((nextError) => setError(errorMessage(nextError)));
+  }, [loadNext]);
 
   const submitAnswer = async (value: string, revealed = false) => {
     if (!prompt || submitting) {
@@ -248,8 +250,8 @@ export function SessionPage() {
               </div>
               <div className={styles.summaryMetrics}>
                 <article>
-                  <span>正确率</span>
-                  <strong>{summary.accuracy}%</strong>
+                  <span>首轮正确率</span>
+                  <strong>{summary.firstPassAccuracy}%</strong>
                 </article>
                 <article>
                   <span>当前掌握度</span>
@@ -263,6 +265,11 @@ export function SessionPage() {
               {summary.delayedAccuracy !== null && (
                 <p className={styles.delayedResult}>
                   本组延迟测试正确率为 {summary.delayedAccuracy}%。
+                </p>
+              )}
+              {summary.reinforcementCount > 0 && (
+                <p className={styles.reinforcementResult}>
+                  本组回练 {summary.reinforcementCount} 项，其中 {summary.recoveredCount} 项已纠正。
                 </p>
               )}
               <div className={page.actions}>
@@ -334,7 +341,9 @@ export function SessionPage() {
     return <div className={styles.centerState}>正在准备下一题……</div>;
   }
 
-  const progress = Math.round((prompt.progress.completed / prompt.progress.total) * 100);
+  const sessionTotal = result?.sessionTotal ?? prompt.progress.total;
+  const completedItems = prompt.progress.completed + (result ? 1 : 0);
+  const progress = Math.round((completedItems / sessionTotal) * 100);
 
   return (
     <div className={styles.page}>
@@ -344,7 +353,7 @@ export function SessionPage() {
         </IconButton>
         <Progress label="本组进度" value={progress} showValue={false} />
         <span>
-          {prompt.progress.completed + (result ? 1 : 0)} / {prompt.progress.total}
+          {completedItems} / {sessionTotal}
         </span>
       </header>
 
@@ -435,6 +444,12 @@ export function SessionPage() {
                 {result.contentUpdated && (
                   <p className={styles.versionNotice}>
                     本题使用开始学习时的内容版本，结果已保留，但不会改变当前掌握度。
+                  </p>
+                )}
+                {result.reinforcementScheduled && (
+                  <p className={styles.reinforcementNotice}>
+                    <Icon icon="lucide:rotate-ccw" />
+                    这项内容会在本组结束前再练一次。
                   </p>
                 )}
                 <div className={styles.feedbackMeta}>

@@ -32,8 +32,9 @@ fingerprint resets that card; non-semantic changes preserve it.
 
 ## Study session
 
-An ordered learning task that pins every content identity to the exact content version shown. Later
-administrative edits cannot change its prompts, answers or result history.
+An ordered learning task that pins every content identity to the exact content version shown. An
+incorrect item can return once after at least two intervening retrievals; later administrative edits
+cannot change its prompts, answers or result history.
 
 ## Review event
 

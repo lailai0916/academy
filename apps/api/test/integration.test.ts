@@ -627,22 +627,52 @@ integrationDescribe('Academy API integration', () => {
     });
     expect(focused.statusCode).toBe(201);
     const focusedSessionId = focused.json().sessionId as string;
-    for (let index = 0; index < 5; index += 1) {
+    const expectedAnswers = new Map<string, string>();
+    let reinforcementScheduled = 0;
+    let focusedComplete = false;
+    let finalSessionTotal = 0;
+    for (let index = 0; index < 12 && !focusedComplete; index += 1) {
       const current = await app.inject({
         method: 'GET',
         url: `/api/learn/sessions/${focusedSessionId}/next`,
         headers: { cookie: userCookie },
       });
       expect(current.statusCode).toBe(200);
-      const contentId = current.json().prompt.contentId as string;
+      const currentPrompt = current.json().prompt;
+      const contentId = currentPrompt.contentId as string;
+      const previousAnswer = expectedAnswers.get(contentId);
+      let submittedAnswer = previousAnswer ?? '';
+      if (previousAnswer) {
+        const content = await app.inject({
+          method: 'GET',
+          url: `/api/admin/content/${contentId}`,
+          headers: { cookie: adminCookie },
+        });
+        const payload = content.json().content.payload;
+        submittedAnswer =
+          currentPrompt.promptType === 'meaning_choice' ? payload.meanings[0] : payload.headword;
+      }
       const answer = await app.inject({
         method: 'POST',
         url: `/api/learn/sessions/${focusedSessionId}/answer`,
         headers: mutationHeaders(userCookie),
-        payload: { contentId, answer: '', responseMs: 1800, revealed: true },
+        payload: {
+          contentId,
+          answer: submittedAnswer,
+          responseMs: 1800,
+          revealed: !previousAnswer,
+        },
       });
       expect(answer.statusCode).toBe(200);
+      const result = answer.json().result;
+      if (!previousAnswer) expectedAnswers.set(contentId, result.expectedAnswer);
+      if (result.reinforcementScheduled) reinforcementScheduled += 1;
+      focusedComplete = result.sessionComplete;
+      finalSessionTotal = result.sessionTotal;
     }
+    expect(focusedComplete).toBe(true);
+    expect(reinforcementScheduled).toBe(5);
+    expect(finalSessionTotal).toBe(10);
     const summary = await app.inject({
       method: 'GET',
       url: `/api/learn/sessions/${focusedSessionId}/summary`,
@@ -650,8 +680,22 @@ integrationDescribe('Academy API integration', () => {
     });
     expect(summary.statusCode).toBe(200);
     expect(summary.json().summary.status).toBe('completed');
-    expect(summary.json().summary.completedCount).toBe(5);
+    expect(summary.json().summary.completedCount).toBe(10);
+    expect(summary.json().summary.firstPassAccuracy).toBe(0);
+    expect(summary.json().summary.reinforcementCount).toBe(5);
+    expect(summary.json().summary.recoveredCount).toBe(5);
     expect(summary.json().summary.mistakes).toHaveLength(5);
+
+    const completedSession = await app.inject({
+      method: 'GET',
+      url: `/api/learn/sessions/${focusedSessionId}/next`,
+      headers: { cookie: userCookie },
+    });
+    expect(completedSession.statusCode).toBe(200);
+    expect(completedSession.json()).toMatchObject({
+      prompt: null,
+      summary: { id: focusedSessionId, status: 'completed', recoveredCount: 5 },
+    });
 
     const insights = await app.inject({
       method: 'GET',

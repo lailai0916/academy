@@ -78,6 +78,23 @@ function answerMatches(answer: string, accepted: string[]) {
   return accepted.some((item) => normalizeAnswer(item) === normalized);
 }
 
+const minimumReinforcementGap = 2;
+
+export function shouldScheduleReinforcement(
+  contentQueue: string[],
+  completedCount: number,
+  contentId: string,
+  correct: boolean,
+  contentUpdated = false
+) {
+  if (correct || contentUpdated) return false;
+  const remainingItems = contentQueue.length - completedCount - 1;
+  if (remainingItems < minimumReinforcementGap) return false;
+  const occurrences = contentQueue.filter((queuedId) => queuedId === contentId).length;
+  const alreadyQueued = contentQueue.slice(completedCount + 1).includes(contentId);
+  return occurrences < 2 && !alreadyQueued;
+}
+
 const responseBenchmarks: Record<LearningPrompt['promptType'], { easy: number; hard: number }> = {
   meaning_choice: { easy: 4_000, hard: 14_000 },
   spelling: { easy: 7_000, hard: 25_000 },
@@ -171,6 +188,24 @@ async function getPinnedLearningContent(contentId: string, versionId: string) {
 
 function percentage(value: number, total: number) {
   return total === 0 ? 0 : Math.round((value / total) * 100);
+}
+
+export function summarizeAttemptSequences(events: { contentId: string; correct: boolean }[]) {
+  const attemptsByContent = new Map<string, boolean[]>();
+  for (const event of events) {
+    const attempts = attemptsByContent.get(event.contentId) ?? [];
+    attempts.push(event.correct);
+    attemptsByContent.set(event.contentId, attempts);
+  }
+  const attempts = [...attemptsByContent.values()];
+  const firstPassCorrect = attempts.filter((item) => item[0]).length;
+  const reinforced = attempts.filter((item) => item.length > 1);
+  const recovered = reinforced.filter((item) => !item[0] && item.slice(1).some(Boolean));
+  return {
+    firstPassAccuracy: percentage(firstPassCorrect, attempts.length),
+    reinforcementCount: reinforced.length,
+    recoveredCount: recovered.length,
+  };
 }
 
 function hashString(value: string) {
@@ -592,7 +627,24 @@ export async function answerPrompt(
     card.lastReview && now.getTime() - card.lastReview.getTime() >= 86_400_000
   );
   const completedCount = session.completedCount + 1;
-  const sessionComplete = completedCount >= session.plannedCount;
+  const reinforcementScheduled = shouldScheduleReinforcement(
+    session.contentQueue,
+    session.completedCount,
+    input.contentId,
+    correct,
+    contentUpdated
+  );
+  const plannedCount = session.plannedCount + (reinforcementScheduled ? 1 : 0);
+  const contentQueue = reinforcementScheduled
+    ? [...session.contentQueue, input.contentId]
+    : session.contentQueue;
+  const contentVersionQueue = reinforcementScheduled
+    ? [...session.contentVersionQueue, contentVersionId]
+    : session.contentVersionQueue;
+  const reinforcementAttempt = session.contentQueue
+    .slice(0, session.completedCount)
+    .includes(input.contentId);
+  const sessionComplete = completedCount >= plannedCount;
 
   try {
     await db.transaction(async (transaction) => {
@@ -600,6 +652,9 @@ export async function answerPrompt(
         .update(studySessions)
         .set({
           completedCount,
+          plannedCount,
+          contentQueue,
+          contentVersionQueue,
           status: sessionComplete ? 'completed' : 'active',
           completedAt: sessionComplete ? now : null,
         })
@@ -651,7 +706,7 @@ export async function answerPrompt(
         difficultyBefore: card.difficulty,
         difficultyAfter: contentUpdated ? card.difficulty : result.card.difficulty,
       });
-      if (session.mode === 'plan') {
+      if (session.mode === 'plan' && !reinforcementAttempt) {
         await transaction
           .update(dailyPlans)
           .set({
@@ -668,7 +723,7 @@ export async function answerPrompt(
         await transaction.insert(activities).values({
           userId: user.id,
           kind: `${session.kind}_session`,
-          summary: `完成了 ${session.plannedCount} 项${session.kind === 'word' ? '单词' : '古诗词'}练习`,
+          summary: `完成了 ${plannedCount} 项${session.kind === 'word' ? '单词' : '古诗词'}练习`,
           metadata: { sessionId: session.id, correct },
         });
       }
@@ -689,6 +744,8 @@ export async function answerPrompt(
     nextDueAt: (contentUpdated ? card.due : result.card.due).toISOString(),
     rating: ratingName(rating),
     sessionComplete,
+    sessionTotal: plannedCount,
+    reinforcementScheduled,
     contentUpdated,
   };
 }
@@ -896,6 +953,9 @@ export async function getLearningSessionSummary(
       unit: row.content.unit,
     });
   }
+  const attemptSummary = summarizeAttemptSequences(
+    events.map((row) => ({ contentId: row.contentId, correct: row.event.correct }))
+  );
 
   return {
     id: session.id,
@@ -906,6 +966,7 @@ export async function getLearningSessionSummary(
     completedCount: session.completedCount,
     correctCount,
     accuracy: percentage(correctCount, events.length),
+    ...attemptSummary,
     averageResponseMs:
       events.length === 0
         ? 0
@@ -995,6 +1056,27 @@ export async function getLearningInsights(userId: string, days: number): Promise
     .groupBy(studySessions.id)
     .orderBy(desc(studySessions.startedAt))
     .limit(8);
+  const sessionIds = sessionRows.map((session) => session.id);
+  const sessionEvents =
+    sessionIds.length === 0
+      ? []
+      : await db
+          .select({
+            sessionId: reviewEvents.sessionId,
+            contentId: contentVersions.contentId,
+            correct: reviewEvents.correct,
+          })
+          .from(reviewEvents)
+          .innerJoin(contentVersions, eq(contentVersions.id, reviewEvents.contentVersionId))
+          .where(and(eq(reviewEvents.userId, userId), inArray(reviewEvents.sessionId, sessionIds)))
+          .orderBy(asc(reviewEvents.createdAt));
+  const attemptsBySession = new Map<string, { contentId: string; correct: boolean }[]>();
+  for (const event of sessionEvents) {
+    if (!event.sessionId) continue;
+    const attempts = attemptsBySession.get(event.sessionId) ?? [];
+    attempts.push({ contentId: event.contentId, correct: event.correct });
+    attemptsBySession.set(event.sessionId, attempts);
+  }
 
   return {
     periodDays: days,
@@ -1032,6 +1114,7 @@ export async function getLearningInsights(userId: string, days: number): Promise
         completedCount: session.completedCount,
         correctCount: Number(session.correctCount),
         accuracy: percentage(Number(session.correctCount), eventCount),
+        ...summarizeAttemptSequences(attemptsBySession.get(session.id) ?? []),
         averageResponseMs: Math.round(Number(session.averageResponseMs)),
         delayedAccuracy:
           delayedCount === 0 ? null : percentage(Number(session.delayedCorrect), delayedCount),
