@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Avatar, Brand, ThemeControl } from '@lailai/ui';
+import { Avatar, Brand, IconButton, ThemeControl } from '@lailai/ui';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router';
 import { useAuth } from '../auth/AuthProvider';
 import { GlobalSearch } from './GlobalSearch';
@@ -20,8 +20,8 @@ const navigation: { label: string; items: NavigationItem[] }[] = [
     items: [
       { to: '/dashboard', label: '今日学习', icon: 'lucide:house', end: true },
       { to: '/learn', label: '学习中心', icon: 'lucide:book-open', end: true },
-      { to: '/learn/words', label: 'AI 背单词', icon: 'lucide:languages', end: true },
-      { to: '/learn/poems', label: 'AI 背古诗词', icon: 'lucide:feather', end: true },
+      { to: '/learn/words', label: '英语词汇', icon: 'lucide:languages', end: true },
+      { to: '/learn/poems', label: '古诗词', icon: 'lucide:feather', end: true },
       { to: '/learn/mistakes', label: '错题本', icon: 'lucide:notebook-tabs', end: true },
       { to: '/progress', label: '学习分析', icon: 'lucide:chart-no-axes-combined', end: true },
     ],
@@ -32,10 +32,7 @@ const navigation: { label: string; items: NavigationItem[] }[] = [
   },
   {
     label: '账号',
-    items: [
-      { to: '/profile', label: '个人主页', icon: 'lucide:user-round', end: true },
-      { to: '/settings', label: '设置', icon: 'lucide:settings-2' },
-    ],
+    items: [{ to: '/settings', label: '设置', icon: 'lucide:settings-2' }],
   },
 ];
 
@@ -46,6 +43,7 @@ export function AppShell() {
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const previousPath = useRef(location.pathname);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
 
   useEffect(() => {
     setMenuOpen(false);
@@ -83,13 +81,19 @@ export function AppShell() {
     ? '管理'
     : location.pathname.startsWith('/learn/session')
       ? '学习任务'
-      : location.pathname.startsWith('/profile/')
+      : location.pathname === '/profile' || location.pathname.startsWith('/profile/')
         ? '个人主页'
         : (current?.label ?? 'Academy');
 
   const handleLogout = async () => {
-    await logout();
-    navigate('/login', { replace: true });
+    if (loggingOut) return;
+    setLoggingOut(true);
+    try {
+      await logout();
+      navigate('/login', { replace: true });
+    } finally {
+      setLoggingOut(false);
+    }
   };
 
   return (
@@ -131,6 +135,15 @@ export function AppShell() {
             <Avatar name={user?.displayName ?? '?'} alt="个人头像" size={32} />
             <span>{user?.displayName}</span>
           </NavLink>
+          <IconButton
+            className={styles.logoutButton}
+            label="退出登录"
+            size="small"
+            disabled={loggingOut}
+            onClick={() => void handleLogout()}
+          >
+            <Icon icon="lucide:log-out" />
+          </IconButton>
         </div>
       </header>
 
@@ -144,7 +157,14 @@ export function AppShell() {
       )}
 
       <aside className={`${styles.sidebar} ${menuOpen ? styles.sidebarOpen : ''}`}>
-        <NavLink className={styles.userCard} to="/profile">
+        <NavLink
+          className={({ isActive }) =>
+            `${styles.userCard} ${isActive ? styles.userCardActive : ''}`
+          }
+          to="/profile"
+          end
+          aria-label="打开个人主页"
+        >
           <Avatar name={user?.displayName ?? '?'} alt="个人头像" size={36} />
           <span>
             <strong>{user?.displayName}</strong>
@@ -186,13 +206,6 @@ export function AppShell() {
             </div>
           )}
         </nav>
-
-        <div className={styles.sidebarFooter}>
-          <button type="button" onClick={handleLogout}>
-            <Icon icon="lucide:log-out" />
-            <span>退出登录</span>
-          </button>
-        </div>
       </aside>
 
       <main

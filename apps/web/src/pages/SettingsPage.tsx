@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react';
-import { Button, Panel, SelectField, TextAreaField, TextField, ThemeControl } from '@lailai/ui';
+import { Button, Panel, SelectField, TextAreaField, TextField } from '@lailai/ui';
 import type { Grade, Profile } from '@lailai/academy-shared';
 import { useAuth } from '../auth/AuthProvider';
 import { api, errorMessage } from '../lib/api';
@@ -56,93 +56,75 @@ export function SettingsPage() {
   return (
     <div className={page.page}>
       <header className={page.pageHeader}>
-        <div className={page.pageTitle}>
-          <p className={page.eyebrow}>我的</p>
-          <h1>设置</h1>
-          <p>修改个人资料、学习目标和外观。</p>
-        </div>
+        <h1 className={page.pageHeading}>设置</h1>
       </header>
       {error && <p className={page.error}>{error}</p>}
       {message && <p className={page.success}>{message}</p>}
       {profile && (
-        <div className={styles.settingsGrid}>
-          <Panel feature>
-            <form className={styles.adminSection} onSubmit={submit}>
-              <div className={page.panelTitle}>
-                <div className={page.panelTitleCopy}>
-                  <h2>个人资料与学习目标</h2>
-                  <p>年级、目标分数和每日项目数会影响学习计划。</p>
-                </div>
-              </div>
-              <div className={page.formRow}>
-                <TextField
-                  label="显示名称"
-                  value={profile.displayName}
-                  maxLength={24}
-                  onChange={(event) => update('displayName', event.target.value)}
-                  required
-                />
-                <SelectField
-                  label="当前年级"
-                  value={profile.grade}
-                  onChange={(event) => update('grade', event.target.value as Grade)}
-                >
-                  <option value="高一">高一</option>
-                  <option value="高二">高二</option>
-                  <option value="高三">高三</option>
-                </SelectField>
-              </div>
-              <TextAreaField
-                label="个人简介"
-                value={profile.bio}
-                maxLength={160}
-                onChange={(event) => update('bio', event.target.value)}
-              />
-              <div className={page.formRow}>
-                <TextField
-                  label="高考总分目标"
-                  type="number"
-                  min={0}
-                  max={750}
-                  value={profile.targetScore}
-                  onChange={(event) => update('targetScore', Number(event.target.value))}
-                />
-                <TextField
-                  label="每日学习项目数"
-                  type="number"
-                  min={5}
-                  max={100}
-                  value={profile.dailyGoal}
-                  onChange={(event) => update('dailyGoal', Number(event.target.value))}
-                  description="系统会优先安排到期复习。"
-                />
-              </div>
-              <SelectField
-                label="个人主页可见性"
-                value={profile.isPublic ? 'public' : 'private'}
-                onChange={(event) => update('isPublic', event.target.value === 'public')}
-              >
-                <option value="public">平台用户可见</option>
-                <option value="private">仅自己可见</option>
-              </SelectField>
-              <div className={page.actions}>
-                <Button type="submit" disabled={saving}>
-                  {saving ? '正在保存' : '保存设置'}
-                </Button>
-              </div>
-            </form>
-          </Panel>
-          <Panel>
-            <div className={`${styles.adminSection} ${styles.themeBox}`}>
+        <Panel feature>
+          <form className={styles.adminSection} onSubmit={submit}>
+            <div className={page.panelTitle}>
               <div className={page.panelTitleCopy}>
-                <h2>外观</h2>
-                <p>当前设备的显示方式。</p>
+                <h2>个人资料与学习目标</h2>
               </div>
-              <ThemeControl labels={{ system: '自动', light: '浅色', dark: '深色' }} />
-              <p className={page.muted}>选择保存在当前设备。</p>
             </div>
-          </Panel>
-        </div>
+            <div className={page.formRow}>
+              <TextField
+                label="显示名称"
+                value={profile.displayName}
+                maxLength={24}
+                onChange={(event) => update('displayName', event.target.value)}
+                required
+              />
+              <SelectField
+                label="当前年级"
+                value={profile.grade}
+                onChange={(event) => update('grade', event.target.value as Grade)}
+              >
+                <option value="高一">高一</option>
+                <option value="高二">高二</option>
+                <option value="高三">高三</option>
+              </SelectField>
+            </div>
+            <TextAreaField
+              label="个人简介"
+              value={profile.bio}
+              maxLength={160}
+              onChange={(event) => update('bio', event.target.value)}
+            />
+            <div className={page.formRow}>
+              <TextField
+                label="高考总分目标"
+                type="number"
+                min={0}
+                max={750}
+                value={profile.targetScore}
+                onChange={(event) => update('targetScore', Number(event.target.value))}
+              />
+              <TextField
+                label="每日学习项目数"
+                type="number"
+                min={5}
+                max={100}
+                value={profile.dailyGoal}
+                onChange={(event) => update('dailyGoal', Number(event.target.value))}
+              />
+            </div>
+            <SelectField
+              label="个人主页可见性"
+              value={profile.isPublic ? 'public' : 'private'}
+              onChange={(event) => update('isPublic', event.target.value === 'public')}
+            >
+              <option value="public">平台用户可见</option>
+              <option value="private">仅自己可见</option>
+            </SelectField>
+            <div className={page.actions}>
+              <Button type="submit" disabled={saving}>
+                {saving ? '正在保存' : '保存设置'}
+              </Button>
+            </div>
+          </form>
+        </Panel>
       )}
     </div>
   );

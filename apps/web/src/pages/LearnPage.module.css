@@ -30,22 +30,29 @@
 
 .subjectCopy {
   display: grid;
-  gap: 6px;
+  gap: 8px;
 }
 
-.subjectCopy p {
-  color: var(--lui-color-accent-label);
-  font-size: 12px;
-  font-weight: 650;
+.subjectHeading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 7px 11px;
 }
 
-.subjectCopy h2 {
+.subjectHeading h2 {
   font-size: 23px;
   font-weight: 680;
   letter-spacing: -0.035em;
 }
 
-.subjectCopy span {
+.subjectHeading span {
+  color: var(--lui-color-label-tertiary);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.subjectCopy > p {
   color: var(--lui-color-label-secondary);
   font-size: 14px;
 }

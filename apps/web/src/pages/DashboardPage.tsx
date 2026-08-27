@@ -41,7 +41,7 @@ export function DashboardPage() {
   if (error) return <p className={page.error}>{error}</p>;
   if (!data) return <div className={page.empty}>正在生成今天的学习计划……</div>;
 
-  const { plan, metrics, user } = data.dashboard;
+  const { plan, metrics } = data.dashboard;
   const activeSession = data.dashboard.activeSession;
   const completion = plan.total === 0 ? 0 : Math.round((plan.completed / plan.total) * 100);
   const boundedCompletion = Math.min(100, Math.max(0, completion));
@@ -55,13 +55,7 @@ export function DashboardPage() {
   return (
     <div className={page.page}>
       <header className={page.pageHeader}>
-        <div className={page.pageTitle}>
-          <p className={page.eyebrow}>
-            {plan.date} · {user.grade}
-          </p>
-          <h1>今日学习</h1>
-          <p>{plan.reason}</p>
-        </div>
+        <h1 className={page.pageHeading}>今日学习</h1>
         <Button
           size="large"
           onClick={() => navigate(activeSession ? `/learn/session/${activeSession.id}` : '/learn')}
@@ -120,7 +114,7 @@ export function DashboardPage() {
                         ? '今日计划已完成'
                         : `还需完成 ${remaining} 项`}
                   </strong>
-                  <span>到期内容优先，其后安排新学内容</span>
+                  <span>{plan.reason}</span>
                 </div>
               </div>
               <div className={styles.planItems}>
@@ -129,7 +123,7 @@ export function DashboardPage() {
                     <Icon icon="lucide:languages" />
                   </span>
                   <span>
-                    <strong>英语单词</strong>
+                    <strong>英语词汇</strong>
                     <small>
                       {plan.wordsDue} 项复习 · {plan.wordsNew} 项新学
                     </small>

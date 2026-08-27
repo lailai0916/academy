@@ -46,7 +46,6 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
           <form className={styles.form} onSubmit={submit}>
             <header className={styles.formHeader}>
               <h1>{loginMode ? '登录' : '邀请码注册'}</h1>
-              <p>{loginMode ? '使用用户名和密码登录。' : '填写管理员提供的邀请码。'}</p>
             </header>
             <TextField
               label="用户名"

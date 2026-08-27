@@ -90,11 +90,7 @@ export function SocialPage() {
   return (
     <div className={page.page}>
       <header className={page.pageHeader}>
-        <div className={page.pageTitle}>
-          <p className={page.eyebrow}>社区</p>
-          <h1>同学</h1>
-          <p>动态、学习小组、挑战与好友。</p>
-        </div>
+        <h1 className={page.pageHeading}>同学</h1>
       </header>
 
       <div className={styles.tabList} role="tablist" aria-label="同学圈栏目">

@@ -8,7 +8,7 @@ import page from './Page.module.css';
 import styles from './MistakesPage.module.css';
 
 const labels = {
-  word: { name: '英语单词', icon: 'lucide:languages' },
+  word: { name: '英语词汇', icon: 'lucide:languages' },
   poem: { name: '古诗词', icon: 'lucide:feather' },
 } as const;
 
@@ -50,11 +50,7 @@ export function MistakesPage() {
   return (
     <div className={page.page}>
       <header className={page.pageHeader}>
-        <div className={page.pageTitle}>
-          <p className={page.eyebrow}>学习</p>
-          <h1>错题本</h1>
-          <p>记录答错和查看答案的内容，并按当前掌握度排序。</p>
-        </div>
+        <h1 className={page.pageHeading}>错题本</h1>
         <Button size="large" onClick={start} disabled={starting || !overview?.mistakes.length}>
           <Icon icon="lucide:rotate-ccw" />
           巩固当前错题

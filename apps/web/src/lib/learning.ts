@@ -1,7 +1,7 @@
 import type { ActiveLearningSession, ContentKind } from '@lailai/academy-shared';
 
 export const learningKindLabels: Record<ContentKind, string> = {
-  word: '英语单词',
+  word: '英语词汇',
   poem: '古诗词',
 };
 

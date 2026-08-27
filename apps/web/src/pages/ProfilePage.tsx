@@ -25,11 +25,7 @@ export function ProfilePage() {
   return (
     <div className={page.page}>
       <header className={page.pageHeader}>
-        <div className={page.pageTitle}>
-          <p className={page.eyebrow}>{username ? '同学' : '我的'}</p>
-          <h1>个人主页</h1>
-          <p>个人资料与学习结果。</p>
-        </div>
+        <h1 className={page.pageHeading}>个人主页</h1>
       </header>
 
       <Panel feature>

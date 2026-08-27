@@ -10,14 +10,14 @@ import styles from './LearnPage.module.css';
 
 const subjects = {
   word: {
-    eyebrow: '英语 · 人教版',
-    title: 'AI 背单词',
+    curriculum: '英语 · 人教版',
+    title: '英语词汇',
     description: '从释义识别到拼写和语境应用，题型随掌握度逐步升级。',
     icon: 'lucide:languages',
   },
   poem: {
-    eyebrow: '语文 · 部编版',
-    title: 'AI 背古诗词',
+    curriculum: '语文 · 部编版',
+    title: '古诗词',
     description: '通过补空、接句和延迟默写，建立可用于考试的准确回忆。',
     icon: 'lucide:feather',
   },
@@ -82,11 +82,7 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
     return (
       <div className={page.page}>
         <header className={page.pageHeader}>
-          <div className={page.pageTitle}>
-            <p className={page.eyebrow}>{subject.eyebrow}</p>
-            <h1>{subject.title}</h1>
-            <p>{subject.description}</p>
-          </div>
+          <h1 className={page.pageHeading}>{subject.title}</h1>
           <Button size="large" onClick={() => start(kind, 'plan')} disabled={starting}>
             <Icon icon="lucide:play" />
             {activeSession ? '继续当前任务' : '开始今日计划'}
@@ -275,11 +271,7 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
   return (
     <div className={page.page}>
       <header className={page.pageHeader}>
-        <div className={page.pageTitle}>
-          <p className={page.eyebrow}>学习</p>
-          <h1>学习中心</h1>
-          <p>按今日计划、教材单元或历史错题组织学习。</p>
-        </div>
+        <h1 className={page.pageHeading}>学习中心</h1>
       </header>
 
       {error && <p className={page.error}>{error}</p>}
@@ -305,9 +297,11 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
                   <Icon icon={subject.icon} />
                 </span>
                 <div className={styles.subjectCopy}>
-                  <p>{subject.eyebrow}</p>
-                  <h2>{subject.title}</h2>
-                  <span>{subject.description}</span>
+                  <div className={styles.subjectHeading}>
+                    <h2>{subject.title}</h2>
+                    <span>{subject.curriculum}</span>
+                  </div>
+                  <p>{subject.description}</p>
                 </div>
                 <div className={styles.subjectStats}>
                   <span>

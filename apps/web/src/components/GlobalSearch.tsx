@@ -7,12 +7,14 @@ import styles from './GlobalSearch.module.css';
 
 const destinations = [
   { id: 'today', title: '今日学习', detail: '计划与长期记忆指标', href: '/dashboard' },
-  { id: 'learn', title: '学习中心', detail: '单词、古诗词与教材单元', href: '/learn' },
+  { id: 'learn', title: '学习中心', detail: '英语词汇、古诗词与教材单元', href: '/learn' },
+  { id: 'words', title: '英语词汇', detail: '人教版教材词汇', href: '/learn/words' },
+  { id: 'poems', title: '古诗词', detail: '部编版教材古诗词', href: '/learn/poems' },
   { id: 'mistakes', title: '错题本', detail: '历史错误与针对性巩固', href: '/learn/mistakes' },
   { id: 'progress', title: '学习分析', detail: '准确率、活跃天数与薄弱单元', href: '/progress' },
   { id: 'social', title: '同学', detail: '动态、好友、学习小组与挑战', href: '/social' },
   { id: 'profile', title: '个人主页', detail: '个人资料与学习结果', href: '/profile' },
-  { id: 'settings', title: '设置', detail: '资料、目标与外观', href: '/settings' },
+  { id: 'settings', title: '设置', detail: '个人资料与学习目标', href: '/settings' },
 ] as const;
 
 export function GlobalSearch() {
@@ -145,7 +147,7 @@ export function GlobalSearch() {
                 ref={inputRef}
                 id="workspace-search"
                 value={query}
-                placeholder="搜索单词、古诗词、同学或功能"
+                placeholder="搜索词汇、古诗词、同学或功能"
                 autoComplete="off"
                 onChange={(event) => setQuery(event.target.value)}
               />

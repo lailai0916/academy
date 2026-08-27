@@ -352,7 +352,7 @@ export function SessionPage() {
         <Panel feature className={styles.questionPanel}>
           <div className={styles.question}>
             <div className={styles.questionMeta}>
-              <span>{prompt.kind === 'word' ? '英语单词' : '古诗词'}</span>
+              <span>{prompt.kind === 'word' ? '英语词汇' : '古诗词'}</span>
               <span>
                 {promptTypeLabels[prompt.promptType]}
                 {prompt.options ? ' · 1–4 键选择' : ''}
@@ -449,7 +449,7 @@ export function SessionPage() {
                   </Button>
                   <Button variant="secondary" onClick={askAi} disabled={aiLoading}>
                     <Icon icon="lucide:sparkles" />
-                    {aiLoading ? '正在生成讲解' : '生成 AI 讲解'}
+                    {aiLoading ? '正在生成讲解' : '生成讲解'}
                   </Button>
                 </div>
               </div>
@@ -465,7 +465,7 @@ export function SessionPage() {
                   <Icon icon="lucide:sparkles" />
                 </span>
                 <div>
-                  <h2>AI 讲解</h2>
+                  <h2>补充讲解</h2>
                   <p>结合本题内容与当前学习记录</p>
                 </div>
               </div>

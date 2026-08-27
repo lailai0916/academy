@@ -28,11 +28,7 @@ export function ProgressPage() {
   return (
     <div className={page.page}>
       <header className={page.pageHeader}>
-        <div className={page.pageTitle}>
-          <p className={page.eyebrow}>近 {insights.periodDays} 天</p>
-          <h1>学习分析</h1>
-          <p>以正确率、延迟表现和知识稳定性衡量学习结果。</p>
-        </div>
+        <h1 className={page.pageHeading}>学习分析</h1>
       </header>
 
       <div className={page.grid4}>
@@ -112,7 +108,7 @@ export function ProgressPage() {
                 {insights.weakUnits.map((unit) => (
                   <article key={`${unit.kind}-${unit.unit}`}>
                     <div>
-                      <span>{unit.kind === 'word' ? '英语单词' : '古诗词'}</span>
+                      <span>{unit.kind === 'word' ? '英语词汇' : '古诗词'}</span>
                       <strong>{unit.unit}</strong>
                       <small>
                         {unit.cardCount} 项已学 · {unit.due} 项到期 · 累计遗忘 {unit.lapses} 次

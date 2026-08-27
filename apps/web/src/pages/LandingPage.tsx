@@ -5,7 +5,7 @@ import styles from './LandingPage.module.css';
 
 const principles = [
   ['教材范围', '人教版 · 部编版'],
-  ['首期内容', '英语单词 · 古诗词'],
+  ['首期内容', '英语词汇 · 古诗词'],
   ['学习指标', '掌握度 · 延迟正确率'],
 ] as const;
 
@@ -24,10 +24,9 @@ export function LandingPage() {
       <main id="main-content">
         <section className={styles.hero}>
           <div className={styles.heroCopy}>
-            <p className={styles.eyebrow}>高中生个人自学平台</p>
             <h1>按掌握情况安排每一次学习</h1>
             <p className={styles.intro}>
-              围绕人教版高中教材，根据复习记录调整计划、题型和难度。当前提供英语单词与古诗词学习。
+              围绕人教版高中教材，根据复习记录调整计划、题型和难度。当前提供英语词汇与古诗词学习。
             </p>
             <div className={styles.heroActions}>
               <Link to="/login" className={styles.primaryButton}>
@@ -57,7 +56,7 @@ export function LandingPage() {
                   <Icon icon="lucide:languages" />
                 </span>
                 <div>
-                  <strong>英语单词</strong>
+                  <strong>英语词汇</strong>
                   <span>8 项复习 · 4 项新学</span>
                 </div>
                 <Icon icon="lucide:chevron-right" />
