@@ -1,9 +1,10 @@
-import { and, avg, eq, sql } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import type { FastifyInstance } from 'fastify';
 import { profileUpdateSchema } from '@lailai/academy-shared';
 import { db } from '../db/index.js';
 import { learningCards, profiles, users } from '../db/schema.js';
 import { parseBody } from '../lib/http.js';
+import { currentMastery } from '../services/memory-model.js';
 
 async function buildProfile(userId: string) {
   const [profile] = await db
@@ -26,23 +27,24 @@ async function buildProfile(userId: string) {
   if (!profile) {
     return null;
   }
-  const [metrics] = await db
-    .select({
-      mastery: avg(learningCards.mastery),
-      delayedCorrect: sql<number>`coalesce(sum(${learningCards.delayedCorrect}), 0)`,
-      delayedAttempts: sql<number>`coalesce(sum(${learningCards.delayedAttempts}), 0)`,
-      reviewCount: sql<number>`coalesce(sum(${learningCards.reps}), 0)`,
-    })
+  const memoryRows = await db
+    .select({ card: learningCards })
     .from(learningCards)
     .where(eq(learningCards.userId, userId));
-  const attempts = Number(metrics?.delayedAttempts ?? 0);
+  const now = new Date();
+  const cards = memoryRows.map((row) => row.card).filter((card) => card.reps > 0);
+  const mastery =
+    cards.length === 0
+      ? 0
+      : cards.reduce((sum, card) => sum + currentMastery(card, now), 0) / cards.length;
+  const delayedCorrect = cards.reduce((sum, card) => sum + card.delayedCorrect, 0);
+  const attempts = cards.reduce((sum, card) => sum + card.delayedAttempts, 0);
   return {
     ...profile,
     createdAt: profile.createdAt.toISOString(),
-    mastery: Math.round(Number(metrics?.mastery ?? 0) * 100),
-    delayedAccuracy:
-      attempts === 0 ? 0 : Math.round((Number(metrics?.delayedCorrect ?? 0) / attempts) * 100),
-    reviewCount: Number(metrics?.reviewCount ?? 0),
+    mastery: Math.round(mastery * 100),
+    delayedAccuracy: attempts === 0 ? 0 : Math.round((delayedCorrect / attempts) * 100),
+    reviewCount: cards.reduce((sum, card) => sum + card.reps, 0),
   };
 }
 

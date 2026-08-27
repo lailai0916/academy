@@ -8,6 +8,11 @@ import { sessionModeLabels, sessionStatusLabels } from '../lib/learning';
 import page from './Page.module.css';
 import styles from './ProgressPage.module.css';
 
+const weekdayFormat = new Intl.DateTimeFormat('zh-CN', {
+  timeZone: 'Asia/Shanghai',
+  weekday: 'short',
+});
+
 export function ProgressPage() {
   const navigate = useNavigate();
   const [insights, setInsights] = useState<LearningInsights | null>(null);
@@ -24,6 +29,8 @@ export function ProgressPage() {
 
   const maxReviews = Math.max(1, ...insights.daily.map((day) => day.reviews));
   const hasReviewActivity = insights.daily.some((day) => day.reviews > 0);
+  const forecastTotal = insights.forecast.reduce((sum, day) => sum + day.total, 0);
+  const maxForecast = Math.max(1, ...insights.forecast.map((day) => day.total));
 
   return (
     <div className={page.page}>
@@ -53,6 +60,50 @@ export function ProgressPage() {
           <small>不以在线时长计数</small>
         </article>
       </div>
+
+      <section className={page.section}>
+        <div className={page.sectionHeader}>
+          <h2>未来 7 天</h2>
+          <p>预计 {forecastTotal} 项复习</p>
+        </div>
+        <Panel>
+          <ol className={styles.forecastList} aria-label="未来 7 天复习安排">
+            {insights.forecast.map((day, index) => (
+              <li key={day.date}>
+                <span className={styles.forecastDate}>
+                  <strong>
+                    {index === 0
+                      ? '今天'
+                      : weekdayFormat.format(new Date(`${day.date}T12:00:00+08:00`))}
+                  </strong>
+                  <time dateTime={day.date}>{day.date.slice(5).replace('-', '/')}</time>
+                </span>
+                <span
+                  className={styles.forecastTrack}
+                  role="progressbar"
+                  aria-label={`${day.date} 预计复习 ${day.total} 项`}
+                  aria-valuemin={0}
+                  aria-valuemax={maxForecast}
+                  aria-valuenow={day.total}
+                >
+                  <span style={{ width: `${(day.total / maxForecast) * 100}%` }} />
+                </span>
+                <span className={styles.forecastKinds}>
+                  {day.total === 0 ? (
+                    '无安排'
+                  ) : (
+                    <>
+                      <span>词汇 {day.word}</span>
+                      <span>古诗词 {day.poem}</span>
+                    </>
+                  )}
+                </span>
+                <strong className={styles.forecastCount}>{day.total}</strong>
+              </li>
+            ))}
+          </ol>
+        </Panel>
+      </section>
 
       <section className={page.section}>
         <div className={page.sectionHeader}>

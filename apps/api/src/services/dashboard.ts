@@ -1,4 +1,4 @@
-import { and, asc, avg, count, desc, eq, gte, lte, notExists, sql } from 'drizzle-orm';
+import { and, asc, count, desc, eq, gte, lte, notExists } from 'drizzle-orm';
 import type { Dashboard, DailyPlan, SessionUser } from '@lailai/academy-shared';
 import { db } from '../db/index.js';
 import {
@@ -12,6 +12,7 @@ import {
   users,
 } from '../db/schema.js';
 import { getActiveLearningSession } from './study-sessions.js';
+import { currentMastery } from './memory-model.js';
 
 const shanghaiDate = new Intl.DateTimeFormat('en-CA', {
   timeZone: 'Asia/Shanghai',
@@ -160,24 +161,28 @@ export async function getDashboard(user: SessionUser): Promise<Dashboard> {
     getOrCreateDailyPlan(user),
     getActiveLearningSession(user.id),
   ]);
-  const [metrics] = await db
-    .select({
-      mastery: avg(learningCards.mastery),
-      delayedCorrect: sql<number>`coalesce(sum(${learningCards.delayedCorrect}), 0)`,
-      delayedAttempts: sql<number>`coalesce(sum(${learningCards.delayedAttempts}), 0)`,
-      longTermCards: sql<number>`count(*) filter (where ${learningCards.stability} >= 21)`,
-    })
+  const memoryRows = await db
+    .select({ card: learningCards })
     .from(learningCards)
     .innerJoin(contentItems, eq(contentItems.id, learningCards.contentId))
     .innerJoin(contentVersions, eq(contentVersions.id, contentItems.publishedVersionId))
     .where(eq(learningCards.userId, user.id));
+  const now = new Date();
+  const startedCards = memoryRows.map((row) => row.card).filter((card) => card.reps > 0);
+  const delayedCorrect = startedCards.reduce((sum, card) => sum + card.delayedCorrect, 0);
+  const delayedAttempts = startedCards.reduce((sum, card) => sum + card.delayedAttempts, 0);
+  const mastery =
+    startedCards.length === 0
+      ? 0
+      : startedCards.reduce((sum, card) => sum + currentMastery(card, now), 0) /
+        startedCards.length;
   const reviews = await db
     .select({ createdAt: reviewEvents.createdAt })
     .from(reviewEvents)
     .where(
       and(
         eq(reviewEvents.userId, user.id),
-        gte(reviewEvents.createdAt, new Date(Date.now() - 90 * 86_400_000))
+        gte(reviewEvents.createdAt, new Date(now.getTime() - 90 * 86_400_000))
       )
     )
     .orderBy(desc(reviewEvents.createdAt));
@@ -196,19 +201,15 @@ export async function getDashboard(user: SessionUser): Promise<Dashboard> {
     .where(eq(activities.userId, user.id))
     .orderBy(desc(activities.createdAt))
     .limit(6);
-  const delayedAttempts = Number(metrics?.delayedAttempts ?? 0);
-
   return {
     user,
     plan,
     activeSession,
     metrics: {
-      mastery: Math.round(Number(metrics?.mastery ?? 0) * 100),
+      mastery: Math.round(mastery * 100),
       delayedAccuracy:
-        delayedAttempts === 0
-          ? 0
-          : Math.round((Number(metrics?.delayedCorrect ?? 0) / delayedAttempts) * 100),
-      longTermCards: Number(metrics?.longTermCards ?? 0),
+        delayedAttempts === 0 ? 0 : Math.round((delayedCorrect / delayedAttempts) * 100),
+      longTermCards: startedCards.filter((card) => card.stability >= 21).length,
       streakDays: countStreak(reviews.map((row) => row.createdAt)),
     },
     recentActivity: recentActivity.map((item) => ({

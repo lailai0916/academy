@@ -415,6 +415,12 @@ export type LearningInsights = {
     reviews: number;
     accuracy: number;
   }[];
+  forecast: {
+    date: string;
+    word: number;
+    poem: number;
+    total: number;
+  }[];
   weakUnits: {
     kind: ContentKind;
     unit: string;

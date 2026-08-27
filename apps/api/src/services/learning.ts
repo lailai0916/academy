@@ -1,5 +1,5 @@
 import { and, asc, desc, eq, gte, inArray, lte, notExists, sql } from 'drizzle-orm';
-import { fsrs, Rating, type Card, type Grade } from 'ts-fsrs';
+import { Rating, type Grade } from 'ts-fsrs';
 import type {
   ActiveLearningSession,
   ContentKind,
@@ -24,16 +24,8 @@ import {
   studySessions,
 } from '../db/schema.js';
 import { currentStudyDate, getOrCreateDailyPlan } from './dashboard.js';
+import { buildReviewForecast, currentMastery, reviewMemory } from './memory-model.js';
 import { getActiveLearningSession, presentActiveLearningSession } from './study-sessions.js';
-
-const scheduler = fsrs({
-  request_retention: 0.9,
-  maximum_interval: 3650,
-  enable_fuzz: true,
-  enable_short_term: true,
-  learning_steps: ['1m', '10m'],
-  relearning_steps: ['10m'],
-});
 
 type StoredCard = typeof learningCards.$inferSelect;
 type StoredVersion = typeof contentVersions.$inferSelect;
@@ -50,21 +42,6 @@ type SessionOptions = {
   unit?: string;
   limit?: number;
 };
-
-function toFsrsCard(card: StoredCard): Card {
-  return {
-    due: card.due,
-    stability: card.stability,
-    difficulty: card.difficulty,
-    elapsed_days: card.elapsedDays,
-    scheduled_days: card.scheduledDays,
-    learning_steps: card.learningSteps,
-    reps: card.reps,
-    lapses: card.lapses,
-    state: card.state,
-    last_review: card.lastReview ?? undefined,
-  } as Card;
-}
 
 function normalizeAnswer(value: string) {
   return value
@@ -131,12 +108,6 @@ function ratingName(rating: Grade): LearningAnswerResult['rating'] {
       : rating === Rating.Easy
         ? 'easy'
         : 'good';
-}
-
-function computeMastery(card: Card, now: Date) {
-  const retrievability = scheduler.get_retrievability(card, now, false);
-  const stabilityScore = 1 - Math.exp(-card.stability / 30);
-  return Math.max(0, Math.min(1, stabilityScore * 0.65 + retrievability * 0.35));
 }
 
 function maskPoemLine(line: string, seed: number) {
@@ -621,9 +592,9 @@ export async function answerPrompt(
     prompt.promptType
   );
   const now = new Date();
-  const masteryBefore = computeMastery(toFsrsCard(card), now);
-  const result = scheduler.next(toFsrsCard(card), now, rating);
-  const mastery = computeMastery(result.card, now);
+  const memoryResult = reviewMemory(card, now, rating);
+  const masteryBefore = memoryResult.masteryBefore;
+  const mastery = memoryResult.masteryAfter;
   const delayed = Boolean(
     card.lastReview && now.getTime() - card.lastReview.getTime() >= 86_400_000
   );
@@ -674,16 +645,16 @@ export async function answerPrompt(
         await transaction
           .update(learningCards)
           .set({
-            due: result.card.due,
-            stability: result.card.stability,
-            difficulty: result.card.difficulty,
-            elapsedDays: result.card.elapsed_days,
-            scheduledDays: result.card.scheduled_days,
-            learningSteps: result.card.learning_steps,
-            reps: result.card.reps,
-            lapses: result.card.lapses,
-            state: result.card.state,
-            lastReview: result.card.last_review ?? null,
+            due: memoryResult.card.due,
+            stability: memoryResult.card.stability,
+            difficulty: memoryResult.card.difficulty,
+            elapsedDays: memoryResult.card.elapsed_days,
+            scheduledDays: memoryResult.card.scheduled_days,
+            learningSteps: memoryResult.card.learning_steps,
+            reps: memoryResult.card.reps,
+            lapses: memoryResult.card.lapses,
+            state: memoryResult.card.state,
+            lastReview: memoryResult.card.last_review ?? null,
             mastery,
             delayedAttempts: delayed ? card.delayedAttempts + 1 : card.delayedAttempts,
             delayedCorrect: delayed && correct ? card.delayedCorrect + 1 : card.delayedCorrect,
@@ -705,9 +676,9 @@ export async function answerPrompt(
         masteryBefore,
         masteryAfter: contentUpdated ? masteryBefore : mastery,
         stabilityBefore: card.stability,
-        stabilityAfter: contentUpdated ? card.stability : result.card.stability,
+        stabilityAfter: contentUpdated ? card.stability : memoryResult.card.stability,
         difficultyBefore: card.difficulty,
-        difficultyAfter: contentUpdated ? card.difficulty : result.card.difficulty,
+        difficultyAfter: contentUpdated ? card.difficulty : memoryResult.card.difficulty,
       });
       if (session.mode === 'plan' && !reinforcementAttempt) {
         await transaction
@@ -744,7 +715,7 @@ export async function answerPrompt(
     acceptedAnswers: prompt.acceptedAnswers,
     explanation: prompt.explanation,
     mastery: Math.round((contentUpdated ? card.mastery : mastery) * 100),
-    nextDueAt: (contentUpdated ? card.due : result.card.due).toISOString(),
+    nextDueAt: (contentUpdated ? card.due : memoryResult.card.due).toISOString(),
     rating: ratingName(rating),
     sessionComplete,
     sessionTotal: plannedCount,
@@ -797,13 +768,7 @@ export async function getLearningOverview(
     .select({
       content: contentVersions,
       contentId: contentItems.id,
-      cardId: learningCards.id,
-      due: learningCards.due,
-      mastery: learningCards.mastery,
-      reps: learningCards.reps,
-      stability: learningCards.stability,
-      delayedCorrect: learningCards.delayedCorrect,
-      delayedAttempts: learningCards.delayedAttempts,
+      card: learningCards,
     })
     .from(contentItems)
     .innerJoin(contentVersions, eq(contentVersions.id, contentItems.publishedVersionId))
@@ -830,15 +795,24 @@ export async function getLearningOverview(
     )
     .groupBy(reviewEvents.cardId);
   const mistakesByCard = new Map(mistakeRows.map((row) => [row.cardId, row]));
-  const now = Date.now();
-  const startedRows = rows.filter((row) => row.cardId && row.reps && row.reps > 0);
-  const masteredRows = startedRows.filter(
-    (row) => Number(row.mastery) >= 0.8 && Number(row.stability) >= 21
+  const now = new Date();
+  const masteryByCard = new Map(
+    rows.flatMap((row) =>
+      row.card ? ([[row.card.id, currentMastery(row.card, now)]] as const) : []
+    )
   );
-  const dueRows = startedRows.filter((row) => row.due && row.due.getTime() <= now);
-  const delayedCorrect = startedRows.reduce((sum, row) => sum + Number(row.delayedCorrect ?? 0), 0);
+  const startedRows = rows.filter((row) => row.card && row.card.reps > 0);
+  const masteredRows = startedRows.filter(
+    (row) =>
+      row.card !== null && (masteryByCard.get(row.card.id) ?? 0) >= 0.8 && row.card.stability >= 21
+  );
+  const dueRows = startedRows.filter((row) => row.card && row.card.due <= now);
+  const delayedCorrect = startedRows.reduce(
+    (sum, row) => sum + Number(row.card?.delayedCorrect ?? 0),
+    0
+  );
   const delayedAttempts = startedRows.reduce(
-    (sum, row) => sum + Number(row.delayedAttempts ?? 0),
+    (sum, row) => sum + Number(row.card?.delayedAttempts ?? 0),
     0
   );
 
@@ -855,20 +829,21 @@ export async function getLearningOverview(
       mastery: 0,
     };
     current.total += 1;
-    if (row.cardId && Number(row.reps) > 0) {
+    if (row.card && row.card.reps > 0) {
+      const mastery = masteryByCard.get(row.card.id) ?? 0;
       current.started += 1;
-      current.mastery += Number(row.mastery ?? 0);
-      if (row.due && row.due.getTime() <= now) current.due += 1;
-      if (Number(row.mastery) >= 0.8 && Number(row.stability) >= 21) current.mastered += 1;
+      current.mastery += mastery;
+      if (row.card.due <= now) current.due += 1;
+      if (mastery >= 0.8 && row.card.stability >= 21) current.mastered += 1;
     }
     units.set(key, current);
   }
 
   const mistakes: LearningMistake[] = rows
     .flatMap((row) => {
-      if (!row.cardId) return [];
-      const mistake = mistakesByCard.get(row.cardId);
-      if (!mistake || !row.due) return [];
+      if (!row.card) return [];
+      const mistake = mistakesByCard.get(row.card.id);
+      if (!mistake) return [];
       const content = presentContent(row.content);
       return [
         {
@@ -878,10 +853,10 @@ export async function getLearningOverview(
           detail: content.detail,
           textbook: row.content.textbook,
           unit: row.content.unit,
-          mastery: Math.round(Number(row.mastery ?? 0) * 100),
+          mastery: Math.round((masteryByCard.get(row.card.id) ?? 0) * 100),
           mistakeCount: Number(mistake.mistakeCount),
           lastMistakeAt: new Date(mistake.lastMistakeAt).toISOString(),
-          dueAt: row.due.toISOString(),
+          dueAt: row.card.due.toISOString(),
         },
       ];
     })
@@ -903,7 +878,10 @@ export async function getLearningOverview(
         startedRows.length === 0
           ? 0
           : Math.round(
-              (startedRows.reduce((sum, row) => sum + Number(row.mastery ?? 0), 0) /
+              (startedRows.reduce(
+                (sum, row) => sum + (row.card ? (masteryByCard.get(row.card.id) ?? 0) : 0),
+                0
+              ) /
                 startedRows.length) *
                 100
             ),
@@ -932,7 +910,7 @@ export async function getLearningSessionSummary(
   const events = await db
     .select({
       event: reviewEvents,
-      cardMastery: learningCards.mastery,
+      card: learningCards,
       content: contentVersions,
       contentId: contentItems.id,
     })
@@ -982,7 +960,7 @@ export async function getLearningSessionSummary(
       events.length === 0
         ? 0
         : Math.round(
-            (events.reduce((sum, row) => sum + Number(row.cardMastery), 0) / events.length) * 100
+            (events.reduce((sum, row) => sum + currentMastery(row.card), 0) / events.length) * 100
           ),
     startedAt: session.startedAt.toISOString(),
     completedAt: session.completedAt?.toISOString() ?? null,
@@ -991,6 +969,7 @@ export async function getLearningSessionSummary(
 }
 
 export async function getLearningInsights(userId: string, days: number): Promise<LearningInsights> {
+  const now = new Date();
   const since = new Date(Date.now() - (days - 1) * 86_400_000);
   since.setHours(0, 0, 0, 0);
   const events = await db
@@ -1018,22 +997,56 @@ export async function getLearningInsights(userId: string, days: number): Promise
   });
   const delayedEvents = events.filter((event) => event.delayed);
 
-  const weakRows = await db
+  const memoryRows = await db
     .select({
       kind: contentVersions.kind,
       unit: contentVersions.unit,
-      cardCount: sql<number>`count(*)`,
-      due: sql<number>`count(*) filter (where ${learningCards.due} <= now())`,
-      mastery: sql<number>`coalesce(avg(${learningCards.mastery}), 0)`,
-      lapses: sql<number>`coalesce(sum(${learningCards.lapses}), 0)`,
+      card: learningCards,
     })
     .from(learningCards)
     .innerJoin(contentItems, eq(contentItems.id, learningCards.contentId))
     .innerJoin(contentVersions, eq(contentVersions.id, contentItems.publishedVersionId))
-    .where(eq(learningCards.userId, userId))
-    .groupBy(contentVersions.kind, contentVersions.unit)
-    .orderBy(asc(sql`avg(${learningCards.mastery})`), desc(sql`sum(${learningCards.lapses})`))
-    .limit(6);
+    .where(eq(learningCards.userId, userId));
+  const weakUnitMap = new Map<
+    string,
+    {
+      kind: ContentKind;
+      unit: string;
+      cardCount: number;
+      due: number;
+      mastery: number;
+      lapses: number;
+    }
+  >();
+  for (const row of memoryRows) {
+    if (row.card.reps === 0) continue;
+    const key = `${row.kind}:${row.unit}`;
+    const unit = weakUnitMap.get(key) ?? {
+      kind: row.kind,
+      unit: row.unit,
+      cardCount: 0,
+      due: 0,
+      mastery: 0,
+      lapses: 0,
+    };
+    unit.cardCount += 1;
+    unit.due += row.card.due <= now ? 1 : 0;
+    unit.mastery += currentMastery(row.card, now);
+    unit.lapses += row.card.lapses;
+    weakUnitMap.set(key, unit);
+  }
+  const weakUnits = [...weakUnitMap.values()]
+    .map((unit) => ({
+      ...unit,
+      mastery: Math.round((unit.mastery / unit.cardCount) * 100),
+    }))
+    .sort((left, right) => left.mastery - right.mastery || right.lapses - left.lapses)
+    .slice(0, 6);
+  const forecast = buildReviewForecast(
+    memoryRows.map((row) => ({ kind: row.kind, due: row.card.due, reps: row.card.reps })),
+    7,
+    now
+  );
 
   const sessionRows = await db
     .select({
@@ -1050,11 +1063,9 @@ export async function getLearningInsights(userId: string, days: number): Promise
       delayedCount: sql<number>`count(${reviewEvents.id}) filter (where ${reviewEvents.delayed} = true)`,
       delayedCorrect: sql<number>`count(${reviewEvents.id}) filter (where ${reviewEvents.delayed} = true and ${reviewEvents.correct} = true)`,
       averageResponseMs: sql<number>`coalesce(avg(${reviewEvents.responseMs}), 0)`,
-      averageMastery: sql<number>`coalesce(avg(${learningCards.mastery}), 0)`,
     })
     .from(studySessions)
     .leftJoin(reviewEvents, eq(reviewEvents.sessionId, studySessions.id))
-    .leftJoin(learningCards, eq(learningCards.id, reviewEvents.cardId))
     .where(eq(studySessions.userId, userId))
     .groupBy(studySessions.id)
     .orderBy(desc(studySessions.startedAt))
@@ -1068,17 +1079,23 @@ export async function getLearningInsights(userId: string, days: number): Promise
             sessionId: reviewEvents.sessionId,
             contentId: contentVersions.contentId,
             correct: reviewEvents.correct,
+            card: learningCards,
           })
           .from(reviewEvents)
           .innerJoin(contentVersions, eq(contentVersions.id, reviewEvents.contentVersionId))
+          .innerJoin(learningCards, eq(learningCards.id, reviewEvents.cardId))
           .where(and(eq(reviewEvents.userId, userId), inArray(reviewEvents.sessionId, sessionIds)))
           .orderBy(asc(reviewEvents.createdAt));
   const attemptsBySession = new Map<string, { contentId: string; correct: boolean }[]>();
+  const masteryBySession = new Map<string, number[]>();
   for (const event of sessionEvents) {
     if (!event.sessionId) continue;
     const attempts = attemptsBySession.get(event.sessionId) ?? [];
     attempts.push({ contentId: event.contentId, correct: event.correct });
     attemptsBySession.set(event.sessionId, attempts);
+    const mastery = masteryBySession.get(event.sessionId) ?? [];
+    mastery.push(currentMastery(event.card, now));
+    masteryBySession.set(event.sessionId, mastery);
   }
 
   return {
@@ -1097,17 +1114,12 @@ export async function getLearningInsights(userId: string, days: number): Promise
       activeDays: byDate.size,
     },
     daily,
-    weakUnits: weakRows.map((row) => ({
-      kind: row.kind,
-      unit: row.unit,
-      cardCount: Number(row.cardCount),
-      due: Number(row.due),
-      mastery: Math.round(Number(row.mastery) * 100),
-      lapses: Number(row.lapses),
-    })),
+    forecast,
+    weakUnits,
     recentSessions: sessionRows.map((session) => {
       const eventCount = Number(session.eventCount);
       const delayedCount = Number(session.delayedCount);
+      const sessionMastery = masteryBySession.get(session.id) ?? [];
       return {
         id: session.id,
         kind: session.kind,
@@ -1121,7 +1133,14 @@ export async function getLearningInsights(userId: string, days: number): Promise
         averageResponseMs: Math.round(Number(session.averageResponseMs)),
         delayedAccuracy:
           delayedCount === 0 ? null : percentage(Number(session.delayedCorrect), delayedCount),
-        averageMastery: Math.round(Number(session.averageMastery) * 100),
+        averageMastery:
+          sessionMastery.length === 0
+            ? 0
+            : Math.round(
+                (sessionMastery.reduce((sum, mastery) => sum + mastery, 0) /
+                  sessionMastery.length) *
+                  100
+              ),
         startedAt: session.startedAt.toISOString(),
         completedAt: session.completedAt?.toISOString() ?? null,
       };

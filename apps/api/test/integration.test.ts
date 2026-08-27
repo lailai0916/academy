@@ -704,6 +704,13 @@ integrationDescribe('Academy API integration', () => {
     });
     expect(insights.statusCode).toBe(200);
     expect(insights.json().insights.daily).toHaveLength(14);
+    expect(insights.json().insights.forecast).toHaveLength(7);
+    expect(insights.json().insights.forecast[0]).toMatchObject({
+      date: expect.any(String),
+      word: expect.any(Number),
+      poem: expect.any(Number),
+      total: expect.any(Number),
+    });
     expect(insights.json().insights.metrics.reviewCount).toBeGreaterThanOrEqual(7);
   });
 

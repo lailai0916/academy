@@ -51,6 +51,7 @@ export function DashboardPage() {
   const mistakeCount = data.words.summary.mistakes + data.poems.summary.mistakes;
   const maxDaily = Math.max(1, ...data.insights.daily.map((day) => day.reviews));
   const hasReviewActivity = data.insights.daily.some((day) => day.reviews > 0);
+  const forecastTotal = data.insights.forecast.reduce((sum, day) => sum + day.total, 0);
 
   return (
     <div className={page.page}>
@@ -178,6 +179,15 @@ export function DashboardPage() {
                 <div>
                   <strong>{metrics.longTermCards}</strong>
                   <small>项长期记忆</small>
+                </div>
+              </article>
+              <article>
+                <span>
+                  <Icon icon="lucide:calendar-clock" />
+                </span>
+                <div>
+                  <strong>{forecastTotal}</strong>
+                  <small>项 7 日预计复习</small>
                 </div>
               </article>
               <div className={styles.focusActions}>
