@@ -1,12 +1,19 @@
 import argon2 from 'argon2';
-import { and, eq, gt, lt, sql } from 'drizzle-orm';
+import { and, desc, eq, gt, lt, ne, sql } from 'drizzle-orm';
 import type { FastifyInstance, FastifyRequest } from 'fastify';
-import { loginSchema, registerSchema } from '@lailai/academy-shared';
+import { z } from 'zod';
+import {
+  loginSchema,
+  passwordUpdateSchema,
+  registerSchema,
+  type AuthSession,
+} from '@lailai/academy-shared';
 import { config } from '../config.js';
 import { db } from '../db/index.js';
 import { authSessions, invites, profiles, users } from '../db/schema.js';
 import { createSessionToken, sha256 } from '../lib/crypto.js';
 import { parseBody } from '../lib/http.js';
+import { describeUserAgent, maskIpAddress } from '../services/auth-sessions.js';
 
 const dummyHash = argon2.hash('academy-invalid-password', {
   type: argon2.argon2id,
@@ -14,6 +21,7 @@ const dummyHash = argon2.hash('academy-invalid-password', {
   timeCost: 3,
   parallelism: 1,
 });
+const sessionParamsSchema = z.object({ sessionId: z.uuid() });
 
 function sessionExpiry() {
   return new Date(Date.now() + config.SESSION_TTL_DAYS * 86_400_000);
@@ -160,5 +168,108 @@ export async function authRoutes(app: FastifyInstance) {
     }
     reply.clearCookie(config.SESSION_COOKIE_NAME, { path: '/' });
     return reply.status(204).send();
+  });
+
+  app.get('/auth/sessions', { preHandler: app.requireAuth }, async (request) => {
+    const now = new Date();
+    await db
+      .delete(authSessions)
+      .where(and(eq(authSessions.userId, request.user!.id), lt(authSessions.expiresAt, now)));
+    const rows = await db
+      .select({
+        id: authSessions.id,
+        userAgent: authSessions.userAgent,
+        ipAddress: authSessions.ipAddress,
+        createdAt: authSessions.createdAt,
+        lastSeenAt: authSessions.lastSeenAt,
+        expiresAt: authSessions.expiresAt,
+      })
+      .from(authSessions)
+      .where(eq(authSessions.userId, request.user!.id))
+      .orderBy(desc(authSessions.lastSeenAt));
+    const sessions: AuthSession[] = rows.map((session) => ({
+      id: session.id,
+      current: session.id === request.authSessionId,
+      ...describeUserAgent(session.userAgent),
+      network: maskIpAddress(session.ipAddress),
+      createdAt: session.createdAt.toISOString(),
+      lastSeenAt: session.lastSeenAt.toISOString(),
+      expiresAt: session.expiresAt.toISOString(),
+    }));
+    return { sessions };
+  });
+
+  app.post(
+    '/auth/password',
+    {
+      preHandler: app.requireAuth,
+      config: { rateLimit: { max: 5, timeWindow: '15 minutes' } },
+    },
+    async (request, reply) => {
+      const body = parseBody(passwordUpdateSchema, request.body, reply);
+      if (!body) return;
+      if (!request.authSessionId) {
+        return reply.status(401).send({ error: '登录状态已失效，请重新登录。' });
+      }
+      const currentSessionId = request.authSessionId;
+      const [user] = await db
+        .select({ passwordHash: users.passwordHash })
+        .from(users)
+        .where(eq(users.id, request.user!.id))
+        .limit(1);
+      if (!user || !(await argon2.verify(user.passwordHash, body.currentPassword))) {
+        return reply.status(401).send({ error: '当前密码不正确。' });
+      }
+      const passwordHash = await argon2.hash(body.newPassword, {
+        type: argon2.argon2id,
+        memoryCost: 65_536,
+        timeCost: 3,
+        parallelism: 1,
+      });
+      const revoked = await db.transaction(async (transaction) => {
+        await transaction
+          .update(users)
+          .set({ passwordHash, updatedAt: new Date() })
+          .where(eq(users.id, request.user!.id));
+        return transaction
+          .delete(authSessions)
+          .where(
+            and(eq(authSessions.userId, request.user!.id), ne(authSessions.id, currentSessionId))
+          )
+          .returning({ id: authSessions.id });
+      });
+      return { otherSessionsRevoked: revoked.length };
+    }
+  );
+
+  app.delete<{ Params: { sessionId: string } }>(
+    '/auth/sessions/:sessionId',
+    { preHandler: app.requireAuth },
+    async (request, reply) => {
+      const params = parseBody(sessionParamsSchema, request.params, reply);
+      if (!params) return;
+      const [revoked] = await db
+        .delete(authSessions)
+        .where(
+          and(eq(authSessions.id, params.sessionId), eq(authSessions.userId, request.user!.id))
+        )
+        .returning({ id: authSessions.id });
+      if (!revoked) return reply.status(404).send({ error: '登录设备不存在。' });
+      if (revoked.id === request.authSessionId) {
+        reply.clearCookie(config.SESSION_COOKIE_NAME, { path: '/' });
+      }
+      return reply.status(204).send();
+    }
+  );
+
+  app.post('/auth/sessions/revoke-others', { preHandler: app.requireAuth }, async (request) => {
+    if (!request.authSessionId) return { revoked: 0 };
+    const revoked = await db
+      .delete(authSessions)
+      .where(
+        and(eq(authSessions.userId, request.user!.id), ne(authSessions.id, request.authSessionId))
+      )
+      .returning({ id: authSessions.id });
+    return { revoked: revoked.length };
   });
 }

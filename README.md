@@ -42,7 +42,8 @@ source content.
 positive feedback support peer learning without public ranking pressure.
 
 🔐 **Invite access** — users register with a username, password and administrator-issued
-invite code; sessions use HttpOnly cookies.
+invite code; sessions use HttpOnly cookies. Learners can change their password, inspect signed-in
+devices and revoke other sessions from settings.
 
 🖥️ **Public website and study workspace** — visitors receive a clear product overview,
 while signed-in learners use a grouped sidebar, top-bar search, notifications and theme controls.

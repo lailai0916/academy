@@ -96,6 +96,7 @@ export const invites = pgTable(
 export const authSessions = pgTable(
   'auth_sessions',
   {
+    id: uuid('id').notNull().defaultRandom(),
     tokenHash: varchar('token_hash', { length: 64 }).primaryKey(),
     userId: uuid('user_id')
       .notNull()
@@ -106,7 +107,10 @@ export const authSessions = pgTable(
     lastSeenAt: timestamp('last_seen_at', { withTimezone: true }).notNull().defaultNow(),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   },
-  (table) => [index('auth_sessions_user_idx').on(table.userId)]
+  (table) => [
+    uniqueIndex('auth_sessions_id_unique').on(table.id),
+    index('auth_sessions_user_idx').on(table.userId),
+  ]
 );
 
 export const aiSettings = pgTable('ai_settings', {

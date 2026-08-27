@@ -14,7 +14,7 @@ const destinations = [
   { id: 'progress', title: '学习分析', detail: '准确率、活跃天数与薄弱单元', href: '/progress' },
   { id: 'social', title: '同学', detail: '动态、好友、学习小组与挑战', href: '/social' },
   { id: 'profile', title: '个人主页', detail: '个人资料与学习结果', href: '/profile' },
-  { id: 'settings', title: '设置', detail: '个人资料与学习目标', href: '/settings' },
+  { id: 'settings', title: '设置', detail: '个人资料、密码与登录设备', href: '/settings' },
 ] as const;
 
 export function GlobalSearch() {

@@ -8,6 +8,7 @@ let app: FastifyInstance;
 let adminCookie = '';
 let userCookie = '';
 let userId = '';
+let userUsername = '';
 let sessionId = '';
 
 const mutationHeaders = (cookie = '') => ({
@@ -72,23 +73,27 @@ integrationDescribe('Academy API integration', () => {
     const code = invite.json().invite.code as string;
     expect(code).toMatch(/^ACA-/);
 
-    const username = `student_${Date.now()}`;
+    userUsername = `student_${Date.now()}`;
     const register = await app.inject({
       method: 'POST',
       url: '/api/auth/register',
       headers: mutationHeaders(),
-      payload: { username, password: 'StudentPassword-2026', inviteCode: code },
+      payload: { username: userUsername, password: 'StudentPassword-2026', inviteCode: code },
     });
     expect(register.statusCode).toBe(201);
     userCookie = cookieFrom(register);
     userId = register.json().user.id as string;
-    expect(register.json().user.username).toBe(username);
+    expect(register.json().user.username).toBe(userUsername);
 
     const reuse = await app.inject({
       method: 'POST',
       url: '/api/auth/register',
       headers: mutationHeaders(),
-      payload: { username: `${username}_2`, password: 'StudentPassword-2026', inviteCode: code },
+      payload: {
+        username: `${userUsername}_2`,
+        password: 'StudentPassword-2026',
+        inviteCode: code,
+      },
     });
     expect(reuse.statusCode).toBe(400);
 
@@ -371,6 +376,93 @@ integrationDescribe('Academy API integration', () => {
       },
     });
     expect(mismatchedContent.statusCode).toBe(400);
+  });
+
+  it('updates the password and revokes other login sessions', async () => {
+    const secondaryLogin = await app.inject({
+      method: 'POST',
+      url: '/api/auth/login',
+      headers: { ...mutationHeaders(), 'user-agent': 'Mozilla/5.0 (iPhone) Safari/605.1.15' },
+      payload: { username: userUsername, password: 'StudentPassword-2026' },
+    });
+    expect(secondaryLogin.statusCode).toBe(200);
+    const secondaryCookie = cookieFrom(secondaryLogin);
+
+    const listed = await app.inject({
+      method: 'GET',
+      url: '/api/auth/sessions',
+      headers: { cookie: userCookie },
+    });
+    expect(listed.statusCode).toBe(200);
+    expect(listed.json().sessions).toHaveLength(2);
+    expect(
+      listed.json().sessions.filter((item: { current: boolean }) => item.current)
+    ).toHaveLength(1);
+    const secondarySession = listed
+      .json()
+      .sessions.find((item: { current: boolean }) => !item.current) as { id: string };
+
+    const revoked = await app.inject({
+      method: 'DELETE',
+      url: `/api/auth/sessions/${secondarySession.id}`,
+      headers: mutationHeaders(userCookie),
+    });
+    expect(revoked.statusCode).toBe(204);
+    const revokedMe = await app.inject({
+      method: 'GET',
+      url: '/api/auth/me',
+      headers: { cookie: secondaryCookie },
+    });
+    expect(revokedMe.json()).toEqual({ user: null });
+
+    const anotherLogin = await app.inject({
+      method: 'POST',
+      url: '/api/auth/login',
+      headers: { ...mutationHeaders(), 'user-agent': 'Mozilla/5.0 (Windows NT 10.0) Chrome/140' },
+      payload: { username: userUsername, password: 'StudentPassword-2026' },
+    });
+    expect(anotherLogin.statusCode).toBe(200);
+    const anotherCookie = cookieFrom(anotherLogin);
+
+    const changed = await app.inject({
+      method: 'POST',
+      url: '/api/auth/password',
+      headers: mutationHeaders(userCookie),
+      payload: {
+        currentPassword: 'StudentPassword-2026',
+        newPassword: 'UpdatedStudentPassword-2026',
+      },
+    });
+    expect(changed.statusCode).toBe(200);
+    expect(changed.json()).toEqual({ otherSessionsRevoked: 1 });
+
+    const primaryMe = await app.inject({
+      method: 'GET',
+      url: '/api/auth/me',
+      headers: { cookie: userCookie },
+    });
+    expect(primaryMe.json().user.id).toBe(userId);
+    const anotherMe = await app.inject({
+      method: 'GET',
+      url: '/api/auth/me',
+      headers: { cookie: anotherCookie },
+    });
+    expect(anotherMe.json()).toEqual({ user: null });
+
+    const oldPassword = await app.inject({
+      method: 'POST',
+      url: '/api/auth/login',
+      headers: mutationHeaders(),
+      payload: { username: userUsername, password: 'StudentPassword-2026' },
+    });
+    expect(oldPassword.statusCode).toBe(401);
+    const newPassword = await app.inject({
+      method: 'POST',
+      url: '/api/auth/login',
+      headers: mutationHeaders(),
+      payload: { username: userUsername, password: 'UpdatedStudentPassword-2026' },
+    });
+    expect(newPassword.statusCode).toBe(200);
   });
 
   it('builds a personal plan and completes an adaptive review', async () => {

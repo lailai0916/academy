@@ -52,6 +52,125 @@
   padding: 22px;
 }
 
+.settingsStack {
+  display: grid;
+  gap: 14px;
+}
+
+.securitySection {
+  display: grid;
+  gap: 20px;
+  padding: 22px;
+}
+
+.securityGrid {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.8fr) minmax(0, 1.2fr);
+  align-items: start;
+  gap: 28px;
+}
+
+.passwordForm {
+  display: grid;
+  gap: 14px;
+  padding-right: 28px;
+  border-right: 1px solid var(--lui-color-separator);
+}
+
+.passwordForm h3,
+.subsectionTitle h3 {
+  font-size: 15px;
+  font-weight: 660;
+  letter-spacing: -0.01em;
+}
+
+.sessionSection {
+  display: grid;
+  gap: 10px;
+}
+
+.subsectionTitle,
+.sessionName {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.subsectionTitle span,
+.sessionName span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: var(--lui-color-surface-muted);
+  color: var(--lui-color-label-secondary);
+  font-size: 11px;
+  font-weight: 620;
+}
+
+.sessionList {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sessionItem {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  min-height: 76px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--lui-color-separator);
+}
+
+.sessionItem:last-child {
+  border-bottom: 0;
+}
+
+.sessionIcon {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border-radius: 11px;
+  background: var(--lui-color-surface-muted);
+  color: var(--lui-color-label-secondary);
+}
+
+.sessionIcon svg {
+  width: 17px;
+  height: 17px;
+  stroke-width: 1.8;
+}
+
+.sessionCopy {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+  color: var(--lui-color-label-secondary);
+  font-size: 12px;
+}
+
+.sessionName {
+  min-width: 0;
+}
+
+.sessionName strong {
+  overflow: hidden;
+  color: var(--lui-color-label);
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sessionCopy small {
+  color: var(--lui-color-label-tertiary);
+  font-size: 11px;
+}
+
 .composer textarea {
   min-height: 104px;
   resize: vertical;
@@ -261,5 +380,17 @@
   .tab {
     flex: 1;
     min-height: 44px;
+  }
+
+  .securityGrid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .passwordForm {
+    padding-right: 0;
+    padding-bottom: 24px;
+    border-right: 0;
+    border-bottom: 1px solid var(--lui-color-separator);
   }
 }

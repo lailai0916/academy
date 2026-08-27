@@ -23,6 +23,16 @@ export const loginSchema = z.object({
   password: z.string().min(1, '请输入密码。').max(128),
 });
 
+export const passwordUpdateSchema = z
+  .object({
+    currentPassword: z.string().min(1, '请输入当前密码。').max(128),
+    newPassword: passwordSchema,
+  })
+  .refine((value) => value.currentPassword !== value.newPassword, {
+    message: '新密码需要与当前密码不同。',
+    path: ['newPassword'],
+  });
+
 export const gradeSchema = z.enum(['高一', '高二', '高三']);
 export const roleSchema = z.enum(['admin', 'user']);
 export const contentKindSchema = z.enum(['word', 'poem']);
@@ -226,6 +236,18 @@ export type SessionUser = {
   role: UserRole;
   displayName: string;
   grade: Grade;
+};
+
+export type AuthSession = {
+  id: string;
+  current: boolean;
+  deviceType: 'desktop' | 'mobile' | 'tablet' | 'unknown';
+  deviceName: string;
+  browserName: string;
+  network: string;
+  createdAt: string;
+  lastSeenAt: string;
+  expiresAt: string;
 };
 
 export type Profile = SessionUser & {

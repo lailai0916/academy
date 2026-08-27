@@ -4,6 +4,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 declare module 'fastify' {
   interface FastifyRequest {
     user: SessionUser | null;
+    authSessionId: string | null;
   }
 
   interface FastifyInstance {

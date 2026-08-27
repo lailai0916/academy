@@ -1,4 +1,4 @@
-import { and, eq, gt } from 'drizzle-orm';
+import { and, eq, gt, lt } from 'drizzle-orm';
 import fp from 'fastify-plugin';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { config } from '../config.js';
@@ -8,6 +8,7 @@ import { sha256 } from '../lib/crypto.js';
 
 export default fp(async (app) => {
   app.decorateRequest('user', null);
+  app.decorateRequest('authSessionId', null);
 
   app.addHook('onRequest', async (request) => {
     const token = request.cookies[config.SESSION_COOKIE_NAME];
@@ -16,6 +17,8 @@ export default fp(async (app) => {
     }
     const [row] = await db
       .select({
+        sessionId: authSessions.id,
+        lastSeenAt: authSessions.lastSeenAt,
         id: users.id,
         username: users.username,
         role: users.role,
@@ -45,6 +48,15 @@ export default fp(async (app) => {
       displayName: row.displayName,
       grade: row.grade,
     };
+    request.authSessionId = row.sessionId;
+
+    const refreshBefore = new Date(Date.now() - 5 * 60_000);
+    if (row.lastSeenAt < refreshBefore) {
+      await db
+        .update(authSessions)
+        .set({ lastSeenAt: new Date() })
+        .where(and(eq(authSessions.id, row.sessionId), lt(authSessions.lastSeenAt, refreshBefore)));
+    }
   });
 
   const requireAuth = async (request: FastifyRequest, reply: FastifyReply) => {

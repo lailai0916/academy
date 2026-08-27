@@ -39,3 +39,8 @@ administrative edits cannot change its prompts, answers or result history.
 
 An immutable answer record attached to both a learning card and the content version used for the
 question. An answer to a superseded version remains in history but does not update current mastery.
+
+## Authentication session
+
+One revocable browser login stored as a hashed random token. Students can inspect masked device and
+network details, revoke another session, or invalidate every other session by changing the password.
