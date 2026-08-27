@@ -9,6 +9,7 @@ import { LearnPage } from './pages/LearnPage';
 import { LandingPage } from './pages/LandingPage';
 import { MistakesPage } from './pages/MistakesPage';
 import { NotFoundPage } from './pages/NotFoundPage';
+import { OnboardingPage } from './pages/OnboardingPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { ProgressPage } from './pages/ProgressPage';
 import { SessionPage } from './pages/SessionPage';
@@ -18,13 +19,25 @@ import { SocialPage } from './pages/SocialPage';
 function ProtectedLayout() {
   const { loading, user } = useAuth();
   if (loading) return <LoadingScreen />;
-  return user ? <AppShell /> : <Navigate to="/login" replace />;
+  if (!user) return <Navigate to="/login" replace />;
+  return user.onboardingComplete ? <AppShell /> : <Navigate to="/onboarding" replace />;
 }
 
 function GuestRoute({ mode }: { mode: 'login' | 'register' }) {
   const { loading, user } = useAuth();
   if (loading) return <LoadingScreen />;
-  return user ? <Navigate to="/dashboard" replace /> : <AuthPage mode={mode} />;
+  return user ? (
+    <Navigate to={user.onboardingComplete ? '/dashboard' : '/onboarding'} replace />
+  ) : (
+    <AuthPage mode={mode} />
+  );
+}
+
+function OnboardingRoute() {
+  const { loading, user } = useAuth();
+  if (loading) return <LoadingScreen />;
+  if (!user) return <Navigate to="/login" replace />;
+  return user.onboardingComplete ? <Navigate to="/dashboard" replace /> : <OnboardingPage />;
 }
 
 function AdminRoute() {
@@ -38,6 +51,7 @@ export function App() {
       <Route index element={<LandingPage />} />
       <Route path="/login" element={<GuestRoute mode="login" />} />
       <Route path="/register" element={<GuestRoute mode="register" />} />
+      <Route path="/onboarding" element={<OnboardingRoute />} />
       <Route element={<ProtectedLayout />}>
         <Route path="dashboard" element={<DashboardPage />} />
         <Route path="learn" element={<LearnPage />} />

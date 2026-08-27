@@ -1,10 +1,25 @@
-import { Brand, ThemeControl } from '@lailai/ui';
-import { Link } from 'react-router';
+import { useState } from 'react';
+import { Brand, IconButton, ThemeControl } from '@lailai/ui';
+import { Link, useNavigate } from 'react-router';
 import { useAuth } from '../auth/AuthProvider';
+import { Icon } from './Icon';
 import styles from './PublicHeader.module.css';
 
 export function PublicHeader({ minimal = false }: { minimal?: boolean }) {
-  const { loading, user } = useAuth();
+  const { loading, user, logout } = useAuth();
+  const navigate = useNavigate();
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    if (loggingOut) return;
+    setLoggingOut(true);
+    try {
+      await logout();
+      navigate('/login', { replace: true });
+    } finally {
+      setLoggingOut(false);
+    }
+  };
 
   return (
     <>
@@ -31,9 +46,21 @@ export function PublicHeader({ minimal = false }: { minimal?: boolean }) {
               labels={{ system: '跟随系统', light: '浅色', dark: '深色' }}
             />
             {minimal ? (
-              <Link to="/" className={styles.textAction}>
-                返回首页
-              </Link>
+              <>
+                <Link to="/" className={styles.textAction}>
+                  返回首页
+                </Link>
+                {user && (
+                  <IconButton
+                    label="退出登录"
+                    size="small"
+                    disabled={loggingOut}
+                    onClick={() => void handleLogout()}
+                  >
+                    <Icon icon="lucide:log-out" />
+                  </IconButton>
+                )}
+              </>
             ) : !loading && user ? (
               <Link to="/dashboard" className={styles.primaryAction}>
                 进入学习

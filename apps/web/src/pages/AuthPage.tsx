@@ -28,7 +28,7 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
       } else {
         await register(username, password, inviteCode);
       }
-      navigate('/dashboard', { replace: true });
+      navigate(mode === 'register' ? '/onboarding' : '/dashboard', { replace: true });
     } catch (nextError) {
       setError(errorMessage(nextError));
     } finally {

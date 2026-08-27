@@ -235,6 +235,7 @@ export async function seedDatabase() {
     grade: '高一',
     targetScore: 750,
     dailyGoal: 20,
+    onboardingCompletedAt: new Date(),
   });
 }
 

@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { buildReviewForecast, currentMastery } from '../src/services/memory-model.js';
+import {
+  buildReviewForecast,
+  currentMastery,
+  sessionMastery,
+} from '../src/services/memory-model.js';
 
 const reviewedCard = {
   due: new Date('2026-08-29T04:00:00.000Z'),
@@ -25,6 +29,24 @@ describe('current memory state', () => {
 
   it('does not count unseen cards as mastered', () => {
     expect(currentMastery({ ...reviewedCard, reps: 0 })).toBe(0);
+  });
+
+  it('pins difficulty to the session-start state and uses fresh in-session reviews', () => {
+    const sessionStartedAt = new Date('2026-08-28T04:00:00.000Z');
+    const atStart = sessionMastery({ ...reviewedCard, mastery: 0.99 }, sessionStartedAt);
+    expect(atStart).toBeCloseTo(currentMastery(reviewedCard, sessionStartedAt));
+    expect(atStart).not.toBe(0.99);
+
+    expect(
+      sessionMastery(
+        {
+          ...reviewedCard,
+          mastery: 0.72,
+          lastReview: new Date('2026-08-28T04:05:00.000Z'),
+        },
+        sessionStartedAt
+      )
+    ).toBe(0.72);
   });
 });
 

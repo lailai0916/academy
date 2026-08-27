@@ -108,7 +108,13 @@ export async function authRoutes(app: FastifyInstance) {
           .update(invites)
           .set({ uses: sql`${invites.uses} + 1` })
           .where(eq(invites.id, invite.id));
-        return { ...created, username, displayName: body.username, grade: '高一' as const };
+        return {
+          ...created,
+          username,
+          displayName: body.username,
+          grade: '高一' as const,
+          onboardingComplete: false,
+        };
       });
 
       if (!user) {
@@ -137,6 +143,7 @@ export async function authRoutes(app: FastifyInstance) {
           status: users.status,
           displayName: profiles.displayName,
           grade: profiles.grade,
+          onboardingCompletedAt: profiles.onboardingCompletedAt,
         })
         .from(users)
         .innerJoin(profiles, eq(profiles.userId, users.id))
@@ -156,7 +163,8 @@ export async function authRoutes(app: FastifyInstance) {
         .where(eq(users.id, user.id));
       const session = await issueSession(request, user.id);
       reply.setCookie(config.SESSION_COOKIE_NAME, session.token, session.options);
-      const { passwordHash: _, status: __, ...sessionUser } = user;
+      const { passwordHash: _, status: __, onboardingCompletedAt, ...identity } = user;
+      const sessionUser = { ...identity, onboardingComplete: Boolean(onboardingCompletedAt) };
       return { user: sessionUser };
     }
   );

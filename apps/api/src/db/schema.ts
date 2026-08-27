@@ -72,6 +72,7 @@ export const profiles = pgTable('profiles', {
   targetScore: integer('target_score').notNull().default(600),
   dailyGoal: integer('daily_goal').notNull().default(20),
   isPublic: boolean('is_public').notNull().default(true),
+  onboardingCompletedAt: timestamp('onboarding_completed_at', { withTimezone: true }),
   ...timestamps,
 });
 

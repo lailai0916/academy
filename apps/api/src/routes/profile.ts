@@ -1,6 +1,6 @@
 import { and, eq } from 'drizzle-orm';
 import type { FastifyInstance } from 'fastify';
-import { profileUpdateSchema } from '@lailai/academy-shared';
+import { onboardingProfileSchema, profileUpdateSchema } from '@lailai/academy-shared';
 import { db } from '../db/index.js';
 import { learningCards, profiles, users } from '../db/schema.js';
 import { parseBody } from '../lib/http.js';
@@ -18,6 +18,7 @@ async function buildProfile(userId: string) {
       targetScore: profiles.targetScore,
       dailyGoal: profiles.dailyGoal,
       isPublic: profiles.isPublic,
+      onboardingCompletedAt: profiles.onboardingCompletedAt,
       createdAt: users.createdAt,
     })
     .from(users)
@@ -39,8 +40,10 @@ async function buildProfile(userId: string) {
       : cards.reduce((sum, card) => sum + currentMastery(card, now), 0) / cards.length;
   const delayedCorrect = cards.reduce((sum, card) => sum + card.delayedCorrect, 0);
   const attempts = cards.reduce((sum, card) => sum + card.delayedAttempts, 0);
+  const { onboardingCompletedAt, ...identity } = profile;
   return {
-    ...profile,
+    ...identity,
+    onboardingComplete: Boolean(onboardingCompletedAt),
     createdAt: profile.createdAt.toISOString(),
     mastery: Math.round(mastery * 100),
     delayedAccuracy: attempts === 0 ? 0 : Math.round((delayedCorrect / attempts) * 100),
@@ -63,6 +66,20 @@ export async function profileRoutes(app: FastifyInstance) {
       .update(profiles)
       .set({ ...body, updatedAt: new Date() })
       .where(eq(profiles.userId, request.user!.id));
+    return { profile: await buildProfile(request.user!.id) };
+  });
+
+  app.post('/profile/onboarding', { preHandler: app.requireAuth }, async (request, reply) => {
+    const body = parseBody(onboardingProfileSchema, request.body, reply);
+    if (!body) return;
+    const [profile] = await db
+      .update(profiles)
+      .set({ ...body, onboardingCompletedAt: new Date(), updatedAt: new Date() })
+      .where(eq(profiles.userId, request.user!.id))
+      .returning({ userId: profiles.userId });
+    if (!profile) {
+      return reply.status(404).send({ error: '个人资料不存在。' });
+    }
     return { profile: await buildProfile(request.user!.id) };
   });
 

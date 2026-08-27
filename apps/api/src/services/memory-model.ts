@@ -53,6 +53,14 @@ export function currentMastery(card: StoredMemoryState, now = new Date()) {
   return masteryOfCard(toFsrsCard(card), now);
 }
 
+export function sessionMastery(
+  card: StoredMemoryState & { mastery: number },
+  sessionStartedAt: Date
+) {
+  if (card.lastReview && card.lastReview > sessionStartedAt) return card.mastery;
+  return currentMastery(card, sessionStartedAt);
+}
+
 export function reviewMemory(card: StoredMemoryState, now: Date, rating: Grade) {
   const before = toFsrsCard(card);
   const result = scheduler.next(before, now, rating);

@@ -46,6 +46,13 @@ export const profileUpdateSchema = z.object({
   isPublic: z.boolean(),
 });
 
+export const onboardingProfileSchema = z.object({
+  displayName: z.string().trim().min(1).max(24),
+  grade: gradeSchema,
+  targetScore: z.number().int().min(0).max(750),
+  dailyGoal: z.number().int().min(5).max(100),
+});
+
 export const inviteCreateSchema = z.object({
   label: z.string().trim().min(1).max(40),
   maxUses: z.number().int().min(1).max(100),
@@ -247,6 +254,7 @@ export type SessionUser = {
   role: UserRole;
   displayName: string;
   grade: Grade;
+  onboardingComplete: boolean;
 };
 
 export type AuthSession = {

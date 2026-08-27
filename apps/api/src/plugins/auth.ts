@@ -25,6 +25,7 @@ export default fp(async (app) => {
         status: users.status,
         displayName: profiles.displayName,
         grade: profiles.grade,
+        onboardingCompletedAt: profiles.onboardingCompletedAt,
       })
       .from(authSessions)
       .innerJoin(users, eq(users.id, authSessions.userId))
@@ -47,6 +48,7 @@ export default fp(async (app) => {
       role: row.role,
       displayName: row.displayName,
       grade: row.grade,
+      onboardingComplete: Boolean(row.onboardingCompletedAt),
     };
     request.authSessionId = row.sessionId;
 

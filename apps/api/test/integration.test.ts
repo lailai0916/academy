@@ -51,6 +51,7 @@ integrationDescribe('Academy API integration', () => {
     });
     expect(login.statusCode).toBe(200);
     adminCookie = cookieFrom(login);
+    expect(login.json().user.onboardingComplete).toBe(true);
 
     const aiSettings = await app.inject({
       method: 'GET',
@@ -84,6 +85,38 @@ integrationDescribe('Academy API integration', () => {
     userCookie = cookieFrom(register);
     userId = register.json().user.id as string;
     expect(register.json().user.username).toBe(userUsername);
+    expect(register.json().user.onboardingComplete).toBe(false);
+
+    const onboarding = await app.inject({
+      method: 'POST',
+      url: '/api/profile/onboarding',
+      headers: mutationHeaders(userCookie),
+      payload: {
+        displayName: '测试同学',
+        grade: '高一',
+        targetScore: 650,
+        dailyGoal: 24,
+      },
+    });
+    expect(onboarding.statusCode).toBe(200);
+    expect(onboarding.json().profile).toMatchObject({
+      displayName: '测试同学',
+      grade: '高一',
+      targetScore: 650,
+      dailyGoal: 24,
+      onboardingComplete: true,
+    });
+
+    const onboardedMe = await app.inject({
+      method: 'GET',
+      url: '/api/auth/me',
+      headers: { cookie: userCookie },
+    });
+    expect(onboardedMe.json().user).toMatchObject({
+      displayName: '测试同学',
+      grade: '高一',
+      onboardingComplete: true,
+    });
 
     const reuse = await app.inject({
       method: 'POST',

@@ -24,7 +24,12 @@ import {
   studySessions,
 } from '../db/schema.js';
 import { currentStudyDate, getOrCreateDailyPlan } from './dashboard.js';
-import { buildReviewForecast, currentMastery, reviewMemory } from './memory-model.js';
+import {
+  buildReviewForecast,
+  currentMastery,
+  reviewMemory,
+  sessionMastery,
+} from './memory-model.js';
 import { getActiveLearningSession, presentActiveLearningSession } from './study-sessions.js';
 
 type StoredCard = typeof learningCards.$inferSelect;
@@ -235,12 +240,13 @@ async function buildPrompt(
   sessionId: string,
   content: LearningContent,
   card: StoredCard,
+  sessionStartedAt: Date,
   progress: LearningPrompt['progress']
 ): Promise<LearningPrompt & { acceptedAnswers: string[]; explanation: string }> {
+  const mastery = sessionMastery(card, sessionStartedAt);
   if (content.kind === 'word') {
     const payload = content.payload as WordPayload;
-    const promptType =
-      card.reps === 0 ? 'meaning_choice' : card.mastery < 0.55 ? 'spelling' : 'context';
+    const promptType = card.reps === 0 ? 'meaning_choice' : mastery < 0.55 ? 'spelling' : 'context';
     if (promptType === 'meaning_choice') {
       const alternatives = await db
         .select({ payload: contentVersions.payload })
@@ -299,7 +305,7 @@ async function buildPrompt(
 
   const payload = content.payload as PoemPayload;
   const lineIndex = card.reps % Math.max(1, payload.lines.length - 1);
-  if (card.mastery >= 0.62) {
+  if (mastery >= 0.62) {
     return {
       sessionId,
       contentId: content.id,
@@ -401,8 +407,12 @@ export async function createLearningSession(
   const limit = Math.max(1, Math.min(options.limit ?? (desired || 10), 30));
 
   if (focus === 'mistakes') {
-    const mistakes = await db
-      .select({ id: contentItems.id, versionId: contentVersions.id })
+    const mistakeRows = await db
+      .select({
+        id: contentItems.id,
+        versionId: contentVersions.id,
+        lastMistakeAt: sql<Date>`max(${reviewEvents.createdAt})`,
+      })
       .from(reviewEvents)
       .innerJoin(learningCards, eq(learningCards.id, reviewEvents.cardId))
       .innerJoin(contentItems, eq(contentItems.id, learningCards.contentId))
@@ -417,9 +427,42 @@ export async function createLearningSession(
           unit ? eq(contentVersions.unit, unit) : undefined
         )
       )
-      .groupBy(contentItems.id, contentVersions.id, learningCards.mastery, learningCards.due)
-      .orderBy(asc(learningCards.mastery), desc(sql`max(${reviewEvents.createdAt})`))
-      .limit(limit);
+      .groupBy(contentItems.id, contentVersions.id, learningCards.id);
+    const cardRows =
+      mistakeRows.length === 0
+        ? []
+        : await db
+            .select({ card: learningCards })
+            .from(learningCards)
+            .where(
+              and(
+                eq(learningCards.userId, user.id),
+                inArray(
+                  learningCards.contentId,
+                  mistakeRows.map((item) => item.id)
+                )
+              )
+            );
+    const cardsByContent = new Map(cardRows.map((row) => [row.card.contentId, row.card]));
+    const now = new Date();
+    const mistakes = mistakeRows
+      .map((item) => ({ ...item, card: cardsByContent.get(item.id) }))
+      .filter(
+        (
+          item
+        ): item is {
+          id: string;
+          versionId: string;
+          lastMistakeAt: Date;
+          card: StoredCard;
+        } => Boolean(item.card)
+      )
+      .sort(
+        (left, right) =>
+          currentMastery(left.card, now) - currentMastery(right.card, now) ||
+          new Date(right.lastMistakeAt).getTime() - new Date(left.lastMistakeAt).getTime()
+      )
+      .slice(0, limit);
     if (mistakes.length === 0) {
       return null;
     }
@@ -546,7 +589,7 @@ export async function getNextPrompt(userId: string, sessionId: string) {
     throw new Error('Session content version is missing.');
   }
   const card = await ensureCard(userId, content.id);
-  const prompt = await buildPrompt(session.id, content, card, {
+  const prompt = await buildPrompt(session.id, content, card, session.startedAt, {
     completed: session.completedCount,
     total: session.plannedCount,
   });
@@ -579,7 +622,7 @@ export async function answerPrompt(
   }
   const contentUpdated = content.publishedVersionId !== content.versionId;
   const card = await ensureCard(user.id, content.id);
-  const prompt = await buildPrompt(session.id, content, card, {
+  const prompt = await buildPrompt(session.id, content, card, session.startedAt, {
     completed: session.completedCount,
     total: session.plannedCount,
   });

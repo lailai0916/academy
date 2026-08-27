@@ -45,3 +45,9 @@ question. An answer to a superseded version remains in history but does not upda
 
 One revocable browser login stored as a hashed random token. Students can inspect masked device and
 network details, revoke another session, or invalidate every other session by changing the password.
+
+## Learning profile
+
+The student's current grade, exam-score target and daily item capacity. A new account must complete
+this profile before entering the learning workspace so plans and diagnostics do not start from silent
+defaults.
