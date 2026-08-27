@@ -621,6 +621,7 @@ export async function answerPrompt(
     prompt.promptType
   );
   const now = new Date();
+  const masteryBefore = computeMastery(toFsrsCard(card), now);
   const result = scheduler.next(toFsrsCard(card), now, rating);
   const mastery = computeMastery(result.card, now);
   const delayed = Boolean(
@@ -701,6 +702,8 @@ export async function answerPrompt(
         promptType: prompt.promptType,
         delayed,
         countsForMastery: !contentUpdated,
+        masteryBefore,
+        masteryAfter: contentUpdated ? masteryBefore : mastery,
         stabilityBefore: card.stability,
         stabilityAfter: contentUpdated ? card.stability : result.card.stability,
         difficultyBefore: card.difficulty,

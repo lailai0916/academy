@@ -731,6 +731,64 @@ integrationDescribe('Academy API integration', () => {
       payload: { name: `测试学习组 ${Date.now()}`, description: '真实结果互相推动' },
     });
     expect(group.statusCode).toBe(201);
+    const groupId = group.json().group.id as string;
+
+    const challenge = await app.inject({
+      method: 'POST',
+      url: '/api/social/challenges',
+      headers: mutationHeaders(userCookie),
+      payload: {
+        groupId,
+        title: '本周完成两项复习',
+        metric: 'review_count',
+        targetValue: 2,
+        minimumSamples: 20,
+        days: 7,
+      },
+    });
+    expect(challenge.statusCode).toBe(201);
+    const challengeId = challenge.json().challenge.id as string;
+
+    const invalidAccuracyChallenge = await app.inject({
+      method: 'POST',
+      url: '/api/social/challenges',
+      headers: mutationHeaders(userCookie),
+      payload: {
+        groupId,
+        title: '无效的正确率目标',
+        metric: 'delayed_accuracy',
+        targetValue: 101,
+        minimumSamples: 20,
+        days: 7,
+      },
+    });
+    expect(invalidAccuracyChallenge.statusCode).toBe(400);
+
+    const challengeSession = await app.inject({
+      method: 'POST',
+      url: '/api/learn/sessions',
+      headers: mutationHeaders(userCookie),
+      payload: { kind: 'word', mode: 'diagnostic', limit: 5 },
+    });
+    expect(challengeSession.statusCode).toBe(201);
+    const challengeSessionId = challengeSession.json().sessionId as string;
+    const challengePrompt = await app.inject({
+      method: 'GET',
+      url: `/api/learn/sessions/${challengeSessionId}/next`,
+      headers: { cookie: userCookie },
+    });
+    const challengeAnswer = await app.inject({
+      method: 'POST',
+      url: `/api/learn/sessions/${challengeSessionId}/answer`,
+      headers: mutationHeaders(userCookie),
+      payload: {
+        contentId: challengePrompt.json().prompt.contentId,
+        answer: '',
+        responseMs: 1_800,
+        revealed: true,
+      },
+    });
+    expect(challengeAnswer.statusCode).toBe(200);
 
     const post = await app.inject({
       method: 'POST',
@@ -748,6 +806,26 @@ integrationDescribe('Academy API integration', () => {
     expect(social.statusCode).toBe(200);
     expect(social.json().feed[0].body).toBe('完成了第一轮延迟复习。');
     expect(social.json().groups.length).toBeGreaterThan(0);
+    expect(
+      social.json().challenges.find((item: { id: string }) => item.id === challengeId)
+    ).toMatchObject({
+      groupId,
+      groupName: group.json().group.name,
+      joined: true,
+      progressValue: 1,
+      personalValue: 1,
+      progressPercent: 50,
+      status: 'active',
+    });
+
+    const adminSocial = await app.inject({
+      method: 'GET',
+      url: '/api/social',
+      headers: { cookie: adminCookie },
+    });
+    expect(
+      adminSocial.json().challenges.some((item: { id: string }) => item.id === challengeId)
+    ).toBe(false);
 
     const friendRequest = await app.inject({
       method: 'POST',

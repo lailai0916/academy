@@ -214,13 +214,24 @@ export const groupCreateSchema = z.object({
   description: z.string().trim().max(200),
 });
 
-export const challengeCreateSchema = z.object({
-  groupId: z.uuid(),
-  title: z.string().trim().min(2).max(80),
-  metric: z.enum(['review_count', 'mastery_gain', 'delayed_accuracy']),
-  targetValue: z.number().int().min(1).max(10_000),
-  days: z.number().int().min(1).max(60),
-});
+export const challengeCreateSchema = z
+  .object({
+    groupId: z.uuid(),
+    title: z.string().trim().min(2).max(80),
+    metric: z.enum(['review_count', 'mastery_gain', 'delayed_accuracy']),
+    targetValue: z.number().int().min(1).max(10_000),
+    minimumSamples: z.number().int().min(5).max(1_000).default(20),
+    days: z.number().int().min(1).max(60),
+  })
+  .superRefine((value, context) => {
+    if (value.metric === 'delayed_accuracy' && value.targetValue > 100) {
+      context.addIssue({
+        code: 'custom',
+        path: ['targetValue'],
+        message: '延迟正确率目标不能超过 100%。',
+      });
+    }
+  });
 
 export type UserRole = z.infer<typeof roleSchema>;
 export type ContentKind = z.infer<typeof contentKindSchema>;
@@ -549,11 +560,20 @@ export type StudyGroup = {
 export type Challenge = {
   id: string;
   groupId: string;
+  groupName: string;
   title: string;
   metric: 'review_count' | 'mastery_gain' | 'delayed_accuracy';
   targetValue: number;
+  minimumSamples: number;
   participantCount: number;
   joined: boolean;
+  progressValue: number;
+  progressPercent: number;
+  qualifyingEventCount: number;
+  personalValue: number;
+  personalEventCount: number;
+  status: 'active' | 'completed' | 'ended';
+  startsAt: string;
   endsAt: string;
 };
 

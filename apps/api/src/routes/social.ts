@@ -1,4 +1,4 @@
-import { and, count, desc, eq, ilike, inArray, or } from 'drizzle-orm';
+import { and, count, desc, eq, ilike, inArray, lte, or, sql } from 'drizzle-orm';
 import type { FastifyInstance } from 'fastify';
 import {
   challengeCreateSchema,
@@ -20,10 +20,12 @@ import {
   postReactions,
   posts,
   profiles,
+  reviewEvents,
   studyGroups,
   users,
 } from '../db/schema.js';
 import { parseBody } from '../lib/http.js';
+import { summarizeChallengeProgress } from '../services/challenges.js';
 
 async function getFeed(userId: string): Promise<SocialPost[]> {
   const [friendRows, membershipRows] = await Promise.all([
@@ -137,27 +139,106 @@ async function listGroups(userId: string): Promise<StudyGroup[]> {
 }
 
 async function listChallenges(userId: string): Promise<Challenge[]> {
-  const [rows, participants, counts] = await Promise.all([
-    db.select().from(challenges).orderBy(desc(challenges.startsAt)).limit(50),
+  const memberships = await db
+    .select({ groupId: groupMembers.groupId })
+    .from(groupMembers)
+    .where(eq(groupMembers.userId, userId));
+  if (memberships.length === 0) return [];
+
+  const rows = await db
+    .select({
+      id: challenges.id,
+      groupId: challenges.groupId,
+      groupName: studyGroups.name,
+      title: challenges.title,
+      metric: challenges.metric,
+      targetValue: challenges.targetValue,
+      minimumSamples: challenges.minimumSamples,
+      startsAt: challenges.startsAt,
+      endsAt: challenges.endsAt,
+    })
+    .from(challenges)
+    .innerJoin(studyGroups, eq(studyGroups.id, challenges.groupId))
+    .where(
+      inArray(
+        challenges.groupId,
+        memberships.map((membership) => membership.groupId)
+      )
+    )
+    .orderBy(desc(challenges.startsAt))
+    .limit(50);
+  if (rows.length === 0) return [];
+
+  const challengeIds = rows.map((challenge) => challenge.id);
+  const [participants, eventRows] = await Promise.all([
     db
-      .select({ challengeId: challengeParticipants.challengeId })
+      .select({
+        challengeId: challengeParticipants.challengeId,
+        userId: challengeParticipants.userId,
+      })
       .from(challengeParticipants)
-      .where(eq(challengeParticipants.userId, userId)),
+      .where(inArray(challengeParticipants.challengeId, challengeIds)),
     db
-      .select({ challengeId: challengeParticipants.challengeId, value: count() })
+      .select({
+        challengeId: challengeParticipants.challengeId,
+        id: reviewEvents.id,
+        userId: reviewEvents.userId,
+        cardId: reviewEvents.cardId,
+        sessionId: reviewEvents.sessionId,
+        correct: reviewEvents.correct,
+        delayed: reviewEvents.delayed,
+        masteryBefore: reviewEvents.masteryBefore,
+        masteryAfter: reviewEvents.masteryAfter,
+      })
       .from(challengeParticipants)
-      .groupBy(challengeParticipants.challengeId),
+      .innerJoin(challenges, eq(challenges.id, challengeParticipants.challengeId))
+      .innerJoin(
+        reviewEvents,
+        and(
+          eq(reviewEvents.userId, challengeParticipants.userId),
+          eq(reviewEvents.countsForMastery, true),
+          sql`${reviewEvents.createdAt} >= greatest(${challenges.startsAt}, ${challengeParticipants.joinedAt})`,
+          lte(reviewEvents.createdAt, challenges.endsAt)
+        )
+      )
+      .where(inArray(challengeParticipants.challengeId, challengeIds)),
   ]);
-  const joined = new Set(participants.map((participant) => participant.challengeId));
-  const countByChallenge = new Map(counts.map((item) => [item.challengeId, Number(item.value)]));
+  const participantsByChallenge = new Map<string, typeof participants>();
+  for (const participant of participants) {
+    const existing = participantsByChallenge.get(participant.challengeId) ?? [];
+    existing.push(participant);
+    participantsByChallenge.set(participant.challengeId, existing);
+  }
+  const eventsByChallenge = new Map<string, Omit<(typeof eventRows)[number], 'challengeId'>[]>();
+  for (const event of eventRows) {
+    const existing = eventsByChallenge.get(event.challengeId) ?? [];
+    const { challengeId: _, ...progressEvent } = event;
+    existing.push(progressEvent);
+    eventsByChallenge.set(event.challengeId, existing);
+  }
+
   return rows.map((challenge) => ({
     id: challenge.id,
     groupId: challenge.groupId,
+    groupName: challenge.groupName,
     title: challenge.title,
     metric: challenge.metric,
     targetValue: challenge.targetValue,
-    participantCount: countByChallenge.get(challenge.id) ?? 0,
-    joined: joined.has(challenge.id),
+    minimumSamples: challenge.minimumSamples,
+    participantCount: participantsByChallenge.get(challenge.id)?.length ?? 0,
+    joined:
+      participantsByChallenge
+        .get(challenge.id)
+        ?.some((participant) => participant.userId === userId) ?? false,
+    ...summarizeChallengeProgress(
+      challenge.metric,
+      challenge.targetValue,
+      challenge.minimumSamples,
+      eventsByChallenge.get(challenge.id) ?? [],
+      userId,
+      challenge.endsAt
+    ),
+    startsAt: challenge.startsAt.toISOString(),
     endsAt: challenge.endsAt.toISOString(),
   }));
 }
@@ -413,6 +494,7 @@ export async function socialRoutes(app: FastifyInstance) {
         title: body.title,
         metric: body.metric,
         targetValue: body.targetValue,
+        minimumSamples: body.metric === 'delayed_accuracy' ? body.minimumSamples : 1,
         endsAt: new Date(Date.now() + body.days * 86_400_000),
       })
       .returning();
@@ -444,12 +526,15 @@ export async function socialRoutes(app: FastifyInstance) {
     { preHandler: app.requireAuth },
     async (request, reply) => {
       const [challenge] = await db
-        .select({ groupId: challenges.groupId })
+        .select({ groupId: challenges.groupId, endsAt: challenges.endsAt })
         .from(challenges)
         .where(eq(challenges.id, request.params.challengeId))
         .limit(1);
       if (!challenge) {
         return reply.status(404).send({ error: '挑战不存在。' });
+      }
+      if (challenge.endsAt <= new Date()) {
+        return reply.status(409).send({ error: '这项目标已经结束。' });
       }
       const [membership] = await db
         .select({ userId: groupMembers.userId })
