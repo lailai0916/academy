@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Button, EmptyState, Panel } from '@lailai/ui';
 import { useNavigate } from 'react-router';
 import type { Dashboard, LearningInsights, LearningOverview } from '@lailai/academy-shared';
+import { ActiveSessionCard } from '../components/ActiveSessionCard';
 import { Icon } from '../components/Icon';
 import { api, errorMessage } from '../lib/api';
 import page from './Page.module.css';
@@ -41,6 +42,7 @@ export function DashboardPage() {
   if (!data) return <div className={page.empty}>正在生成今天的学习计划……</div>;
 
   const { plan, metrics, user } = data.dashboard;
+  const activeSession = data.dashboard.activeSession;
   const completion = plan.total === 0 ? 0 : Math.round((plan.completed / plan.total) * 100);
   const boundedCompletion = Math.min(100, Math.max(0, completion));
   const ringLength = 276.46;
@@ -60,11 +62,21 @@ export function DashboardPage() {
           <h1>今日学习</h1>
           <p>{plan.reason}</p>
         </div>
-        <Button size="large" onClick={() => navigate('/learn')}>
+        <Button
+          size="large"
+          onClick={() => navigate(activeSession ? `/learn/session/${activeSession.id}` : '/learn')}
+        >
           <Icon icon="lucide:play" />
-          开始学习
+          {activeSession ? '继续学习' : '开始学习'}
         </Button>
       </header>
+
+      {activeSession && (
+        <ActiveSessionCard
+          session={activeSession}
+          onResume={() => navigate(`/learn/session/${activeSession.id}`)}
+        />
+      )}
 
       <div className={styles.workspaceGrid}>
         <section className={page.section}>

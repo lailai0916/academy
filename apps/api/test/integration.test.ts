@@ -191,6 +191,32 @@ integrationDescribe('Academy API integration', () => {
     expect(overview.statusCode).toBe(200);
     expect(overview.json().overview.units.length).toBeGreaterThan(0);
 
+    const resumed = await app.inject({
+      method: 'POST',
+      url: '/api/learn/sessions',
+      headers: mutationHeaders(userCookie),
+      payload: { kind: 'poem', mode: 'plan' },
+    });
+    expect(resumed.statusCode).toBe(200);
+    expect(resumed.json()).toMatchObject({ sessionId, resumed: true });
+
+    const abandoned = await app.inject({
+      method: 'POST',
+      url: `/api/learn/sessions/${sessionId}/abandon`,
+      headers: mutationHeaders(userCookie),
+    });
+    expect(abandoned.statusCode).toBe(204);
+
+    const abandonedSummary = await app.inject({
+      method: 'GET',
+      url: `/api/learn/sessions/${sessionId}/summary`,
+      headers: { cookie: userCookie },
+    });
+    expect(abandonedSummary.json().summary).toMatchObject({
+      status: 'abandoned',
+      completedCount: 2,
+    });
+
     const focused = await app.inject({
       method: 'POST',
       url: '/api/learn/sessions',

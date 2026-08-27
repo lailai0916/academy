@@ -15,6 +15,12 @@ import type {
 } from '@lailai/academy-shared';
 import { Icon } from '../components/Icon';
 import { api, ApiRequestError, errorMessage } from '../lib/api';
+import {
+  formatNextReview,
+  promptTypeLabels,
+  ratingLabels,
+  sessionModeLabels,
+} from '../lib/learning';
 import page from './Page.module.css';
 import styles from './SessionPage.module.css';
 
@@ -27,6 +33,7 @@ type AiResponse = {
 export function SessionPage() {
   const { sessionId = '' } = useParams();
   const navigate = useNavigate();
+  const exitDialogRef = useRef<HTMLDialogElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const startedAt = useRef(Date.now());
   const [prompt, setPrompt] = useState<LearningPrompt | null>(null);
@@ -36,17 +43,25 @@ export function SessionPage() {
   const [aiResponse, setAiResponse] = useState<AiResponse | null>(null);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [loadingNext, setLoadingNext] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
+  const [ending, setEnding] = useState(false);
+  const [exitError, setExitError] = useState('');
 
   const loadNext = useCallback(async () => {
+    setLoadingNext(true);
     setError('');
     setAnswer('');
     setResult(null);
     setAiResponse(null);
-    const response = await api<{ prompt: LearningPrompt }>(`/learn/sessions/${sessionId}/next`);
-    setPrompt(response.prompt);
-    startedAt.current = Date.now();
-    window.setTimeout(() => inputRef.current?.focus(), 0);
+    try {
+      const response = await api<{ prompt: LearningPrompt }>(`/learn/sessions/${sessionId}/next`);
+      setPrompt(response.prompt);
+      startedAt.current = Date.now();
+      window.setTimeout(() => inputRef.current?.focus(), 0);
+    } finally {
+      setLoadingNext(false);
+    }
   }, [sessionId]);
 
   const loadSummary = useCallback(async () => {
@@ -132,14 +147,89 @@ export function SessionPage() {
     }
   };
 
+  const continueLearning = useCallback(() => {
+    if (!result || loadingNext) return;
+    if (result.sessionComplete) {
+      void loadSummary();
+    } else {
+      void loadNext();
+    }
+  }, [loadNext, loadSummary, loadingNext, result]);
+
+  useEffect(() => {
+    const ownerDocument = inputRef.current?.ownerDocument ?? document;
+    const handleShortcut = (event: globalThis.KeyboardEvent) => {
+      if (
+        event.defaultPrevented ||
+        event.repeat ||
+        event.isComposing ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.altKey
+      ) {
+        return;
+      }
+      const target = event.target;
+      if (
+        target instanceof HTMLElement &&
+        target.closest('button, input, textarea, select, summary, [contenteditable="true"]')
+      ) {
+        return;
+      }
+      if (!result && prompt?.options && /^[1-4]$/.test(event.key)) {
+        const option = prompt.options[Number(event.key) - 1];
+        if (!option || submitting) return;
+        event.preventDefault();
+        void submitAnswer(option);
+        return;
+      }
+      if (result && event.key === 'Enter') {
+        event.preventDefault();
+        continueLearning();
+      }
+    };
+    ownerDocument.addEventListener('keydown', handleShortcut);
+    return () => ownerDocument.removeEventListener('keydown', handleShortcut);
+  }, [continueLearning, prompt, result, submitting]);
+
+  const openExitDialog = () => {
+    setExitError('');
+    exitDialogRef.current?.showModal();
+  };
+
+  const closeExitDialog = () => {
+    exitDialogRef.current?.close();
+  };
+
+  const pauseSession = () => {
+    exitDialogRef.current?.close();
+    navigate('/learn');
+  };
+
+  const abandonSession = async () => {
+    if (ending) return;
+    setEnding(true);
+    setExitError('');
+    try {
+      await api(`/learn/sessions/${sessionId}/abandon`, { method: 'POST' });
+      exitDialogRef.current?.close();
+      navigate('/learn');
+    } catch (nextError) {
+      setExitError(errorMessage(nextError));
+      setEnding(false);
+    }
+  };
+
   if (summary) {
+    const completed = summary.status === 'completed';
+    const summaryProgress = Math.round((summary.completedCount / summary.plannedCount) * 100);
     return (
       <div className={styles.page}>
         <header className={styles.header}>
           <IconButton label="返回学习中心" onClick={() => navigate('/learn')}>
             <Icon icon="lucide:x" />
           </IconButton>
-          <Progress label="本组已完成" value={100} showValue={false} />
+          <Progress label="本组进度" value={summaryProgress} showValue={false} />
           <span>
             {summary.completedCount} / {summary.plannedCount}
           </span>
@@ -147,18 +237,12 @@ export function SessionPage() {
         <div className={styles.stage}>
           <Panel feature>
             <div className={styles.summary}>
-              <span className={styles.summaryIcon}>
-                <Icon icon="lucide:check-circle-2" />
+              <span className={`${styles.summaryIcon} ${completed ? '' : styles.summaryIconEnded}`}>
+                <Icon icon={completed ? 'lucide:check-circle-2' : 'lucide:circle-stop'} />
               </span>
               <div className={styles.summaryTitle}>
-                <p>
-                  {summary.mode === 'diagnostic'
-                    ? '水平诊断'
-                    : summary.mode === 'review'
-                      ? '复习巩固'
-                      : '计划学习'}
-                </p>
-                <h1>本组学习结果</h1>
+                <p>{sessionModeLabels[summary.mode]}</p>
+                <h1>{completed ? '本组学习结果' : '本组已结束'}</h1>
                 <span>{new Date(summary.startedAt).toLocaleString('zh-CN')}</span>
               </div>
               <div className={styles.summaryMetrics}>
@@ -172,7 +256,7 @@ export function SessionPage() {
                 </article>
                 <article>
                   <span>平均反应</span>
-                  <strong>{Math.round(summary.averageResponseMs / 100) / 10}s</strong>
+                  <strong>{Math.round(summary.averageResponseMs / 100) / 10} 秒</strong>
                 </article>
               </div>
               {summary.delayedAccuracy !== null && (
@@ -181,7 +265,19 @@ export function SessionPage() {
                 </p>
               )}
               <div className={page.actions}>
-                <Button onClick={() => navigate('/learn')}>返回学习中心</Button>
+                <Button
+                  onClick={() =>
+                    navigate(
+                      completed
+                        ? '/learn'
+                        : summary.kind === 'word'
+                          ? '/learn/words'
+                          : '/learn/poems'
+                    )
+                  }
+                >
+                  {completed ? '返回学习中心' : '开始新任务'}
+                </Button>
                 {summary.mistakes.length > 0 && (
                   <Button variant="secondary" onClick={() => navigate('/learn/mistakes')}>
                     <Icon icon="lucide:notebook-tabs" />
@@ -242,7 +338,7 @@ export function SessionPage() {
   return (
     <div className={styles.page}>
       <header className={styles.header}>
-        <IconButton label="结束本次学习" onClick={() => navigate('/learn')}>
+        <IconButton label="退出当前任务" onClick={openExitDialog}>
           <Icon icon="lucide:x" />
         </IconButton>
         <Progress label="本组进度" value={progress} showValue={false} />
@@ -256,7 +352,10 @@ export function SessionPage() {
           <div className={styles.question}>
             <div className={styles.questionMeta}>
               <span>{prompt.kind === 'word' ? '英语单词' : '古诗词'}</span>
-              <span>{prompt.promptType.replace('_', ' ')}</span>
+              <span>
+                {promptTypeLabels[prompt.promptType]}
+                {prompt.options ? ' · 1–4 键选择' : ''}
+              </span>
             </div>
             <div className={styles.questionCopy}>
               <p>{prompt.context}</p>
@@ -268,14 +367,16 @@ export function SessionPage() {
               <div className={styles.answerArea}>
                 {prompt.options ? (
                   <div className={styles.options}>
-                    {prompt.options.map((option) => (
+                    {prompt.options.map((option, index) => (
                       <button
-                        key={option}
+                        key={`${index}-${option}`}
                         type="button"
+                        aria-keyshortcuts={`${index + 1}`}
                         disabled={submitting}
                         onClick={() => submitAnswer(option)}
                       >
-                        {option}
+                        <kbd>{index + 1}</kbd>
+                        <span>{option}</span>
                       </button>
                     ))}
                   </div>
@@ -316,26 +417,33 @@ export function SessionPage() {
                 <div className={styles.feedbackTitle}>
                   <Icon icon={result.correct ? 'lucide:check-circle-2' : 'lucide:circle-x'} />
                   <div>
-                    <h2>{result.correct ? '回答正确' : '这次还没有回忆准确'}</h2>
-                    <p>
-                      正确答案：<strong>{result.expectedAnswer}</strong>
-                    </p>
+                    <h2>{result.correct ? '回答正确' : '回答不正确'}</h2>
+                    <div className={styles.answerComparison}>
+                      {!result.correct && (
+                        <p>
+                          你的答案：<strong>{answer || '已查看答案'}</strong>
+                        </p>
+                      )}
+                      <p>
+                        正确答案：<strong>{result.expectedAnswer}</strong>
+                      </p>
+                    </div>
                   </div>
                 </div>
                 <p className={styles.explanation}>{result.explanation}</p>
                 <div className={styles.feedbackMeta}>
                   <span>掌握度 {result.mastery}%</span>
-                  <span>评价 {result.rating}</span>
-                  <span>下次复习 {new Date(result.nextDueAt).toLocaleString('zh-CN')}</span>
+                  <span>{ratingLabels[result.rating]}</span>
+                  <span>下次复习：{formatNextReview(result.nextDueAt)}</span>
                 </div>
                 <div className={page.actions}>
-                  <Button onClick={() => (result.sessionComplete ? loadSummary() : loadNext())}>
-                    {result.sessionComplete ? '查看本组结果' : '下一题'}
+                  <Button onClick={continueLearning} disabled={loadingNext}>
+                    {loadingNext ? '正在准备' : result.sessionComplete ? '查看本组结果' : '下一题'}
                     <Icon icon="lucide:arrow-right" />
                   </Button>
                   <Button variant="secondary" onClick={askAi} disabled={aiLoading}>
                     <Icon icon="lucide:sparkles" />
-                    {aiLoading ? 'AI 正在分析' : 'AI 深入讲解'}
+                    {aiLoading ? '正在生成讲解' : '生成 AI 讲解'}
                   </Button>
                 </div>
               </div>
@@ -352,7 +460,7 @@ export function SessionPage() {
                 </span>
                 <div>
                   <h2>AI 讲解</h2>
-                  <p>基于本题内容与当前掌握度生成</p>
+                  <p>结合本题内容与当前学习记录</p>
                 </div>
               </div>
               <p>{aiResponse.summary}</p>
@@ -375,6 +483,45 @@ export function SessionPage() {
 
         {error && <p className={page.error}>{error}</p>}
       </div>
+
+      <dialog
+        ref={exitDialogRef}
+        className={styles.exitDialog}
+        aria-labelledby="exit-dialog-title"
+        aria-describedby="exit-dialog-description"
+        onCancel={(event) => {
+          event.preventDefault();
+          closeExitDialog();
+        }}
+      >
+        <div className={styles.exitDialogBody}>
+          <span className={styles.exitDialogIcon} aria-hidden="true">
+            <Icon icon="lucide:pause" />
+          </span>
+          <div className={styles.exitDialogCopy}>
+            <h2 id="exit-dialog-title">退出当前任务？</h2>
+            <p id="exit-dialog-description">
+              暂存后可从今日学习或学习中心继续。结束后保留已完成记录，未答内容不计入结果。
+            </p>
+          </div>
+          {exitError && (
+            <p className={`${page.error} ${styles.exitDialogError}`} role="alert">
+              {exitError}
+            </p>
+          )}
+          <div className={styles.exitDialogActions}>
+            <Button variant="quiet" onClick={closeExitDialog} disabled={ending}>
+              继续学习
+            </Button>
+            <Button variant="secondary" onClick={pauseSession} disabled={ending}>
+              暂存并退出
+            </Button>
+            <Button variant="danger" onClick={abandonSession} disabled={ending}>
+              {ending ? '正在结束' : '结束本组'}
+            </Button>
+          </div>
+        </div>
+      </dialog>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { and, asc, desc, eq, gte, inArray, lte, notExists, sql } from 'drizzle-orm';
 import { fsrs, Rating, type Card, type Grade } from 'ts-fsrs';
 import type {
+  ActiveLearningSession,
   ContentKind,
   LearningAnswerResult,
   LearningInsights,
@@ -22,6 +23,7 @@ import {
   studySessions,
 } from '../db/schema.js';
 import { currentStudyDate, getOrCreateDailyPlan } from './dashboard.js';
+import { getActiveLearningSession, presentActiveLearningSession } from './study-sessions.js';
 
 const scheduler = fsrs({
   request_retention: 0.9,
@@ -231,11 +233,47 @@ async function ensureCard(userId: string, contentId: string) {
   return existing;
 }
 
+type LearningSessionDraft = {
+  userId: string;
+  kind: ContentKind;
+  mode: SessionOptions['mode'];
+  plannedCount: number;
+  contentQueue: string[];
+};
+
+function isUniqueViolation(error: unknown) {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'code' in error &&
+    (error as { code?: string }).code === '23505'
+  );
+}
+
+async function persistLearningSession(
+  draft: LearningSessionDraft
+): Promise<{ session: ActiveLearningSession; resumed: boolean }> {
+  try {
+    const [session] = await db.insert(studySessions).values(draft).returning();
+    return { session: presentActiveLearningSession(session), resumed: false };
+  } catch (error) {
+    if (!isUniqueViolation(error)) throw error;
+    const activeSession = await getActiveLearningSession(draft.userId);
+    if (!activeSession) throw error;
+    return { session: activeSession, resumed: true };
+  }
+}
+
 export async function createLearningSession(
   user: SessionUser,
   kind: ContentKind,
   options: SessionOptions
 ) {
+  const activeSession = await getActiveLearningSession(user.id);
+  if (activeSession) {
+    return { session: activeSession, resumed: true };
+  }
+
   const { mode, focus, unit } = options;
   const plan = await getOrCreateDailyPlan(user);
   const desired =
@@ -268,17 +306,13 @@ export async function createLearningSession(
     if (mistakes.length === 0) {
       return null;
     }
-    const [session] = await db
-      .insert(studySessions)
-      .values({
-        userId: user.id,
-        kind,
-        mode: 'review',
-        plannedCount: mistakes.length,
-        contentQueue: mistakes.map((item) => item.id),
-      })
-      .returning();
-    return session;
+    return persistLearningSession({
+      userId: user.id,
+      kind,
+      mode: 'review',
+      plannedCount: mistakes.length,
+      contentQueue: mistakes.map((item) => item.id),
+    });
   }
 
   if (mode === 'diagnostic') {
@@ -298,17 +332,13 @@ export async function createLearningSession(
     if (diagnostic.length === 0) {
       return null;
     }
-    const [session] = await db
-      .insert(studySessions)
-      .values({
-        userId: user.id,
-        kind,
-        mode,
-        plannedCount: diagnostic.length,
-        contentQueue: diagnostic.map((item) => item.id),
-      })
-      .returning();
-    return session;
+    return persistLearningSession({
+      userId: user.id,
+      kind,
+      mode,
+      plannedCount: diagnostic.length,
+      contentQueue: diagnostic.map((item) => item.id),
+    });
   }
 
   const due = await db
@@ -359,17 +389,13 @@ export async function createLearningSession(
   if (queue.length === 0) {
     return null;
   }
-  const [session] = await db
-    .insert(studySessions)
-    .values({
-      userId: user.id,
-      kind,
-      mode,
-      plannedCount: queue.length,
-      contentQueue: queue,
-    })
-    .returning();
-  return session;
+  return persistLearningSession({
+    userId: user.id,
+    kind,
+    mode,
+    plannedCount: queue.length,
+    contentQueue: queue,
+  });
 }
 
 export async function getNextPrompt(userId: string, sessionId: string) {

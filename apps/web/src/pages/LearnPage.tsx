@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Button, EmptyState, Panel, Progress } from '@lailai/ui';
 import { useNavigate } from 'react-router';
 import type { ContentKind, Dashboard, LearningOverview } from '@lailai/academy-shared';
+import { ActiveSessionCard } from '../components/ActiveSessionCard';
 import { Icon } from '../components/Icon';
 import { api, errorMessage } from '../lib/api';
 import page from './Page.module.css';
@@ -55,6 +56,10 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
     options: SessionOptions = {}
   ) => {
     if (starting) return;
+    if (dashboard?.activeSession) {
+      navigate(`/learn/session/${dashboard.activeSession.id}`);
+      return;
+    }
     setStarting(true);
     setError('');
     try {
@@ -69,6 +74,8 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
     }
   };
 
+  const activeSession = dashboard?.activeSession;
+
   if (kind) {
     const subject = subjects[kind];
     const summary = overview?.summary;
@@ -82,11 +89,18 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
           </div>
           <Button size="large" onClick={() => start(kind, 'plan')} disabled={starting}>
             <Icon icon="lucide:play" />
-            开始今日计划
+            {activeSession ? '继续当前任务' : '开始今日计划'}
           </Button>
         </header>
 
         {error && <p className={page.error}>{error}</p>}
+
+        {activeSession && (
+          <ActiveSessionCard
+            session={activeSession}
+            onResume={() => navigate(`/learn/session/${activeSession.id}`)}
+          />
+        )}
 
         <div className={page.grid4}>
           <article className={page.metric}>
@@ -125,7 +139,11 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
                   <h3>今日计划</h3>
                   <p>先处理到期内容，再按容量补充新内容。</p>
                 </div>
-                <Button variant="secondary" onClick={() => start(kind, 'plan')} disabled={starting}>
+                <Button
+                  variant="secondary"
+                  onClick={() => start(kind, 'plan')}
+                  disabled={starting || Boolean(activeSession)}
+                >
                   开始
                 </Button>
               </div>
@@ -142,7 +160,7 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
                 <Button
                   variant="secondary"
                   onClick={() => start(kind, 'review', { focus: 'mistakes' })}
-                  disabled={starting || summary?.mistakes === 0}
+                  disabled={starting || Boolean(activeSession) || summary?.mistakes === 0}
                 >
                   开始
                 </Button>
@@ -160,7 +178,7 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
                 <Button
                   variant="secondary"
                   onClick={() => start(kind, 'diagnostic')}
-                  disabled={starting}
+                  disabled={starting || Boolean(activeSession)}
                 >
                   开始
                 </Button>
@@ -195,7 +213,7 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
                         size="small"
                         variant="quiet"
                         onClick={() => start(kind, 'plan', { unit: unit.unit, limit: 10 })}
-                        disabled={starting}
+                        disabled={starting || Boolean(activeSession)}
                       >
                         学习本单元
                         <Icon icon="lucide:arrow-right" />
@@ -266,9 +284,17 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
 
       {error && <p className={page.error}>{error}</p>}
 
+      {activeSession && (
+        <ActiveSessionCard
+          session={activeSession}
+          onResume={() => navigate(`/learn/session/${activeSession.id}`)}
+        />
+      )}
+
       <div className={styles.subjectGrid}>
         {(Object.keys(subjects) as ContentKind[]).map((subjectKind) => {
           const subject = subjects[subjectKind];
+          const isActiveSubject = activeSession?.kind === subjectKind;
           const due = subjectKind === 'word' ? dashboard?.plan.wordsDue : dashboard?.plan.poemsDue;
           const fresh =
             subjectKind === 'word' ? dashboard?.plan.wordsNew : dashboard?.plan.poemsNew;
@@ -292,8 +318,11 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
                   </span>
                 </div>
                 <div className={page.actions}>
-                  <Button onClick={() => start(subjectKind, 'plan')} disabled={starting}>
-                    开始计划
+                  <Button
+                    onClick={() => start(subjectKind, 'plan')}
+                    disabled={starting || Boolean(activeSession && !isActiveSubject)}
+                  >
+                    {isActiveSubject ? '继续学习' : '开始计划'}
                   </Button>
                   <Button
                     variant="quiet"

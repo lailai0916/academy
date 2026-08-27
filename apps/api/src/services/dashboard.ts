@@ -10,6 +10,7 @@ import {
   reviewEvents,
   users,
 } from '../db/schema.js';
+import { getActiveLearningSession } from './study-sessions.js';
 
 const shanghaiDate = new Intl.DateTimeFormat('en-CA', {
   timeZone: 'Asia/Shanghai',
@@ -31,6 +32,27 @@ function countStreak(dates: Date[]) {
     cursor = new Date(cursor.getTime() - 86_400_000);
   }
   return streak;
+}
+
+type PlanCapacity = { word: number; poem: number };
+
+export function allocatePlanCapacity(
+  capacity: number,
+  available: PlanCapacity,
+  preferredWordShare: number
+): PlanCapacity {
+  const boundedCapacity = Math.max(0, capacity);
+  const preferredWords = Math.round(boundedCapacity * preferredWordShare);
+  let word = Math.min(available.word, preferredWords);
+  let poem = Math.min(available.poem, boundedCapacity - word);
+  let remaining = boundedCapacity - word - poem;
+
+  const extraWords = Math.min(Math.max(0, available.word - word), remaining);
+  word += extraWords;
+  remaining -= extraWords;
+  poem += Math.min(Math.max(0, available.poem - poem), remaining);
+
+  return { word, poem };
 }
 
 export async function getOrCreateDailyPlan(user: SessionUser): Promise<DailyPlan> {
@@ -59,7 +81,14 @@ export async function getOrCreateDailyPlan(user: SessionUser): Promise<DailyPlan
     .select({ kind: contentItems.kind, value: count() })
     .from(learningCards)
     .innerJoin(contentItems, eq(contentItems.id, learningCards.contentId))
-    .where(and(eq(learningCards.userId, user.id), lte(learningCards.due, new Date())))
+    .where(
+      and(
+        eq(learningCards.userId, user.id),
+        eq(contentItems.grade, user.grade),
+        eq(contentItems.status, 'published'),
+        lte(learningCards.due, new Date())
+      )
+    )
     .groupBy(contentItems.kind)
     .orderBy(asc(contentItems.kind));
   const newCounts = await db
@@ -85,15 +114,29 @@ export async function getOrCreateDailyPlan(user: SessionUser): Promise<DailyPlan
   const due = Object.fromEntries(dueCounts.map((row) => [row.kind, Number(row.value)]));
   const available = Object.fromEntries(newCounts.map((row) => [row.kind, Number(row.value)]));
   const goal = profile.dailyGoal;
-  const wordsDue = Math.min(due.word ?? 0, Math.ceil(goal * 0.5));
-  const poemsDue = Math.min(due.poem ?? 0, Math.ceil(goal * 0.25));
-  const remaining = Math.max(0, goal - wordsDue - poemsDue);
-  const wordsNew = Math.min(available.word ?? 0, Math.ceil(remaining * 0.72));
-  const poemsNew = Math.min(available.poem ?? 0, Math.max(0, remaining - wordsNew));
+  const duePlan = allocatePlanCapacity(goal, { word: due.word ?? 0, poem: due.poem ?? 0 }, 0.65);
+  const dueTotal = duePlan.word + duePlan.poem;
+  const newPlan = allocatePlanCapacity(
+    goal - dueTotal,
+    { word: available.word ?? 0, poem: available.poem ?? 0 },
+    0.75
+  );
+  const wordsDue = duePlan.word;
+  const poemsDue = duePlan.poem;
+  const wordsNew = newPlan.word;
+  const poemsNew = newPlan.poem;
+  const newTotal = wordsNew + poemsNew;
+  const availableDue = (due.word ?? 0) + (due.poem ?? 0);
   const reason =
-    wordsDue + poemsDue > 0
-      ? '优先处理到期复习，再补充少量新内容，降低短期遗忘。'
-      : '当前没有到期内容，先建立新记忆，后续计划会按回答表现调整。';
+    dueTotal > 0 && newTotal > 0
+      ? `先完成 ${dueTotal} 项到期复习，再学习 ${newTotal} 项新内容。`
+      : dueTotal > 0 && availableDue > dueTotal
+        ? `今天安排 ${dueTotal} 项到期复习，其余 ${availableDue - dueTotal} 项将在后续计划中继续处理。`
+        : dueTotal > 0
+          ? `今天安排 ${dueTotal} 项到期复习，不新增内容。`
+          : newTotal > 0
+            ? `当前没有到期内容，今天安排 ${newTotal} 项新内容。`
+            : '当前年级暂无可安排的学习内容。';
 
   const [created] = await db
     .insert(dailyPlans)
@@ -112,7 +155,10 @@ export async function getOrCreateDailyPlan(user: SessionUser): Promise<DailyPlan
 }
 
 export async function getDashboard(user: SessionUser): Promise<Dashboard> {
-  const plan = await getOrCreateDailyPlan(user);
+  const [plan, activeSession] = await Promise.all([
+    getOrCreateDailyPlan(user),
+    getActiveLearningSession(user.id),
+  ]);
   const [metrics] = await db
     .select({
       mastery: avg(learningCards.mastery),
@@ -152,6 +198,7 @@ export async function getDashboard(user: SessionUser): Promise<Dashboard> {
   return {
     user,
     plan,
+    activeSession,
     metrics: {
       mastery: Math.round(Number(metrics?.mastery ?? 0) * 100),
       delayedAccuracy:

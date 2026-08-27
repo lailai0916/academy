@@ -188,9 +188,19 @@ export type DailyPlan = {
   reason: string;
 };
 
+export type ActiveLearningSession = {
+  id: string;
+  kind: ContentKind;
+  mode: 'plan' | 'review' | 'diagnostic';
+  plannedCount: number;
+  completedCount: number;
+  startedAt: string;
+};
+
 export type Dashboard = {
   user: SessionUser;
   plan: DailyPlan;
+  activeSession: ActiveLearningSession | null;
   metrics: {
     mastery: number;
     delayedAccuracy: number;

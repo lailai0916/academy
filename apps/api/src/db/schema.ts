@@ -15,6 +15,7 @@ import {
   uuid,
   varchar,
 } from 'drizzle-orm/pg-core';
+import { sql } from 'drizzle-orm';
 import type { PoemPayload, WordPayload } from '@lailai/academy-shared';
 
 const timestamps = {
@@ -177,7 +178,12 @@ export const studySessions = pgTable(
     startedAt: timestamp('started_at', { withTimezone: true }).notNull().defaultNow(),
     completedAt: timestamp('completed_at', { withTimezone: true }),
   },
-  (table) => [index('study_sessions_user_idx').on(table.userId, table.startedAt)]
+  (table) => [
+    index('study_sessions_user_idx').on(table.userId, table.startedAt),
+    uniqueIndex('study_sessions_user_active_unique')
+      .on(table.userId)
+      .where(sql`${table.status} = 'active'`),
+  ]
 );
 
 export const reviewEvents = pgTable(

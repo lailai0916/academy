@@ -166,6 +166,31 @@
   font-size: 10px;
 }
 
+.sessionMeta {
+  display: grid;
+  justify-items: end;
+  gap: 4px;
+}
+
+.sessionStatus {
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: var(--lui-color-surface-muted);
+  color: var(--lui-color-label-secondary);
+  font-size: 10px;
+  font-weight: 620;
+}
+
+.sessionStatus[data-status='active'] {
+  background: var(--lui-color-accent-soft);
+  color: var(--lui-color-accent-label);
+}
+
+.sessionStatus[data-status='completed'] {
+  background: var(--lui-color-success-soft);
+  color: var(--lui-color-success);
+}
+
 @media (max-width: 1080px) {
   .columns {
     grid-template-columns: 1fr;

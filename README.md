@@ -27,7 +27,8 @@ unit instead of being generated as an unverified exercise feed.
 types adjust each learner's daily plan.
 
 🗂️ **Textbook and mistake loop** — learners can study by textbook unit, run diagnostics,
-reinforce mistakes, inspect session results and review 7–90 day learning analysis.
+reinforce mistakes, resume an unfinished session, inspect session results and review 7–90 day
+learning analysis.
 
 🤖 **Configurable AI** — `gpt-5.6-sol` is the default model. An administrator supplies an
 OpenAI-compatible endpoint and encrypted API key for explanations and variations based on reviewed

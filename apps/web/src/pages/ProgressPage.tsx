@@ -4,14 +4,9 @@ import { useNavigate } from 'react-router';
 import type { LearningInsights } from '@lailai/academy-shared';
 import { Icon } from '../components/Icon';
 import { api, errorMessage } from '../lib/api';
+import { sessionModeLabels, sessionStatusLabels } from '../lib/learning';
 import page from './Page.module.css';
 import styles from './ProgressPage.module.css';
-
-const modeLabels = {
-  plan: '计划学习',
-  review: '复习巩固',
-  diagnostic: '水平诊断',
-} as const;
 
 export function ProgressPage() {
   const navigate = useNavigate();
@@ -165,15 +160,20 @@ export function ProgressPage() {
                       />
                     </span>
                     <span>
-                      <strong>{modeLabels[session.mode]}</strong>
+                      <strong>{sessionModeLabels[session.mode]}</strong>
                       <small>
                         {session.completedCount}/{session.plannedCount} 项 · 正确率{' '}
                         {session.accuracy}%
                       </small>
                     </span>
-                    <time dateTime={session.startedAt}>
-                      {new Date(session.startedAt).toLocaleDateString('zh-CN')}
-                    </time>
+                    <span className={styles.sessionMeta}>
+                      <span className={styles.sessionStatus} data-status={session.status}>
+                        {sessionStatusLabels[session.status]}
+                      </span>
+                      <time dateTime={session.startedAt}>
+                        {new Date(session.startedAt).toLocaleDateString('zh-CN')}
+                      </time>
+                    </span>
                   </button>
                 ))}
               </div>

@@ -14,6 +14,7 @@ import {
   getLearningSessionSummary,
   getNextPrompt,
 } from '../services/learning.js';
+import { abandonLearningSession } from '../services/study-sessions.js';
 
 export async function learningRoutes(app: FastifyInstance) {
   app.post('/learn/sessions', { preHandler: app.requireAuth }, async (request, reply) => {
@@ -21,16 +22,20 @@ export async function learningRoutes(app: FastifyInstance) {
     if (!body) {
       return;
     }
-    const session = await createLearningSession(request.user!, body.kind, {
+    const result = await createLearningSession(request.user!, body.kind, {
       mode: body.mode,
       focus: body.focus,
       unit: body.unit,
       limit: body.limit,
     });
-    if (!session) {
+    if (!result) {
       return reply.status(409).send({ error: '当前没有可学习的内容。' });
     }
-    return reply.status(201).send({ sessionId: session.id, total: session.plannedCount });
+    return reply.status(result.resumed ? 200 : 201).send({
+      sessionId: result.session.id,
+      total: result.session.plannedCount,
+      resumed: result.resumed,
+    });
   });
 
   app.get<{ Params: { sessionId: string } }>(
@@ -58,6 +63,18 @@ export async function learningRoutes(app: FastifyInstance) {
         return reply.status(409).send({ error: '题目已变化，请重新加载当前学习任务。' });
       }
       return { result };
+    }
+  );
+
+  app.post<{ Params: { sessionId: string } }>(
+    '/learn/sessions/:sessionId/abandon',
+    { preHandler: app.requireAuth },
+    async (request, reply) => {
+      const abandoned = await abandonLearningSession(request.user!.id, request.params.sessionId);
+      if (!abandoned) {
+        return reply.status(409).send({ error: '当前学习任务已经结束。' });
+      }
+      return reply.status(204).send();
     }
   );
 

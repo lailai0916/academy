@@ -1,0 +1,68 @@
+.body {
+  display: grid;
+  grid-template-columns: auto minmax(180px, 1fr) minmax(180px, 280px) auto;
+  align-items: center;
+  gap: 18px;
+  padding: 18px 20px;
+}
+
+.icon {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border-radius: 11px;
+  background: var(--lui-color-accent-soft);
+  color: var(--lui-color-accent-label);
+}
+
+.icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.copy {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.copy p {
+  color: var(--lui-color-accent-label);
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.copy h2 {
+  font-size: 16px;
+  letter-spacing: -0.015em;
+}
+
+.copy > span {
+  overflow: hidden;
+  color: var(--lui-color-label-secondary);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.progress {
+  min-width: 0;
+}
+
+@media (max-width: 760px) {
+  .body {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 14px;
+    padding: 16px;
+  }
+
+  .progress,
+  .body > button {
+    grid-column: 1 / -1;
+  }
+
+  .body > button {
+    width: 100%;
+  }
+}

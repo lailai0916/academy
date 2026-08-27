@@ -53,6 +53,8 @@ standalone forms and never double as the product homepage.
 - The sidebar footer contains the logout action only; do not repeat the product description there.
 - Dashboard prioritizes today's plan, current review focus, long-term metrics, recent results, and a
   compact activity trend.
+- An unfinished learning session appears consistently on the dashboard and learning center with its
+  subject, mode, progress, and one direct resume action.
 - Academy's identity comes from learning state: due reviews, memory stability, textbook progress,
   and a precise daily-plan completion ring. Generic SaaS metric-card repetition is secondary.
 - Global search must return real routes, textbook content, and public profiles. Empty search buttons
@@ -68,6 +70,8 @@ standalone forms and never double as the product homepage.
 - Empty states name what is absent in one short sentence.
 - Forms keep visible labels, inline errors, and concrete recovery steps.
 - Metrics use tabular numerals and short definitions.
+- Learning-session exit distinguishes pause from end. Ending requires a focused confirmation;
+  pausing keeps the remaining queue available from the dashboard.
 
 ## Motion
 
