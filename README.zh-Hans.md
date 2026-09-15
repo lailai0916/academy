@@ -2,7 +2,7 @@
   <h1>lailai's Academy</h1>
   <p><a href="README.md">English</a> · <strong>简体中文</strong></p>
   <p>
-    <img src="https://img.shields.io/github/actions/workflow/status/lailai0916/academy/deploy.yml?style=flat-square" alt="部署状态" />
+    <img src="https://img.shields.io/github/actions/workflow/status/lailai0916/academy/deploy.yml?branch=main&style=flat-square" alt="部署状态" />
     <img src="https://img.shields.io/github/last-commit/lailai0916/academy?style=flat-square" alt="最后提交" />
     <img src="https://img.shields.io/github/languages/top/lailai0916/academy?style=flat-square" alt="主要语言" />
     <img src="https://img.shields.io/github/repo-size/lailai0916/academy?style=flat-square" alt="仓库大小" />
@@ -18,28 +18,28 @@
 
 ## 项目特性
 
-📚 **结构化学习** —— 经过审核的内容按年级、教材、册次与单元组织。未经验证的生成题目
+📚 **结构化学习** — 经过审核的内容按年级、教材、册次与单元组织。未经验证的生成题目
 不会成为学习主线。
 
-🧾 **教材内容工作流** —— 管理员可预检批次、在专用工作台编辑内容，并在发布前保留不可变
+🧾 **教材内容工作流** — 管理员可预检批次、在专用工作台编辑内容，并在发布前保留不可变
 修订记录、来源和版次。完整性问题会阻止发布；导入批次可回滚，但不会删除审计记录。
 
-🧠 **自适应复习** —— FSRS 负责跨天调度；答错内容经过间隔后在本组回练。主动回忆、延迟
+🧠 **自适应复习** — FSRS 负责跨天调度；答错内容经过间隔后在本组回练。主动回忆、延迟
 测试与多种题型共同调整每日计划。
 
-🗂️ **教材与错题闭环** —— 学生可按教材单元学习、执行水平诊断、集中巩固错题、继续未完成
+🗂️ **教材与错题闭环** — 学生可按教材单元学习、执行水平诊断、集中巩固错题、继续未完成
 任务，并查看每组学习结果与近 7–90 天分析。
 
-🤖 **可配置 AI** —— 默认模型为 `gpt-5.6-sol`。管理员配置 OpenAI 兼容服务与加密
+🤖 **可配置 AI** — 默认模型为 `gpt-5.6-sol`。管理员配置 OpenAI 兼容服务与加密
 API Key，AI 基于已审核内容生成错因讲解与变式。
 
-👥 **学习社区** —— 个人主页、好友、动态、小组与挑战支持同伴学习。平台不制造公开排名压力。
+👥 **学习社区** — 个人主页、好友、动态、小组与挑战支持同伴学习。平台不制造公开排名压力。
 
-🔐 **邀请码访问** —— 用户凭用户名、密码与管理员生成的邀请码注册。会话通过 HttpOnly Cookie
+🔐 **邀请码访问** — 用户凭用户名、密码与管理员生成的邀请码注册。会话通过 HttpOnly Cookie
 保存；首次进入时确认年级、目标与每日负荷，设置页支持修改密码、查看登录设备和撤销其他
 会话。
 
-🖥️ **公开官网与学习空间** —— 访客先了解平台，登录后进入带分区侧栏、顶部搜索、通知和主题
+🖥️ **公开官网与学习空间** — 访客先了解平台，登录后进入带分区侧栏、顶部搜索、通知和主题
 控制的学习工作区。两个界面都支持浅色、深色与跟随系统主题。
 
 ## 快速开始
