@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { Button, Panel, TextField } from '@lailai/ui';
+import { Button, Panel, TextField } from '@lailai0916/ui';
 import { Link, useNavigate } from 'react-router';
 import { useAuth } from '../auth/AuthProvider';
 import { PublicHeader } from '../components/PublicHeader';
@@ -81,7 +81,7 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
                 {error}
               </p>
             )}
-            <Button type="submit" size="large" disabled={submitting}>
+            <Button variant="primary" type="submit" size="lg" disabled={submitting}>
               {submitting ? '正在提交' : loginMode ? '登录' : '注册'}
             </Button>
             <p className={styles.switchMode}>

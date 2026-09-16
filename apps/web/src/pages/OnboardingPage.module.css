@@ -1,6 +1,6 @@
 .page {
   min-height: 100vh;
-  background: var(--lui-color-canvas);
+  background: var(--lk-background-color);
 }
 
 .content {
@@ -18,7 +18,7 @@
 }
 
 .panel {
-  background: var(--lui-color-surface);
+  background: var(--lk-card-background-color);
 }
 
 .form {
@@ -31,7 +31,7 @@
   margin: 0;
   padding: 24px;
   border: 0;
-  border-bottom: 1px solid var(--lui-color-separator);
+  border-bottom: 1px solid var(--lk-color-emphasis-300);
 }
 
 .section h2,
@@ -71,13 +71,13 @@
   align-items: center;
   gap: 10px;
   padding: 12px;
-  border: 1px solid var(--lui-color-separator);
+  border: 1px solid var(--lk-color-emphasis-300);
   border-radius: 11px;
-  background: var(--lui-color-surface-raised);
+  background: var(--lk-background-raised);
   transition:
-    border-color var(--lui-motion-control),
-    background-color var(--lui-motion-control),
-    transform var(--lui-motion-control);
+    border-color var(--lk-transition),
+    background-color var(--lk-transition),
+    transform var(--lk-transition);
 }
 
 .destination {
@@ -87,8 +87,8 @@
 
 .choice:hover,
 .destination:hover {
-  border-color: var(--lui-color-separator-strong);
-  background: var(--lui-color-surface-muted);
+  border-color: var(--lk-color-emphasis-400);
+  background: var(--lk-color-emphasis-100);
 }
 
 .choice:active,
@@ -98,13 +98,13 @@
 
 .choice:has(input:checked),
 .destination:has(input:checked) {
-  border-color: color-mix(in srgb, var(--lui-color-accent) 48%, var(--lui-color-separator));
-  background: var(--lui-color-accent-soft);
+  border-color: color-mix(in srgb, var(--lk-color-primary) 48%, var(--lk-color-emphasis-300));
+  background: var(--lk-color-primary-soft);
 }
 
 .choice:has(input:focus-visible),
 .destination:has(input:focus-visible) {
-  outline: 2px solid var(--lui-color-focus);
+  outline: 2px solid var(--lk-color-primary);
   outline-offset: 2px;
 }
 
@@ -134,7 +134,7 @@
 .choice small,
 .destination small,
 .footer > span {
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 11px;
 }
 
@@ -144,8 +144,8 @@
   height: 34px;
   place-items: center;
   border-radius: 9px;
-  background: var(--lui-color-surface-muted);
-  color: var(--lui-color-label-secondary);
+  background: var(--lk-color-emphasis-100);
+  color: var(--lk-font-color-secondary);
 }
 
 .destinationIcon svg {
@@ -154,17 +154,17 @@
 }
 
 .destination:has(input:checked) .destinationIcon {
-  background: var(--lui-color-surface);
-  color: var(--lui-color-accent-label);
+  background: var(--lk-card-background-color);
+  color: var(--lk-color-primary-label);
 }
 
 .error {
   margin: 20px 24px 0;
   padding: 11px 13px;
-  border: 1px solid color-mix(in srgb, var(--lui-color-danger) 20%, transparent);
-  border-radius: var(--lui-radius-control);
-  background: var(--lui-color-danger-soft);
-  color: var(--lui-color-danger);
+  border: 1px solid color-mix(in srgb, var(--lk-color-danger) 20%, transparent);
+  border-radius: var(--lk-radius-control);
+  background: var(--lk-color-danger-soft);
+  color: var(--lk-color-danger);
   font-size: 13px;
 }
 
@@ -201,7 +201,7 @@
     flex-direction: column;
   }
 
-  .footer :global(.lui-button) {
+  .footer :global([data-lk='button']) {
     width: 100%;
   }
 }

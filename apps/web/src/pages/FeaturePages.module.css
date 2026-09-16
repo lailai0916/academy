@@ -13,9 +13,9 @@
   width: fit-content;
   gap: 3px;
   padding: 3px;
-  border: 1px solid var(--lui-color-separator);
+  border: 1px solid var(--lk-color-emphasis-300);
   border-radius: 12px;
-  background: var(--lui-color-surface-muted);
+  background: var(--lk-color-emphasis-100);
 }
 
 .tab {
@@ -24,19 +24,19 @@
   border: 0;
   border-radius: 9px;
   background: transparent;
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   cursor: pointer;
   transition:
-    background-color var(--lui-motion-control),
-    color var(--lui-motion-control),
-    transform var(--lui-motion-control);
+    background-color var(--lk-transition),
+    color var(--lk-transition),
+    transform var(--lk-transition);
 }
 
 .tabActive {
-  background: var(--lui-color-surface);
-  color: var(--lui-color-label);
+  background: var(--lk-card-background-color);
+  color: var(--lk-font-color-base);
   font-weight: 650;
-  box-shadow: var(--lui-shadow-control);
+  box-shadow: var(--lk-shadow-control);
 }
 
 .tab:active {
@@ -74,7 +74,7 @@
   display: grid;
   gap: 14px;
   padding-right: 28px;
-  border-right: 1px solid var(--lui-color-separator);
+  border-right: 1px solid var(--lk-color-emphasis-300);
 }
 
 .passwordForm h3,
@@ -103,8 +103,8 @@
   min-height: 22px;
   padding: 0 7px;
   border-radius: 999px;
-  background: var(--lui-color-surface-muted);
-  color: var(--lui-color-label-secondary);
+  background: var(--lk-color-emphasis-100);
+  color: var(--lk-font-color-secondary);
   font-size: 11px;
   font-weight: 620;
 }
@@ -123,7 +123,7 @@
   gap: 12px;
   min-height: 76px;
   padding: 10px 0;
-  border-bottom: 1px solid var(--lui-color-separator);
+  border-bottom: 1px solid var(--lk-color-emphasis-300);
 }
 
 .sessionItem:last-child {
@@ -136,8 +136,8 @@
   height: 38px;
   place-items: center;
   border-radius: 11px;
-  background: var(--lui-color-surface-muted);
-  color: var(--lui-color-label-secondary);
+  background: var(--lk-color-emphasis-100);
+  color: var(--lk-font-color-secondary);
 }
 
 .sessionIcon svg {
@@ -150,7 +150,7 @@
   display: grid;
   min-width: 0;
   gap: 2px;
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 12px;
 }
 
@@ -160,14 +160,14 @@
 
 .sessionName strong {
   overflow: hidden;
-  color: var(--lui-color-label);
+  color: var(--lk-font-color-base);
   font-size: 14px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .sessionCopy small {
-  color: var(--lui-color-label-tertiary);
+  color: var(--lk-font-color-tertiary);
   font-size: 11px;
 }
 
@@ -209,7 +209,7 @@
 .postHeader time,
 .profileIdentity span,
 .metaRow {
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 12px;
 }
 
@@ -233,21 +233,21 @@
 .reactionRow button {
   min-height: 40px;
   padding: 0 12px;
-  border: 1px solid var(--lui-color-separator);
+  border: 1px solid var(--lk-color-emphasis-300);
   border-radius: 999px;
-  background: var(--lui-color-surface);
-  color: var(--lui-color-label-secondary);
+  background: var(--lk-card-background-color);
+  color: var(--lk-font-color-secondary);
   cursor: pointer;
   transition:
-    background-color var(--lui-motion-control),
-    border-color var(--lui-motion-control),
-    color var(--lui-motion-control),
-    transform var(--lui-motion-control);
+    background-color var(--lk-transition),
+    border-color var(--lk-transition),
+    color var(--lk-transition),
+    transform var(--lk-transition);
 }
 
 .reactionRow button:hover {
-  border-color: var(--lui-color-separator-strong);
-  background: var(--lui-color-surface-muted);
+  border-color: var(--lk-color-emphasis-400);
+  background: var(--lk-color-emphasis-100);
 }
 
 .reactionRow button:active {
@@ -255,9 +255,9 @@
 }
 
 .reactionRow button[aria-pressed='true'] {
-  border-color: var(--lui-color-accent);
-  background: var(--lui-color-accent-soft);
-  color: var(--lui-color-accent-label);
+  border-color: var(--lk-color-primary);
+  background: var(--lk-color-primary-soft);
+  color: var(--lk-color-primary-label);
 }
 
 .cardGrid {
@@ -277,11 +277,11 @@
 }
 
 .card p {
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 13px;
 }
 
-.card > :global(.lui-button) {
+.card > :global([data-lk='button']) {
   width: fit-content;
 }
 
@@ -291,7 +291,7 @@
   min-height: 32px;
   align-items: center;
   gap: 6px;
-  color: var(--lui-color-success);
+  color: var(--lk-color-success);
   font-size: 12px;
   font-weight: 650;
 }
@@ -329,7 +329,7 @@
 
 .goalToolbar span,
 .goalFormFooter > span {
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 12px;
 }
 
@@ -376,7 +376,7 @@
 }
 
 .goalCardHeader > div > span {
-  color: var(--lui-color-label-tertiary);
+  color: var(--lk-font-color-tertiary);
   font-size: 11px;
   font-weight: 620;
 }
@@ -395,15 +395,15 @@
   align-items: center;
   padding: 0 8px;
   border-radius: 999px;
-  background: var(--lui-color-surface-muted);
-  color: var(--lui-color-label-secondary);
+  background: var(--lk-color-emphasis-100);
+  color: var(--lk-font-color-secondary);
   font-size: 11px;
   font-weight: 650;
 }
 
 .goalStatus[data-status='completed'] {
-  background: var(--lui-color-success-soft);
-  color: var(--lui-color-success);
+  background: var(--lk-color-success-soft);
+  color: var(--lk-color-success);
 }
 
 .goalProgressCopy {
@@ -416,7 +416,7 @@
 }
 
 .goalProgressCopy span {
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 12px;
   text-align: right;
 }
@@ -425,7 +425,7 @@
   height: 6px;
   overflow: hidden;
   border-radius: 999px;
-  background: var(--lui-color-surface-muted);
+  background: var(--lk-color-emphasis-100);
 }
 
 .goalProgress > span {
@@ -433,8 +433,8 @@
   width: 0;
   height: 100%;
   border-radius: inherit;
-  background: var(--lui-color-accent);
-  transition: width var(--lui-motion-surface);
+  background: var(--lk-color-primary);
+  transition: width var(--lk-transition-surface);
 }
 
 .goalFooter .metaRow {
@@ -450,7 +450,7 @@
   width: fit-content;
   min-height: 32px;
   padding: 7px 0;
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 12px;
   font-weight: 620;
   cursor: pointer;
@@ -465,7 +465,7 @@
   align-items: start;
 }
 
-.profileHero :global(.lui-button) svg {
+.profileHero :global([data-lk='button']) svg {
   width: 16px;
   height: 16px;
 }
@@ -481,15 +481,15 @@
 
 .bio {
   max-width: 60ch;
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
 }
 
 .code {
   padding: 12px;
-  border: 1px dashed var(--lui-color-separator-strong);
+  border: 1px dashed var(--lk-color-emphasis-400);
   border-radius: 12px;
-  background: var(--lui-color-surface-muted);
-  font-family: var(--lui-font-mono);
+  background: var(--lk-color-emphasis-100);
+  font-family: var(--lk-font-mono);
   font-size: 13px;
   overflow-wrap: anywhere;
   user-select: all;
@@ -512,19 +512,19 @@
 .table th,
 .table td {
   padding: 12px 10px;
-  border-bottom: 1px solid var(--lui-color-separator);
+  border-bottom: 1px solid var(--lk-color-emphasis-300);
   text-align: left;
   white-space: nowrap;
 }
 
 .table th {
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-weight: 600;
 }
 
 .jsonArea {
   min-height: 260px;
-  font-family: var(--lui-font-mono);
+  font-family: var(--lk-font-mono);
   font-size: 13px;
 }
 
@@ -538,7 +538,7 @@
 }
 
 .notFound strong {
-  color: var(--lui-color-label-tertiary);
+  color: var(--lk-font-color-tertiary);
   font-size: 72px;
   line-height: 1;
 }
@@ -570,7 +570,7 @@
     padding-right: 0;
     padding-bottom: 24px;
     border-right: 0;
-    border-bottom: 1px solid var(--lui-color-separator);
+    border-bottom: 1px solid var(--lk-color-emphasis-300);
   }
 
   .goalToolbar,
@@ -580,9 +580,9 @@
     flex-direction: column;
   }
 
-  .goalToolbar :global(.lui-button),
-  .goalFooter :global(.lui-button),
-  .goalFormFooter :global(.lui-button) {
+  .goalToolbar :global([data-lk='button']),
+  .goalFooter :global([data-lk='button']),
+  .goalFormFooter :global([data-lk='button']) {
     width: 100%;
   }
 

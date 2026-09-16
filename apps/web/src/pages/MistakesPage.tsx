@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, EmptyState, Panel, Progress } from '@lailai/ui';
+import { Button, EmptyState, Panel, Progress } from '@lailai0916/ui';
 import { useNavigate } from 'react-router';
 import type { ContentKind, LearningOverview } from '@lailai/academy-shared';
 import { Icon } from '../components/Icon';
@@ -51,7 +51,12 @@ export function MistakesPage() {
     <div className={page.page}>
       <header className={page.pageHeader}>
         <h1 className={page.pageHeading}>错题本</h1>
-        <Button size="large" onClick={start} disabled={starting || !overview?.mistakes.length}>
+        <Button
+          variant="primary"
+          size="lg"
+          onClick={start}
+          disabled={starting || !overview?.mistakes.length}
+        >
           <Icon icon="lucide:rotate-ccw" />
           巩固当前错题
         </Button>

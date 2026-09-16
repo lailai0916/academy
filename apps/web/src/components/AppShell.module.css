@@ -1,6 +1,6 @@
 .shell {
   min-height: 100vh;
-  padding: var(--lui-header-height) 0 0
+  padding: var(--lk-header-height) 0 0
     calc(var(--academy-sidebar-width) + var(--academy-shell-gap) * 2);
 }
 
@@ -9,13 +9,13 @@
   z-index: 40;
   inset: 0 0 auto;
   display: grid;
-  height: var(--lui-header-height);
+  height: var(--lk-header-height);
   grid-template-columns:
     calc(var(--academy-sidebar-width) + var(--academy-shell-gap) * 2)
     minmax(120px, 1fr) auto;
   align-items: center;
-  border-bottom: 1px solid var(--lui-color-separator);
-  background: var(--lui-color-surface);
+  border-bottom: 1px solid var(--lk-color-emphasis-300);
+  background: var(--lk-card-background-color);
 }
 
 .brandArea {
@@ -29,7 +29,7 @@
 .brandArea > a {
   display: inline-flex;
   min-width: 0;
-  border-radius: var(--lui-radius-control);
+  border-radius: var(--lk-radius-control);
 }
 
 .menuButton {
@@ -39,18 +39,18 @@
   padding: 0;
   place-items: center;
   border: 0;
-  border-radius: var(--lui-radius-control);
+  border-radius: var(--lk-radius-control);
   background: transparent;
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   transition:
-    background-color var(--lui-motion-control),
-    color var(--lui-motion-control),
-    transform var(--lui-motion-control);
+    background-color var(--lk-transition),
+    color var(--lk-transition),
+    transform var(--lk-transition);
 }
 
 .menuButton:hover {
-  background: var(--lui-color-surface-muted);
-  color: var(--lui-color-label);
+  background: var(--lk-color-emphasis-100);
+  color: var(--lk-font-color-base);
 }
 
 .menuButton:active {
@@ -71,7 +71,7 @@
 
 .location strong {
   overflow: hidden;
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 13px;
   font-weight: 600;
   text-overflow: ellipsis;
@@ -89,7 +89,7 @@
   width: 1px;
   height: 18px;
   margin: 0 3px;
-  background: var(--lui-color-separator);
+  background: var(--lk-color-emphasis-300);
 }
 
 .accountButton {
@@ -103,12 +103,12 @@
   font-size: 13px;
   font-weight: 600;
   transition:
-    background-color var(--lui-motion-control),
-    transform var(--lui-motion-control);
+    background-color var(--lk-transition),
+    transform var(--lk-transition);
 }
 
 .accountButton:hover {
-  background: var(--lui-color-surface-muted);
+  background: var(--lk-color-emphasis-100);
 }
 
 .accountButton:active {
@@ -121,19 +121,19 @@
   white-space: nowrap;
 }
 
-.accountButton :global(.lui-avatar) {
-  background: var(--lui-color-surface-muted);
-  color: var(--lui-color-label-secondary);
+.accountButton :global([data-lk='avatar']) {
+  background: var(--lk-color-emphasis-100);
+  color: var(--lk-font-color-secondary);
 }
 
 .logoutButton {
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
 }
 
 .logoutButton:hover:not(:disabled) {
   border-color: transparent;
-  background: var(--lui-color-danger-soft);
-  color: var(--lui-color-danger);
+  background: var(--lk-color-danger-soft);
+  color: var(--lk-color-danger);
 }
 
 .logoutButton svg {
@@ -144,14 +144,14 @@
 .sidebar {
   position: fixed;
   z-index: 30;
-  top: calc(var(--lui-header-height) + var(--academy-shell-gap));
+  top: calc(var(--lk-header-height) + var(--academy-shell-gap));
   bottom: var(--academy-shell-gap);
   left: var(--academy-shell-gap);
   display: flex;
   width: var(--academy-sidebar-width);
   overflow: hidden;
   flex-direction: column;
-  border: 1px solid var(--lui-color-separator);
+  border: 1px solid var(--lk-color-emphasis-300);
   border-radius: 18px;
   background: var(--academy-chrome);
   backdrop-filter: saturate(150%) blur(18px);
@@ -168,16 +168,16 @@
   padding: 9px 10px;
   border-radius: 12px;
   transition:
-    background-color var(--lui-motion-control),
-    transform var(--lui-motion-control);
+    background-color var(--lk-transition),
+    transform var(--lk-transition);
 }
 
 .userCard:hover {
-  background: var(--lui-color-surface-muted);
+  background: var(--lk-color-emphasis-100);
 }
 
 .userCardActive {
-  background: var(--lui-color-surface-muted);
+  background: var(--lk-color-emphasis-100);
 }
 
 .userCard:active {
@@ -203,15 +203,15 @@
 }
 
 .userCard small {
-  color: var(--lui-color-label-tertiary);
+  color: var(--lk-font-color-tertiary);
   font-size: 11px;
 }
 
 .role {
   padding: 3px 6px;
   border-radius: 6px;
-  background: var(--lui-color-surface-muted);
-  color: var(--lui-color-label-secondary);
+  background: var(--lk-color-emphasis-100);
+  color: var(--lk-font-color-secondary);
   font-size: 10px;
   font-weight: 650;
 }
@@ -230,7 +230,7 @@
 
 .navGroup > p {
   padding: 0 10px 6px;
-  color: var(--lui-color-label-tertiary);
+  color: var(--lk-font-color-tertiary);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.02em;
@@ -243,13 +243,13 @@
   gap: 11px;
   padding: 0 11px;
   border-radius: 11px;
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 13px;
   font-weight: 590;
   transition:
-    background-color var(--lui-motion-control),
-    color var(--lui-motion-control),
-    transform var(--lui-motion-control);
+    background-color var(--lk-transition),
+    color var(--lk-transition),
+    transform var(--lk-transition);
 }
 
 .navItem + .navItem {
@@ -257,8 +257,8 @@
 }
 
 .navItem:hover {
-  background: var(--lui-color-surface-muted);
-  color: var(--lui-color-label);
+  background: var(--lk-color-emphasis-100);
+  color: var(--lk-font-color-base);
 }
 
 .navItem:active {
@@ -266,8 +266,8 @@
 }
 
 .navItem.active {
-  background: var(--lui-color-accent-soft);
-  color: var(--lui-color-accent-label);
+  background: var(--lk-color-primary-soft);
+  color: var(--lk-color-primary-label);
   font-weight: 650;
 }
 
@@ -283,7 +283,7 @@
   width: min(100% - 64px, 1240px);
   margin-inline: auto;
   padding: 34px 0 64px;
-  animation: page-enter var(--lui-motion-surface) both;
+  animation: page-enter var(--lk-transition-surface) both;
 }
 
 .main:focus,
@@ -344,7 +344,7 @@
   }
 
   .sidebar {
-    top: calc(var(--lui-header-height) + 8px);
+    top: calc(var(--lk-header-height) + 8px);
     bottom: 8px;
     left: 8px;
     width: min(292px, calc(100vw - 24px));
@@ -352,8 +352,8 @@
     pointer-events: none;
     transform: translateX(calc(-100% - 16px));
     transition:
-      transform var(--lui-motion-surface),
-      visibility var(--lui-motion-surface);
+      transform var(--lk-transition-surface),
+      visibility var(--lk-transition-surface);
   }
 
   .sidebarOpen {
@@ -369,7 +369,7 @@
   .mobileBackdrop {
     position: fixed;
     z-index: 25;
-    inset: var(--lui-header-height) 0 0;
+    inset: var(--lk-header-height) 0 0;
     display: block;
     border: 0;
     background: rgb(0 0 0 / 36%);
@@ -391,7 +391,7 @@
     justify-content: center;
   }
 
-  .brandArea :global(.lui-brand) > span {
+  .brandArea :global([data-lk='brand']) > span {
     display: none;
   }
 }

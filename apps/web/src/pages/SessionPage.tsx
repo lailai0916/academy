@@ -6,7 +6,7 @@ import {
   type FormEvent,
   type KeyboardEvent,
 } from 'react';
-import { Button, IconButton, Panel, Progress } from '@lailai/ui';
+import { Button, IconButton, Panel, Progress } from '@lailai0916/ui';
 import { useNavigate, useParams } from 'react-router';
 import type {
   LearningAnswerResult,
@@ -274,6 +274,7 @@ export function SessionPage() {
               )}
               <div className={page.actions}>
                 <Button
+                  variant="primary"
                   onClick={() =>
                     navigate(
                       completed
@@ -292,7 +293,7 @@ export function SessionPage() {
                     查看本组错题
                   </Button>
                 )}
-                <Button variant="quiet" onClick={() => navigate('/progress')}>
+                <Button variant="ghost" onClick={() => navigate('/progress')}>
                   查看学习分析
                   <Icon icon="lucide:arrow-right" />
                 </Button>
@@ -403,11 +404,15 @@ export function SessionPage() {
                       spellCheck={false}
                     />
                     <div className={page.actions}>
-                      <Button type="submit" disabled={!answer.trim() || submitting}>
+                      <Button
+                        variant="primary"
+                        type="submit"
+                        disabled={!answer.trim() || submitting}
+                      >
                         提交答案
                       </Button>
                       <Button
-                        variant="quiet"
+                        variant="ghost"
                         onClick={() => submitAnswer('', true)}
                         disabled={submitting}
                       >
@@ -458,7 +463,7 @@ export function SessionPage() {
                   <span>下次复习：{formatNextReview(result.nextDueAt)}</span>
                 </div>
                 <div className={page.actions}>
-                  <Button onClick={continueLearning} disabled={loadingNext}>
+                  <Button variant="primary" onClick={continueLearning} disabled={loadingNext}>
                     {loadingNext ? '正在准备' : result.sessionComplete ? '查看本组结果' : '下一题'}
                     <Icon icon="lucide:arrow-right" />
                   </Button>
@@ -531,7 +536,7 @@ export function SessionPage() {
             </p>
           )}
           <div className={styles.exitDialogActions}>
-            <Button variant="quiet" onClick={closeExitDialog} disabled={ending}>
+            <Button variant="ghost" onClick={closeExitDialog} disabled={ending}>
               继续学习
             </Button>
             <Button variant="secondary" onClick={pauseSession} disabled={ending}>

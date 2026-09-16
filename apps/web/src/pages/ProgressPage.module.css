@@ -11,7 +11,7 @@
   align-items: end;
   gap: clamp(3px, 0.6vw, 8px);
   padding-top: 12px;
-  border-bottom: 1px solid var(--lui-color-separator-strong);
+  border-bottom: 1px solid var(--lk-color-emphasis-400);
 }
 
 .day {
@@ -25,7 +25,7 @@
   width: 100%;
   min-height: 2px;
   border-radius: 4px 4px 2px 2px;
-  background: var(--lui-color-accent);
+  background: var(--lk-color-primary);
   opacity: 0.86;
 }
 
@@ -33,7 +33,7 @@
   position: absolute;
   top: calc(100% + 5px);
   left: 0;
-  color: var(--lui-color-label-tertiary);
+  color: var(--lk-font-color-tertiary);
   font-size: 9px;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -44,7 +44,7 @@
   justify-content: space-between;
   gap: 12px;
   margin-top: 12px;
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 12px;
 }
 
@@ -61,7 +61,7 @@
   grid-template-columns: 72px minmax(100px, 1fr) minmax(130px, auto) 28px;
   align-items: center;
   gap: 16px;
-  border-bottom: 1px solid var(--lui-color-separator);
+  border-bottom: 1px solid var(--lk-color-emphasis-300);
 }
 
 .forecastList li:last-child {
@@ -78,7 +78,7 @@
 
 .forecastDate time,
 .forecastKinds {
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 11px;
   font-variant-numeric: tabular-nums;
 }
@@ -88,7 +88,7 @@
   height: 7px;
   overflow: hidden;
   border-radius: 999px;
-  background: var(--lui-color-surface-muted);
+  background: var(--lk-color-emphasis-100);
 }
 
 .forecastTrack > span {
@@ -96,8 +96,8 @@
   min-width: 0;
   height: 100%;
   border-radius: inherit;
-  background: var(--lui-color-accent);
-  transition: width var(--lui-motion-surface);
+  background: var(--lk-color-primary);
+  transition: width var(--lk-transition-surface);
 }
 
 .forecastKinds {
@@ -133,7 +133,7 @@
   align-items: center;
   gap: 16px;
   padding: 14px 0;
-  border-bottom: 1px solid var(--lui-color-separator);
+  border-bottom: 1px solid var(--lk-color-emphasis-300);
 }
 
 .weakList article:last-child,
@@ -151,7 +151,7 @@
 .weakList small,
 .sessionList small,
 .sessionList time {
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 11px;
 }
 
@@ -163,7 +163,7 @@
 }
 
 .weakList small {
-  color: var(--lui-color-label-tertiary);
+  color: var(--lk-font-color-tertiary);
 }
 
 .sessionList button {
@@ -174,20 +174,20 @@
   gap: 11px;
   padding: 10px 0;
   border: 0;
-  border-bottom: 1px solid var(--lui-color-separator);
+  border-bottom: 1px solid var(--lk-color-emphasis-300);
   background: transparent;
   text-align: left;
   transition:
-    background-color var(--lui-motion-control),
-    transform var(--lui-motion-control);
+    background-color var(--lk-transition),
+    transform var(--lk-transition);
 }
 
 .sessionList button:hover {
-  background: color-mix(in srgb, var(--lui-color-surface-muted) 72%, transparent);
+  background: color-mix(in srgb, var(--lk-color-emphasis-100) 72%, transparent);
 }
 
 .sessionList button:hover strong {
-  color: var(--lui-color-accent-label);
+  color: var(--lk-color-primary-label);
 }
 
 .sessionList button:active {
@@ -200,8 +200,8 @@
   height: 36px;
   place-items: center;
   border-radius: 10px;
-  background: var(--lui-color-accent-soft);
-  color: var(--lui-color-accent-label);
+  background: var(--lk-color-primary-soft);
+  color: var(--lk-color-primary-label);
 }
 
 .sessionIcon svg {
@@ -227,7 +227,7 @@
 }
 
 .sessionList time {
-  color: var(--lui-color-label-tertiary);
+  color: var(--lk-font-color-tertiary);
   font-size: 10px;
 }
 
@@ -240,20 +240,20 @@
 .sessionStatus {
   padding: 2px 6px;
   border-radius: 5px;
-  background: var(--lui-color-surface-muted);
-  color: var(--lui-color-label-secondary);
+  background: var(--lk-color-emphasis-100);
+  color: var(--lk-font-color-secondary);
   font-size: 10px;
   font-weight: 620;
 }
 
 .sessionStatus[data-status='active'] {
-  background: var(--lui-color-accent-soft);
-  color: var(--lui-color-accent-label);
+  background: var(--lk-color-primary-soft);
+  color: var(--lk-color-primary-label);
 }
 
 .sessionStatus[data-status='completed'] {
-  background: var(--lui-color-success-soft);
-  color: var(--lui-color-success);
+  background: var(--lk-color-success-soft);
+  color: var(--lk-color-success);
 }
 
 @media (max-width: 1080px) {

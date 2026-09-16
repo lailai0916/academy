@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, EmptyState, Panel } from '@lailai/ui';
+import { Button, EmptyState, Panel } from '@lailai0916/ui';
 import { useNavigate } from 'react-router';
 import type { Dashboard, LearningInsights, LearningOverview } from '@lailai/academy-shared';
 import { ActiveSessionCard } from '../components/ActiveSessionCard';
@@ -58,7 +58,8 @@ export function DashboardPage() {
       <header className={page.pageHeader}>
         <h1 className={page.pageHeading}>今日学习</h1>
         <Button
-          size="large"
+          variant="primary"
+          size="lg"
           onClick={() => navigate(activeSession ? `/learn/session/${activeSession.id}` : '/learn')}
         >
           <Icon icon="lucide:play" />
@@ -191,14 +192,10 @@ export function DashboardPage() {
                 </div>
               </article>
               <div className={styles.focusActions}>
-                <Button
-                  variant="secondary"
-                  size="small"
-                  onClick={() => navigate('/learn/mistakes')}
-                >
+                <Button variant="secondary" size="sm" onClick={() => navigate('/learn/mistakes')}>
                   打开错题本
                 </Button>
-                <Button variant="quiet" size="small" onClick={() => navigate('/progress')}>
+                <Button variant="ghost" size="sm" onClick={() => navigate('/progress')}>
                   查看分析
                 </Button>
               </div>
@@ -240,7 +237,7 @@ export function DashboardPage() {
         <section className={page.section}>
           <div className={page.sectionHeader}>
             <h2>近 14 天</h2>
-            <Button variant="quiet" size="small" onClick={() => navigate('/progress')}>
+            <Button variant="ghost" size="sm" onClick={() => navigate('/progress')}>
               完整分析
             </Button>
           </div>

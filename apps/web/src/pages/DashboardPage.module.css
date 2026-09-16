@@ -24,7 +24,7 @@
   align-content: center;
   gap: 14px;
   padding-right: 26px;
-  border-right: 1px solid var(--lui-color-separator);
+  border-right: 1px solid var(--lk-color-emphasis-300);
   text-align: center;
 }
 
@@ -51,14 +51,14 @@
 }
 
 .ringTrack {
-  stroke: var(--lui-color-surface-muted);
+  stroke: var(--lk-color-emphasis-100);
 }
 
 .ringValue {
-  stroke: var(--lui-color-accent);
+  stroke: var(--lk-color-primary);
   stroke-linecap: round;
   stroke-dasharray: 276.46;
-  transition: stroke-dashoffset var(--lui-motion-surface);
+  transition: stroke-dashoffset var(--lk-transition-surface);
 }
 
 .progressRing > span {
@@ -76,7 +76,7 @@
 
 .progressRing small,
 .progressCopy span {
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 11px;
 }
 
@@ -106,20 +106,20 @@
   gap: 14px;
   min-height: 82px;
   padding: 15px;
-  border: 1px solid var(--lui-color-separator);
-  border-radius: var(--lui-radius-panel);
-  background: var(--lui-color-surface-raised);
-  color: var(--lui-color-label);
+  border: 1px solid var(--lk-color-emphasis-300);
+  border-radius: var(--lk-radius-md);
+  background: var(--lk-background-raised);
+  color: var(--lk-font-color-base);
   text-align: left;
   transition:
-    background-color var(--lui-motion-control),
-    border-color var(--lui-motion-control),
-    transform var(--lui-motion-control);
+    background-color var(--lk-transition),
+    border-color var(--lk-transition),
+    transform var(--lk-transition);
 }
 
 .planItems button:hover {
-  border-color: var(--lui-color-separator-strong);
-  background: var(--lui-color-surface-muted);
+  border-color: var(--lk-color-emphasis-400);
+  background: var(--lk-color-emphasis-100);
 }
 
 .planItems button:active {
@@ -136,12 +136,12 @@
 }
 
 .planItems small {
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 12px;
 }
 
 .planItems button > svg {
-  color: var(--lui-color-label-tertiary);
+  color: var(--lk-font-color-tertiary);
 }
 
 .focus {
@@ -155,7 +155,7 @@
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
   gap: 11px;
-  border-bottom: 1px solid var(--lui-color-separator);
+  border-bottom: 1px solid var(--lk-color-emphasis-300);
 }
 
 .focus article > span {
@@ -164,8 +164,8 @@
   height: 34px;
   place-items: center;
   border-radius: 10px;
-  background: var(--lui-color-accent-soft);
-  color: var(--lui-color-accent-label);
+  background: var(--lk-color-primary-soft);
+  color: var(--lk-color-primary-label);
 }
 
 .focus article > span svg {
@@ -184,7 +184,7 @@
 }
 
 .focus article small {
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 11px;
 }
 
@@ -209,7 +209,7 @@
   align-items: end;
   gap: 7px;
   padding: 22px 22px 14px;
-  border-bottom: 1px solid var(--lui-color-separator);
+  border-bottom: 1px solid var(--lk-color-emphasis-300);
 }
 
 .miniChart > div {
@@ -222,7 +222,7 @@
   width: 100%;
   min-height: 3px;
   border-radius: 4px 4px 2px 2px;
-  background: var(--lui-color-accent);
+  background: var(--lk-color-primary);
   opacity: 0.86;
 }
 
@@ -232,7 +232,7 @@
   justify-content: space-between;
   gap: 8px;
   padding: 12px 22px;
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 11px;
 }
 
@@ -279,7 +279,7 @@
     justify-items: start;
     padding: 0 0 22px;
     border-right: 0;
-    border-bottom: 1px solid var(--lui-color-separator);
+    border-bottom: 1px solid var(--lk-color-emphasis-300);
     text-align: left;
   }
 
@@ -298,7 +298,7 @@
   }
 
   .focus article {
-    border-bottom: 1px solid var(--lui-color-separator);
+    border-bottom: 1px solid var(--lk-color-emphasis-300);
   }
 
   .miniChart {

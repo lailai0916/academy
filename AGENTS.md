@@ -39,7 +39,7 @@ with `ACADEMY_INTEGRATION_TEST=true` when changing authentication, learning, soc
 ## Durable conventions
 
 - Keep the student interface Simplified Chinese. Tools remains the bilingual product.
-- Use semantic tokens and primitives from `@lailai/ui`; keep light, dark, and system modes complete.
+- Use semantic tokens and primitives from `@lailai0916/ui`; keep light, dark, and system modes complete.
 - Measure mastery, delayed accuracy, and long-term retention. Do not optimize product feedback for
   time spent.
 - Treat reviewed textbook content as the factual source. AI may explain and generate variants but
@@ -50,3 +50,6 @@ with `ACADEMY_INTEGRATION_TEST=true` when changing authentication, learning, soc
 - Never attach usernames, answers, content text, API responses, or other sensitive learning data to
   Umami events.
 - Keep `AGENTS.md`, architecture docs, and deployment instructions aligned with code changes.
+
+Shared UI is maintained in `lailai0916/ui` and installed from npm. Import `theme.css` before
+`styles.css`, use `--lk-*` tokens, and customize supported `data-lk` hooks rather than generated classes.

@@ -95,7 +95,7 @@ academy/
 The npm workspace separates the React client, Fastify API and shared validation models.
 Caddy serves the website and proxies `/api` to Fastify; PostgreSQL stores identity,
 learning and social data. Shared interface primitives come directly from
-[`@lailai/ui`](https://github.com/lailai0916/ui) through GitHub rather than npm.
+[`@lailai0916/ui`](https://github.com/lailai0916/ui) from npm.
 
 Detailed decisions and runbooks are available in
 [docs/architecture.md](docs/architecture.md) and [docs/operations.md](docs/operations.md).

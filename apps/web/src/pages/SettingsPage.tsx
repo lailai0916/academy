@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
-import { Button, Panel, SelectField, TextAreaField, TextField } from '@lailai/ui';
+import { Button, Panel, SelectField, TextAreaField, TextField } from '@lailai0916/ui';
 import type { AuthSession, Grade, Profile } from '@lailai/academy-shared';
 import { useAuth } from '../auth/AuthProvider';
 import { Icon } from '../components/Icon';
@@ -230,7 +230,7 @@ export function SettingsPage() {
                 <option value="private">仅自己可见</option>
               </SelectField>
               <div className={page.actions}>
-                <Button type="submit" disabled={saving}>
+                <Button variant="primary" type="submit" disabled={saving}>
                   {saving ? '正在保存' : '保存设置'}
                 </Button>
               </div>
@@ -246,8 +246,8 @@ export function SettingsPage() {
                 {sessions.some((session) => !session.current) && (
                   <Button
                     type="button"
-                    variant="quiet"
-                    size="small"
+                    variant="ghost"
+                    size="sm"
                     disabled={securityBusy}
                     onClick={revokeOtherSessions}
                   >
@@ -295,7 +295,7 @@ export function SettingsPage() {
                     required
                   />
                   <div className={page.actions}>
-                    <Button type="submit" disabled={securityBusy}>
+                    <Button variant="primary" type="submit" disabled={securityBusy}>
                       {passwordSaving ? '正在更新' : '更新密码'}
                     </Button>
                   </div>
@@ -333,8 +333,8 @@ export function SettingsPage() {
                           {!session.current && (
                             <Button
                               type="button"
-                              variant="quiet"
-                              size="small"
+                              variant="ghost"
+                              size="sm"
                               disabled={securityBusy}
                               aria-label={`退出 ${session.deviceName}`}
                               onClick={() => revokeSession(session.id)}

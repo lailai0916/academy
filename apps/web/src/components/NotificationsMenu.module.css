@@ -12,16 +12,16 @@
   border: 0;
   border-radius: 10px;
   background: transparent;
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   transition:
-    background-color var(--lui-motion-control),
-    color var(--lui-motion-control),
-    transform var(--lui-motion-control);
+    background-color var(--lk-transition),
+    color var(--lk-transition),
+    transform var(--lk-transition);
 }
 
 .trigger:hover {
-  background: var(--lui-color-surface-muted);
-  color: var(--lui-color-label);
+  background: var(--lk-color-emphasis-100);
+  color: var(--lk-font-color-base);
 }
 
 .trigger:active {
@@ -42,9 +42,9 @@
   height: 16px;
   padding: 0 4px;
   place-items: center;
-  border: 2px solid var(--lui-color-surface);
+  border: 2px solid var(--lk-card-background-color);
   border-radius: 9px;
-  background: var(--lui-color-danger);
+  background: var(--lk-color-danger);
   color: white;
   font-size: 9px;
   font-weight: 700;
@@ -58,16 +58,16 @@
   right: 0;
   width: min(360px, calc(100vw - 24px));
   overflow: hidden;
-  border: 1px solid var(--lui-color-separator);
+  border: 1px solid var(--lk-color-emphasis-300);
   border-radius: 18px;
-  background: var(--lui-color-surface);
-  box-shadow: var(--lui-shadow-overlay);
-  animation: notification-enter var(--lui-motion-surface) both;
+  background: var(--lk-card-background-color);
+  box-shadow: var(--lk-shadow-overlay);
+  animation: notification-enter var(--lk-transition-surface) both;
 }
 
 .menu header {
   padding: 13px 15px;
-  border-bottom: 1px solid var(--lui-color-separator);
+  border-bottom: 1px solid var(--lk-color-emphasis-300);
 }
 
 .menu h2 {
@@ -88,13 +88,13 @@
   gap: 10px;
   min-height: 72px;
   padding: 12px 14px;
-  border-bottom: 1px solid var(--lui-color-separator);
+  border-bottom: 1px solid var(--lk-color-emphasis-300);
 }
 
 .list a {
   transition:
-    background-color var(--lui-motion-control),
-    transform var(--lui-motion-control);
+    background-color var(--lk-transition),
+    transform var(--lk-transition);
 }
 
 .list a:last-child,
@@ -103,7 +103,7 @@
 }
 
 .list a:hover {
-  background: var(--lui-color-surface-muted);
+  background: var(--lk-color-emphasis-100);
 }
 
 .list a:active {
@@ -117,7 +117,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--lui-color-accent);
+  background: var(--lk-color-primary);
   content: '';
 }
 
@@ -127,8 +127,8 @@
   height: 30px;
   place-items: center;
   border-radius: 8px;
-  background: var(--lui-color-accent-soft);
-  color: var(--lui-color-accent-label);
+  background: var(--lk-color-primary-soft);
+  color: var(--lk-color-primary-label);
 }
 
 .itemIcon svg {
@@ -149,7 +149,7 @@
 .itemCopy > span,
 .itemCopy time,
 .empty {
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 12px;
 }
 
@@ -160,7 +160,7 @@
 }
 
 .itemCopy time {
-  color: var(--lui-color-label-tertiary);
+  color: var(--lk-font-color-tertiary);
   font-size: 11px;
 }
 

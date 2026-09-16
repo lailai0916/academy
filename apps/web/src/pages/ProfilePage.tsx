@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Avatar, Button, Panel } from '@lailai/ui';
+import { Avatar, Button, Panel } from '@lailai0916/ui';
 import { useNavigate, useParams } from 'react-router';
 import type { Profile } from '@lailai/academy-shared';
 import { Icon } from '../components/Icon';

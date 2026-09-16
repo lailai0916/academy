@@ -1,18 +1,18 @@
 .page {
   min-height: 100vh;
-  background: var(--lui-color-canvas);
+  background: var(--lk-background-color);
 }
 
 .content {
   display: grid;
-  min-height: calc(100vh - var(--lui-header-height));
+  min-height: calc(100vh - var(--lk-header-height));
   place-items: center;
   padding: 48px 20px;
 }
 
 .formPanel {
   width: min(100%, 420px);
-  background: var(--lui-color-surface);
+  background: var(--lk-card-background-color);
 }
 
 .form {
@@ -35,19 +35,19 @@
 
 .formHeader p,
 .switchMode {
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 13px;
 }
 
 .error {
   padding: 10px 12px;
-  border-radius: var(--lui-radius-control);
-  background: var(--lui-color-danger-soft);
-  color: var(--lui-color-danger);
+  border-radius: var(--lk-radius-control);
+  background: var(--lk-color-danger-soft);
+  color: var(--lk-color-danger);
   font-size: 13px;
 }
 
-.form :global(.lui-button) {
+.form :global([data-lk='button']) {
   width: 100%;
 }
 
@@ -59,13 +59,13 @@
   display: inline-flex;
   min-height: 44px;
   align-items: center;
-  color: var(--lui-color-accent-label);
+  color: var(--lk-color-primary-label);
   font-weight: 600;
 }
 
 @media (max-width: 520px) {
   .content {
-    min-height: calc(100vh - var(--lui-header-height));
+    min-height: calc(100vh - var(--lk-header-height));
     align-items: start;
     padding: 28px 12px;
   }

@@ -3,9 +3,9 @@
   width: fit-content;
   gap: 3px;
   padding: 3px;
-  border: 1px solid var(--lui-color-separator);
+  border: 1px solid var(--lk-color-emphasis-300);
   border-radius: 12px;
-  background: var(--lui-color-surface-muted);
+  background: var(--lk-color-emphasis-100);
 }
 
 .tabs button {
@@ -17,17 +17,17 @@
   border: 0;
   border-radius: 9px;
   background: transparent;
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 13px;
   font-weight: 600;
   transition:
-    background-color var(--lui-motion-control),
-    color var(--lui-motion-control),
-    transform var(--lui-motion-control);
+    background-color var(--lk-transition),
+    color var(--lk-transition),
+    transform var(--lk-transition);
 }
 
 .tabs button:hover {
-  color: var(--lui-color-label);
+  color: var(--lk-font-color-base);
 }
 
 .tabs button:active {
@@ -35,9 +35,9 @@
 }
 
 .tabs .active {
-  background: var(--lui-color-surface);
-  color: var(--lui-color-label);
-  box-shadow: var(--lui-shadow-control);
+  background: var(--lk-card-background-color);
+  color: var(--lk-font-color-base);
+  box-shadow: var(--lk-shadow-control);
 }
 
 .tabs svg {
@@ -49,8 +49,8 @@
   min-width: 20px;
   padding: 1px 5px;
   border-radius: 8px;
-  background: var(--lui-color-surface-muted);
-  color: var(--lui-color-label-tertiary);
+  background: var(--lk-color-emphasis-100);
+  color: var(--lk-font-color-tertiary);
   font-size: 10px;
   text-align: center;
 }
@@ -67,7 +67,7 @@
   align-items: center;
   gap: 14px;
   padding: 16px 0;
-  border-bottom: 1px solid var(--lui-color-separator);
+  border-bottom: 1px solid var(--lk-color-emphasis-300);
 }
 
 .item:last-child {
@@ -80,8 +80,8 @@
   height: 38px;
   place-items: center;
   border-radius: 11px;
-  background: var(--lui-color-danger-soft);
-  color: var(--lui-color-danger);
+  background: var(--lk-color-danger-soft);
+  color: var(--lk-color-danger);
 }
 
 .icon svg {
@@ -110,12 +110,12 @@
 .copy span,
 .copy small,
 .progress > span {
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 12px;
 }
 
 .copy small {
-  color: var(--lui-color-label-tertiary);
+  color: var(--lk-font-color-tertiary);
 }
 
 .progress {
@@ -124,7 +124,7 @@
 }
 
 .progress > span {
-  color: var(--lui-color-label-tertiary);
+  color: var(--lk-font-color-tertiary);
   text-align: right;
 }
 

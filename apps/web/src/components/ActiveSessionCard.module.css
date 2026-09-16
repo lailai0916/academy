@@ -12,8 +12,8 @@
   height: 40px;
   place-items: center;
   border-radius: 11px;
-  background: var(--lui-color-accent-soft);
-  color: var(--lui-color-accent-label);
+  background: var(--lk-color-primary-soft);
+  color: var(--lk-color-primary-label);
 }
 
 .icon svg {
@@ -28,7 +28,7 @@
 }
 
 .copy p {
-  color: var(--lui-color-accent-label);
+  color: var(--lk-color-primary-label);
   font-size: 11px;
   font-weight: 650;
 }
@@ -40,7 +40,7 @@
 
 .copy > span {
   overflow: hidden;
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 12px;
   text-overflow: ellipsis;
   white-space: nowrap;

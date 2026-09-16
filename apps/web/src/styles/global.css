@@ -1,39 +1,40 @@
 /* Academy owns its product tokens locally so the shared UI package can stay neutral. */
-:root {
-  --lui-color-canvas: #f6f6f8;
-  --lui-color-surface-raised: #fbfbfc;
-  --lui-color-surface-muted: #f0f1f3;
-  --lui-color-label-secondary: #5c5d65;
-  --lui-color-label-tertiary: #71727b;
-  --lui-color-separator: #dddde2;
-  --lui-color-separator-strong: #c7c8ce;
-  --lui-radius-control: 10px;
-  --lui-radius-panel: 14px;
-  --lui-radius-feature: 18px;
-  --lui-radius-overlay: 20px;
-  --lui-header-height: 60px;
-  --lui-shadow-control: 0 1px 2px rgb(0 0 0 / 7%);
-  --lui-shadow-overlay: 0 18px 50px rgb(0 0 0 / 14%), 0 2px 10px rgb(0 0 0 / 6%);
+:root,
+:root[data-theme] {
+  --lk-background-color: #f6f6f8;
+  --lk-background-raised: #fbfbfc;
+  --lk-color-emphasis-100: #f0f1f3;
+  --lk-font-color-secondary: #5c5d65;
+  --lk-font-color-tertiary: #71727b;
+  --lk-color-emphasis-300: #dddde2;
+  --lk-color-emphasis-400: #c7c8ce;
+  --lk-radius-control: 10px;
+  --lk-radius-md: 14px;
+  --lk-radius-lg: 18px;
+  --lk-radius-overlay: 20px;
+  --lk-header-height: 60px;
+  --lk-shadow-control: 0 1px 2px rgb(0 0 0 / 7%);
+  --lk-shadow-overlay: 0 18px 50px rgb(0 0 0 / 14%), 0 2px 10px rgb(0 0 0 / 6%);
   --academy-sidebar-width: 224px;
   --academy-shell-gap: 12px;
   --academy-shadow-panel: 0 1px 2px rgb(15 23 42 / 3%);
-  --academy-chrome: color-mix(in srgb, var(--lui-color-surface) 86%, transparent);
+  --academy-chrome: color-mix(in srgb, var(--lk-card-background-color) 86%, transparent);
 }
 
 :root[data-theme='dark'] {
-  --lui-color-canvas: #111214;
-  --lui-color-surface: #1a1b1f;
-  --lui-color-surface-raised: #202126;
-  --lui-color-surface-muted: #25262b;
-  --lui-color-label: #f5f5f7;
-  --lui-color-label-secondary: #b8b9c1;
-  --lui-color-label-tertiary: #92939d;
-  --lui-color-separator: #34353b;
-  --lui-color-separator-strong: #4a4b53;
-  --lui-color-accent-soft: #12385f;
-  --lui-color-accent-label: #8bc5ff;
-  --lui-shadow-control: 0 1px 2px rgb(0 0 0 / 22%);
-  --lui-shadow-overlay: 0 20px 56px rgb(0 0 0 / 48%), 0 2px 12px rgb(0 0 0 / 26%);
+  --lk-background-color: #111214;
+  --lk-card-background-color: #1a1b1f;
+  --lk-background-raised: #202126;
+  --lk-color-emphasis-100: #25262b;
+  --lk-font-color-base: #f5f5f7;
+  --lk-font-color-secondary: #b8b9c1;
+  --lk-font-color-tertiary: #92939d;
+  --lk-color-emphasis-300: #34353b;
+  --lk-color-emphasis-400: #4a4b53;
+  --lk-color-primary-soft: #12385f;
+  --lk-color-primary-label: #8bc5ff;
+  --lk-shadow-control: 0 1px 2px rgb(0 0 0 / 22%);
+  --lk-shadow-overlay: 0 20px 56px rgb(0 0 0 / 48%), 0 2px 12px rgb(0 0 0 / 26%);
   --academy-shadow-panel: 0 1px 1px rgb(0 0 0 / 18%);
 }
 
@@ -47,11 +48,11 @@ html {
   min-width: 320px;
   scroll-behavior: smooth;
   scroll-padding-top: 76px;
-  background: var(--lui-color-canvas);
-  color: var(--lui-color-label);
-  font-family: var(--lui-font-sans);
+  background: var(--lk-background-color);
+  color: var(--lk-font-color-base);
+  font-family: var(--lk-font-family);
   font-synthesis: none;
-  scrollbar-color: var(--lui-color-separator-strong) transparent;
+  scrollbar-color: var(--lk-color-emphasis-400) transparent;
   -webkit-text-size-adjust: 100%;
 }
 
@@ -59,8 +60,8 @@ body {
   min-width: 320px;
   min-height: 100vh;
   margin: 0;
-  background: var(--lui-color-canvas);
-  color: var(--lui-color-label);
+  background: var(--lk-background-color);
+  color: var(--lk-font-color-base);
   font-size: 15px;
   line-height: 1.6;
   font-variant-numeric: proportional-nums;
@@ -114,33 +115,33 @@ p {
 }
 
 ::selection {
-  background: color-mix(in srgb, var(--lui-color-accent) 24%, transparent);
+  background: color-mix(in srgb, var(--lk-color-primary) 24%, transparent);
 }
 
-/* Shared primitives are tuned to the Academy geometry without forking @lailai/ui. */
-.lui-panel {
+/* Shared primitives are tuned to the Academy geometry without forking @lailai0916/ui. */
+[data-lk='panel'] {
   box-shadow: var(--academy-shadow-panel);
 }
 
-.lui-brand__logo {
+[data-lk='brand-logo'] {
   border: 0;
   box-shadow: none;
 }
 
-.lui-field__control {
-  background: var(--lui-color-surface-raised);
+[data-lk='field-control'] {
+  background: var(--lk-background-raised);
 }
 
-.lui-field__control:focus-visible {
-  background: var(--lui-color-surface);
+[data-lk='field-control']:focus-visible {
+  background: var(--lk-card-background-color);
 }
 
-.lui-theme-picker__menu {
+[data-lk='theme-menu'] {
   border-radius: 12px;
 }
 
 :focus-visible {
-  outline: 2px solid var(--lui-color-focus);
+  outline: 2px solid var(--lk-color-primary);
   outline-offset: 2px;
 }
 
@@ -151,14 +152,14 @@ p {
   left: 8px;
   min-height: 44px;
   padding: 8px 12px;
-  border: 1px solid var(--lui-color-separator);
-  border-radius: var(--lui-radius-control);
-  background: var(--lui-color-surface);
-  color: var(--lui-color-label);
+  border: 1px solid var(--lk-color-emphasis-300);
+  border-radius: var(--lk-radius-control);
+  background: var(--lk-card-background-color);
+  color: var(--lk-font-color-base);
   font-size: 14px;
   font-weight: 650;
   transform: translateY(-160%);
-  transition: transform var(--lui-motion-control);
+  transition: transform var(--lk-transition);
 }
 
 .skip-link:focus {
@@ -186,8 +187,8 @@ p {
 .loading-screen__indicator {
   width: 22px;
   height: 22px;
-  border: 2px solid var(--lui-color-separator);
-  border-top-color: var(--lui-color-accent);
+  border: 2px solid var(--lk-color-emphasis-300);
+  border-top-color: var(--lk-color-primary);
   border-radius: 50%;
   animation: global-spin 700ms linear infinite;
 }
@@ -211,6 +212,6 @@ p {
 
 @media (prefers-reduced-transparency: reduce) {
   :root {
-    --academy-chrome: var(--lui-color-surface);
+    --academy-chrome: var(--lk-card-background-color);
   }
 }

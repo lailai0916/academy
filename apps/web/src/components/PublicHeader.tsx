@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Brand, IconButton, ThemeControl } from '@lailai/ui';
+import { Brand, IconButton, ThemeControl } from '@lailai0916/ui';
 import { Link, useNavigate } from 'react-router';
 import { useAuth } from '../auth/AuthProvider';
 import { Icon } from './Icon';
@@ -53,7 +53,7 @@ export function PublicHeader({ minimal = false }: { minimal?: boolean }) {
                 {user && (
                   <IconButton
                     label="退出登录"
-                    size="small"
+                    size="sm"
                     disabled={loggingOut}
                     onClick={() => void handleLogout()}
                   >

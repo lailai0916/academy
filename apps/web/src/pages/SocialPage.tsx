@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, type FormEvent, type KeyboardEvent } from 'react';
-import { Avatar, Button, Panel, SelectField, TextAreaField, TextField } from '@lailai/ui';
+import { Avatar, Button, Panel, SelectField, TextAreaField, TextField } from '@lailai0916/ui';
 import type { Challenge, SocialPost, StudyGroup } from '@lailai/academy-shared';
 import { Icon } from '../components/Icon';
 import { api, errorMessage } from '../lib/api';
@@ -101,7 +101,7 @@ function ChallengeCard({
             {personalLabel && <span>{personalLabel}</span>}
           </div>
           {!challenge.joined && challenge.status === 'active' && (
-            <Button variant="secondary" size="small" disabled={busy} onClick={onJoin}>
+            <Button variant="secondary" size="sm" disabled={busy} onClick={onJoin}>
               参与目标
             </Button>
           )}
@@ -307,7 +307,7 @@ export function SocialPage() {
                   <option value="platform">全平台</option>
                   <option value="friends">仅好友</option>
                 </SelectField>
-                <Button type="submit" disabled={busy || !post.trim()}>
+                <Button variant="primary" type="submit" disabled={busy || !post.trim()}>
                   发布动态
                 </Button>
               </div>
@@ -390,7 +390,7 @@ export function SocialPage() {
                 />
               </div>
               <div className={page.actions}>
-                <Button type="submit" disabled={busy}>
+                <Button variant="primary" type="submit" disabled={busy}>
                   创建学习小组
                 </Button>
               </div>
@@ -437,7 +437,7 @@ export function SocialPage() {
             {joinedGroups.length > 0 && (
               <Button
                 variant="secondary"
-                size="small"
+                size="sm"
                 aria-expanded={showGoalForm}
                 aria-controls="create-group-goal"
                 onClick={() => setShowGoalForm((current) => !current)}
@@ -523,7 +523,7 @@ export function SocialPage() {
                       ? '达到正确率且满足最低测试次数后，目标才算完成。'
                       : '进度只统计参与目标之后完成的有效学习记录。'}
                   </span>
-                  <Button type="submit" disabled={busy || !challengeTitle.trim()}>
+                  <Button variant="primary" type="submit" disabled={busy || !challengeTitle.trim()}>
                     创建共同目标
                   </Button>
                 </div>
@@ -600,7 +600,7 @@ export function SocialPage() {
                 required
               />
               <div className={page.actions}>
-                <Button type="submit" disabled={busy}>
+                <Button variant="primary" type="submit" disabled={busy}>
                   发送申请
                 </Button>
               </div>
@@ -631,7 +631,8 @@ export function SocialPage() {
                         friend.direction === 'incoming' &&
                         friend.person && (
                           <Button
-                            size="small"
+                            variant="primary"
+                            size="sm"
                             disabled={busy}
                             onClick={() =>
                               run(() =>

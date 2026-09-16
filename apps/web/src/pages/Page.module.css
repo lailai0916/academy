@@ -43,7 +43,7 @@
 
 .sectionHeader p,
 .muted {
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 13px;
 }
 
@@ -96,7 +96,7 @@
 }
 
 .panelTitle p {
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 13px;
 }
 
@@ -107,8 +107,8 @@
   flex: none;
   place-items: center;
   border-radius: 11px;
-  background: var(--lui-color-accent-soft);
-  color: var(--lui-color-accent-label);
+  background: var(--lk-color-primary-soft);
+  color: var(--lk-color-primary-label);
   font-size: 18px;
 }
 
@@ -118,14 +118,14 @@
   min-height: 112px;
   align-content: space-between;
   padding: 19px;
-  border: 1px solid var(--lui-color-separator);
-  border-radius: var(--lui-radius-panel);
-  background: var(--lui-color-surface);
+  border: 1px solid var(--lk-color-emphasis-300);
+  border-radius: var(--lk-radius-md);
+  background: var(--lk-card-background-color);
   box-shadow: var(--academy-shadow-panel);
 }
 
 .metric span {
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 12px;
   font-weight: 580;
 }
@@ -138,7 +138,7 @@
 }
 
 .metric small {
-  color: var(--lui-color-label-tertiary);
+  color: var(--lk-font-color-tertiary);
   font-size: 12px;
 }
 
@@ -166,26 +166,26 @@
 .success {
   padding: 12px 14px;
   border: 1px solid transparent;
-  border-radius: var(--lui-radius-control);
+  border-radius: var(--lk-radius-control);
   font-size: 13px;
 }
 
 .notice {
-  border-color: color-mix(in srgb, var(--lui-color-accent) 20%, transparent);
-  background: var(--lui-color-accent-soft);
-  color: var(--lui-color-accent-label);
+  border-color: color-mix(in srgb, var(--lk-color-primary) 20%, transparent);
+  background: var(--lk-color-primary-soft);
+  color: var(--lk-color-primary-label);
 }
 
 .error {
-  border-color: color-mix(in srgb, var(--lui-color-danger) 20%, transparent);
-  background: var(--lui-color-danger-soft);
-  color: var(--lui-color-danger);
+  border-color: color-mix(in srgb, var(--lk-color-danger) 20%, transparent);
+  background: var(--lk-color-danger-soft);
+  color: var(--lk-color-danger);
 }
 
 .success {
-  border-color: color-mix(in srgb, var(--lui-color-success) 20%, transparent);
-  background: var(--lui-color-success-soft);
-  color: var(--lui-color-success);
+  border-color: color-mix(in srgb, var(--lk-color-success) 20%, transparent);
+  background: var(--lk-color-success-soft);
+  color: var(--lk-color-success);
 }
 
 .list {
@@ -202,7 +202,7 @@
   gap: 12px;
   min-height: 64px;
   padding: 10px 0;
-  border-bottom: 1px solid var(--lui-color-separator);
+  border-bottom: 1px solid var(--lk-color-emphasis-300);
 }
 
 .listItem:last-child {
@@ -224,7 +224,7 @@
 }
 
 .listCopy span {
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 12px;
 }
 
@@ -233,10 +233,10 @@
   min-height: 160px;
   padding: 28px;
   place-items: center;
-  border: 1px solid var(--lui-color-separator);
-  border-radius: var(--lui-radius-panel);
-  background: var(--lui-color-surface);
-  color: var(--lui-color-label-secondary);
+  border: 1px solid var(--lk-color-emphasis-300);
+  border-radius: var(--lk-radius-md);
+  background: var(--lk-card-background-color);
+  color: var(--lk-font-color-secondary);
   text-align: center;
 }
 

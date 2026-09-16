@@ -1,8 +1,9 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router';
-import { ThemeProvider } from '@lailai/ui';
-import '@lailai/ui/styles.css';
+import { ThemeProvider } from '@lailai0916/ui';
+import '@lailai0916/ui/theme.css';
+import '@lailai0916/ui/styles.css';
 import { AuthProvider } from './auth/AuthProvider';
 import { App } from './App';
 import './styles/global.css';
@@ -14,7 +15,7 @@ if (!root) {
 
 createRoot(root).render(
   <StrictMode>
-    <ThemeProvider>
+    <ThemeProvider themeColors={{ light: '#f6f6f8', dark: '#111214' }}>
       <BrowserRouter>
         <AuthProvider>
           <App />

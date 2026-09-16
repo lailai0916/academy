@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
-import { Button, Panel, SelectField, TextAreaField, TextField } from '@lailai/ui';
+import { Button, Panel, SelectField, TextAreaField, TextField } from '@lailai0916/ui';
 import { Link, useLocation } from 'react-router';
 import type { AdminContentDetail, PoemPayload, WordPayload } from '@lailai/academy-shared';
 import { Icon } from '../components/Icon';
@@ -401,7 +401,7 @@ export function AdminContentDetailPage({
               onChange={(event) => update('note', event.target.value)}
             />
             <div className={styles.stickyActions}>
-              <Button type="submit" disabled={busy}>
+              <Button variant="primary" type="submit" disabled={busy}>
                 <Icon icon="lucide:save" />
                 {busy ? '正在保存' : '保存新版本'}
               </Button>

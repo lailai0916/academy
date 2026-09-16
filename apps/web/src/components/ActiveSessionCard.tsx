@@ -1,4 +1,4 @@
-import { Button, Panel, Progress } from '@lailai/ui';
+import { Button, Panel, Progress } from '@lailai0916/ui';
 import type { ActiveLearningSession } from '@lailai/academy-shared';
 import { formatSessionTime, learningKindLabels, sessionModeLabels } from '../lib/learning';
 import { Icon } from './Icon';
@@ -33,7 +33,7 @@ export function ActiveSessionCard({
             value={progress}
           />
         </div>
-        <Button onClick={onResume}>
+        <Button variant="primary" onClick={onResume}>
           继续学习
           <Icon icon="lucide:arrow-right" />
         </Button>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, EmptyState, Panel, Progress } from '@lailai/ui';
+import { Button, EmptyState, Panel, Progress } from '@lailai0916/ui';
 import { useNavigate } from 'react-router';
 import type { ContentKind, Dashboard, LearningOverview } from '@lailai/academy-shared';
 import { ActiveSessionCard } from '../components/ActiveSessionCard';
@@ -83,7 +83,12 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
       <div className={page.page}>
         <header className={page.pageHeader}>
           <h1 className={page.pageHeading}>{subject.title}</h1>
-          <Button size="large" onClick={() => start(kind, 'plan')} disabled={starting}>
+          <Button
+            variant="primary"
+            size="lg"
+            onClick={() => start(kind, 'plan')}
+            disabled={starting}
+          >
             <Icon icon="lucide:play" />
             {activeSession ? '继续当前任务' : '开始今日计划'}
           </Button>
@@ -206,8 +211,8 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
                     <div className={styles.unitProgress}>
                       <Progress label={`教材覆盖 ${progress}%`} value={progress} />
                       <Button
-                        size="small"
-                        variant="quiet"
+                        size="sm"
+                        variant="ghost"
                         onClick={() => start(kind, 'plan', { unit: unit.unit, limit: 10 })}
                         disabled={starting || Boolean(activeSession)}
                       >
@@ -232,7 +237,7 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
         <section className={page.section}>
           <div className={page.sectionHeader}>
             <h2>最近错题</h2>
-            <Button variant="quiet" size="small" onClick={() => navigate('/learn/mistakes')}>
+            <Button variant="ghost" size="sm" onClick={() => navigate('/learn/mistakes')}>
               查看错题本
               <Icon icon="lucide:arrow-right" />
             </Button>
@@ -313,13 +318,14 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
                 </div>
                 <div className={page.actions}>
                   <Button
+                    variant="primary"
                     onClick={() => start(subjectKind, 'plan')}
                     disabled={starting || Boolean(activeSession && !isActiveSubject)}
                   >
                     {isActiveSubject ? '继续学习' : '开始计划'}
                   </Button>
                   <Button
-                    variant="quiet"
+                    variant="ghost"
                     onClick={() => navigate(`/learn/${subjectKind === 'word' ? 'words' : 'poems'}`)}
                   >
                     查看详情

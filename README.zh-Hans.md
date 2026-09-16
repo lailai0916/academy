@@ -85,8 +85,8 @@ academy/
 ## 技术架构
 
 npm workspace 将 React 客户端、Fastify API 与共用验证模型分离。Caddy 提供网页并把
-`/api` 代理至 Fastify，PostgreSQL 保存身份、学习与社交数据。共享界面原语通过 GitHub
-直接使用 [`@lailai/ui`](https://github.com/lailai0916/ui)，无需发布到 npm。
+`/api` 代理至 Fastify，PostgreSQL 保存身份、学习与社交数据。共享界面原语通过 npm
+安装 [`@lailai0916/ui`](https://github.com/lailai0916/ui)，由统一组件仓库维护。
 
 详细决策与运维手册见 [docs/architecture.md](docs/architecture.md) 和
 [docs/operations.md](docs/operations.md)。

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, EmptyState, Panel, Progress } from '@lailai/ui';
+import { Button, EmptyState, Panel, Progress } from '@lailai0916/ui';
 import { useNavigate } from 'react-router';
 import type { LearningInsights } from '@lailai/academy-shared';
 import { Icon } from '../components/Icon';
@@ -167,8 +167,8 @@ export function ProgressPage() {
                     </div>
                     <Progress label={`掌握度 ${unit.mastery}%`} value={unit.mastery} />
                     <Button
-                      size="small"
-                      variant="quiet"
+                      size="sm"
+                      variant="ghost"
                       onClick={() =>
                         navigate(unit.kind === 'word' ? '/learn/words' : '/learn/poems')
                       }

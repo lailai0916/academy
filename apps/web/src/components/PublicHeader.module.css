@@ -2,9 +2,9 @@
   position: sticky;
   top: 0;
   z-index: 40;
-  height: var(--lui-header-height);
-  border-bottom: 1px solid var(--lui-color-separator);
-  background: var(--lui-color-surface);
+  height: var(--lk-header-height);
+  border-bottom: 1px solid var(--lk-color-emphasis-300);
+  background: var(--lk-card-background-color);
 }
 
 .inner {
@@ -23,7 +23,7 @@
   min-width: 44px;
   min-height: 44px;
   align-items: center;
-  border-radius: var(--lui-radius-control);
+  border-radius: var(--lk-radius-control);
 }
 
 .navigation {
@@ -34,15 +34,15 @@
 
 .navigation a,
 .textAction {
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 13px;
   font-weight: 600;
-  transition: color var(--lui-motion-control);
+  transition: color var(--lk-transition);
 }
 
 .navigation a:hover,
 .textAction:hover {
-  color: var(--lui-color-label);
+  color: var(--lk-font-color-base);
 }
 
 .actions {
@@ -56,7 +56,7 @@
 .textAction,
 .primaryAction {
   display: inline-flex;
-  min-height: var(--lui-control-height-compact);
+  min-height: var(--lk-control-height-compact);
   align-items: center;
   justify-content: center;
   padding: 0 11px;
@@ -65,17 +65,17 @@
 }
 
 .primaryAction {
-  background: var(--lui-color-accent-fill);
+  background: var(--lk-color-primary);
   color: #ffffff;
   font-size: 13px;
   font-weight: 650;
   transition:
-    background-color var(--lui-motion-control),
-    transform var(--lui-motion-control);
+    background-color var(--lk-transition),
+    transform var(--lk-transition);
 }
 
 .primaryAction:hover {
-  background: var(--lui-color-accent-fill-hover);
+  background: var(--lk-color-primary-dark);
 }
 
 .primaryAction:active {
@@ -84,7 +84,7 @@
 
 .actionPlaceholder {
   width: 124px;
-  height: var(--lui-control-height-compact);
+  height: var(--lk-control-height-compact);
 }
 
 @media (max-width: 760px) {
@@ -109,7 +109,7 @@
 }
 
 @media (max-width: 460px) {
-  .brand :global(.lui-brand > span:last-child) {
+  .brand :global([data-lk='brand'] > span:last-child) {
     display: none;
   }
 

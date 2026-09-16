@@ -11,7 +11,7 @@
 }
 
 .header > span {
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 13px;
   font-variant-numeric: tabular-nums;
 }
@@ -39,7 +39,7 @@
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  color: var(--lui-color-label-tertiary);
+  color: var(--lk-font-color-tertiary);
   font-size: 12px;
   font-variant-numeric: tabular-nums;
 }
@@ -53,7 +53,7 @@
 }
 
 .questionCopy > p {
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 14px;
 }
 
@@ -66,7 +66,7 @@
 .prompt {
   max-width: 660px;
   margin-top: 8px;
-  color: var(--lui-color-label);
+  color: var(--lk-font-color-base);
   font-size: clamp(1.1rem, 3vw, 1.45rem);
   font-weight: 550;
   line-height: 1.75;
@@ -90,20 +90,20 @@
   align-items: center;
   gap: 10px;
   padding: 10px 14px;
-  border: 1px solid var(--lui-color-separator);
+  border: 1px solid var(--lk-color-emphasis-300);
   border-radius: 12px;
-  background: var(--lui-color-surface-raised);
-  color: var(--lui-color-label);
+  background: var(--lk-background-raised);
+  color: var(--lk-font-color-base);
   text-align: left;
   transition:
-    background-color var(--lui-motion-control),
-    border-color var(--lui-motion-control),
-    transform var(--lui-motion-control);
+    background-color var(--lk-transition),
+    border-color var(--lk-transition),
+    transform var(--lk-transition);
 }
 
 .options button:hover:not(:disabled) {
-  border-color: var(--lui-color-accent);
-  background: var(--lui-color-accent-soft);
+  border-color: var(--lk-color-primary);
+  background: var(--lk-color-primary-soft);
 }
 
 .options button:active:not(:disabled) {
@@ -115,18 +115,18 @@
   width: 24px;
   height: 24px;
   place-items: center;
-  border: 1px solid var(--lui-color-separator);
+  border: 1px solid var(--lk-color-emphasis-300);
   border-radius: 6px;
-  background: var(--lui-color-surface);
-  color: var(--lui-color-label-secondary);
-  font-family: var(--lui-font-sans);
+  background: var(--lk-card-background-color);
+  color: var(--lk-font-color-secondary);
+  font-family: var(--lk-font-family);
   font-size: 11px;
   font-weight: 650;
-  box-shadow: 0 1px 0 var(--lui-color-separator);
+  box-shadow: 0 1px 0 var(--lk-color-emphasis-300);
 }
 
 .options button:hover:not(:disabled) kbd {
-  border-color: color-mix(in srgb, var(--lui-color-accent) 35%, var(--lui-color-separator));
+  border-color: color-mix(in srgb, var(--lk-color-primary) 35%, var(--lk-color-emphasis-300));
 }
 
 .answerForm {
@@ -143,16 +143,16 @@
   width: 100%;
   min-height: 52px;
   padding: 10px 14px;
-  border: 1px solid var(--lui-color-separator);
+  border: 1px solid var(--lk-color-emphasis-300);
   border-radius: 12px;
-  background: var(--lui-color-surface-raised);
-  color: var(--lui-color-label);
+  background: var(--lk-background-raised);
+  color: var(--lk-font-color-base);
   font-size: 17px;
 }
 
 .answerForm input:focus {
-  border-color: var(--lui-color-accent);
-  box-shadow: var(--lui-focus-ring);
+  border-color: var(--lk-color-primary);
+  box-shadow: var(--lk-focus-ring);
   outline: 0;
 }
 
@@ -162,17 +162,17 @@
   margin-top: auto;
   padding: 20px;
   border: 1px solid transparent;
-  border-radius: var(--lui-radius-panel);
+  border-radius: var(--lk-radius-md);
 }
 
 .correct {
-  border-color: color-mix(in srgb, var(--lui-color-success) 20%, transparent);
-  background: var(--lui-color-success-soft);
+  border-color: color-mix(in srgb, var(--lk-color-success) 20%, transparent);
+  background: var(--lk-color-success-soft);
 }
 
 .incorrect {
-  border-color: color-mix(in srgb, var(--lui-color-danger) 20%, transparent);
-  background: var(--lui-color-danger-soft);
+  border-color: color-mix(in srgb, var(--lk-color-danger) 20%, transparent);
+  background: var(--lk-color-danger-soft);
 }
 
 .feedbackTitle {
@@ -189,11 +189,11 @@
 }
 
 .correct .feedbackTitle > svg {
-  color: var(--lui-color-success);
+  color: var(--lk-color-success);
 }
 
 .incorrect .feedbackTitle > svg {
-  color: var(--lui-color-danger);
+  color: var(--lk-color-danger);
 }
 
 .feedbackTitle div {
@@ -207,7 +207,7 @@
 
 .feedbackTitle p,
 .explanation {
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 13px;
 }
 
@@ -218,15 +218,15 @@
 }
 
 .answerComparison strong {
-  color: var(--lui-color-label);
+  color: var(--lk-font-color-base);
 }
 
 .versionNotice {
   padding: 10px 12px;
-  border: 1px solid var(--lui-color-separator);
+  border: 1px solid var(--lk-color-emphasis-300);
   border-radius: 10px;
-  background: var(--lui-color-surface);
-  color: var(--lui-color-label-secondary);
+  background: var(--lk-card-background-color);
+  color: var(--lk-font-color-secondary);
   font-size: 12px;
   line-height: 1.6;
 }
@@ -235,7 +235,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 12px;
 }
 
@@ -254,10 +254,10 @@
 
 .feedbackMeta span {
   padding: 4px 8px;
-  border: 1px solid var(--lui-color-separator);
+  border: 1px solid var(--lk-color-emphasis-300);
   border-radius: 6px;
-  background: var(--lui-color-surface);
-  color: var(--lui-color-label-secondary);
+  background: var(--lk-card-background-color);
+  color: var(--lk-font-color-secondary);
   font-size: 11px;
 }
 
@@ -286,7 +286,7 @@
 .aiContent > p,
 .aiContent li,
 .variant p {
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 13px;
 }
 
@@ -301,13 +301,13 @@
   display: grid;
   gap: 8px;
   padding: 14px;
-  border: 1px solid var(--lui-color-separator);
+  border: 1px solid var(--lk-color-emphasis-300);
   border-radius: 12px;
-  background: var(--lui-color-surface-muted);
+  background: var(--lk-color-emphasis-100);
 }
 
 .variant summary {
-  color: var(--lui-color-accent-label);
+  color: var(--lk-color-primary-label);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -331,8 +331,8 @@
   height: 54px;
   place-items: center;
   border-radius: 15px;
-  background: var(--lui-color-success-soft);
-  color: var(--lui-color-success);
+  background: var(--lk-color-success-soft);
+  color: var(--lk-color-success);
 }
 
 .summaryIcon svg {
@@ -341,8 +341,8 @@
 }
 
 .summaryIconEnded {
-  background: var(--lui-color-surface-muted);
-  color: var(--lui-color-label-secondary);
+  background: var(--lk-color-emphasis-100);
+  color: var(--lk-font-color-secondary);
 }
 
 .summaryTitle {
@@ -354,7 +354,7 @@
 .summaryTitle span,
 .delayedResult,
 .reinforcementResult {
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 12px;
 }
 
@@ -367,16 +367,16 @@
   display: grid;
   width: min(100%, 560px);
   grid-template-columns: repeat(3, 1fr);
-  border: 1px solid var(--lui-color-separator);
-  border-radius: var(--lui-radius-panel);
-  background: var(--lui-color-surface-raised);
+  border: 1px solid var(--lk-color-emphasis-300);
+  border-radius: var(--lk-radius-md);
+  background: var(--lk-background-raised);
 }
 
 .summaryMetrics article {
   display: grid;
   gap: 5px;
   padding: 16px;
-  border-right: 1px solid var(--lui-color-separator);
+  border-right: 1px solid var(--lk-color-emphasis-300);
 }
 
 .summaryMetrics article:last-child {
@@ -384,7 +384,7 @@
 }
 
 .summaryMetrics span {
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 11px;
 }
 
@@ -409,7 +409,7 @@
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
   gap: 11px;
-  border-bottom: 1px solid var(--lui-color-separator);
+  border-bottom: 1px solid var(--lk-color-emphasis-300);
 }
 
 .summaryMistakes article:last-child {
@@ -422,8 +422,8 @@
   height: 34px;
   place-items: center;
   border-radius: 9px;
-  background: var(--lui-color-danger-soft);
-  color: var(--lui-color-danger);
+  background: var(--lk-color-danger-soft);
+  color: var(--lk-color-danger);
 }
 
 .summaryMistakes article > span svg {
@@ -449,7 +449,7 @@
 }
 
 .summaryMistakes small {
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 11px;
 }
 
@@ -459,24 +459,24 @@
   place-content: center;
   justify-items: center;
   gap: 16px;
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
 }
 
 .exitDialog {
   width: min(calc(100% - 32px), 500px);
   max-width: none;
   padding: 0;
-  border: 1px solid var(--lui-color-separator);
-  border-radius: var(--lui-radius-overlay);
-  background: var(--lui-color-surface);
-  color: var(--lui-color-label);
-  box-shadow: var(--lui-shadow-overlay);
-  animation: dialog-enter var(--lui-motion-surface) both;
+  border: 1px solid var(--lk-color-emphasis-300);
+  border-radius: var(--lk-radius-overlay);
+  background: var(--lk-card-background-color);
+  color: var(--lk-font-color-base);
+  box-shadow: var(--lk-shadow-overlay);
+  animation: dialog-enter var(--lk-transition-surface) both;
 }
 
 .exitDialog::backdrop {
   background: rgb(0 0 0 / 42%);
-  animation: backdrop-enter var(--lui-motion-surface) both;
+  animation: backdrop-enter var(--lk-transition-surface) both;
 }
 
 .exitDialogBody {
@@ -492,8 +492,8 @@
   height: 40px;
   place-items: center;
   border-radius: 11px;
-  background: var(--lui-color-surface-muted);
-  color: var(--lui-color-label-secondary);
+  background: var(--lk-color-emphasis-100);
+  color: var(--lk-font-color-secondary);
 }
 
 .exitDialogIcon svg {
@@ -512,7 +512,7 @@
 }
 
 .exitDialogCopy p {
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 13px;
   line-height: 1.65;
 }
@@ -572,7 +572,7 @@
 
   .summaryMetrics article {
     border-right: 0;
-    border-bottom: 1px solid var(--lui-color-separator);
+    border-bottom: 1px solid var(--lk-color-emphasis-300);
   }
 
   .summaryMetrics article:last-child {

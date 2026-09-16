@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
-import { Button, Panel, SelectField, TextAreaField, TextField } from '@lailai/ui';
+import { Button, Panel, SelectField, TextAreaField, TextField } from '@lailai0916/ui';
 import { Link, NavLink, useLocation, useSearchParams } from 'react-router';
 import type {
   AdminContentItem,
@@ -618,7 +618,7 @@ function AdminContent(props: AdminContentProps) {
                         <span className={styles.inlineConfirm}>
                           <span>{item.status === 'published' ? '确认归档？' : '确认发布？'}</span>
                           <Button
-                            size="small"
+                            size="sm"
                             variant={item.status === 'published' ? 'danger' : 'primary'}
                             disabled={props.busy}
                             onClick={() => {
@@ -629,8 +629,8 @@ function AdminContent(props: AdminContentProps) {
                             确认
                           </Button>
                           <Button
-                            size="small"
-                            variant="quiet"
+                            size="sm"
+                            variant="ghost"
                             disabled={props.busy}
                             onClick={() => setStatusCandidate(null)}
                           >
@@ -639,8 +639,8 @@ function AdminContent(props: AdminContentProps) {
                         </span>
                       ) : (
                         <Button
-                          size="small"
-                          variant="quiet"
+                          size="sm"
+                          variant="ghost"
                           disabled={props.busy}
                           onClick={() => setStatusCandidate(item.id)}
                         >
@@ -770,7 +770,7 @@ function AdminContent(props: AdminContentProps) {
                         <span className={styles.inlineConfirm}>
                           <span>恢复到导入前？</span>
                           <Button
-                            size="small"
+                            size="sm"
                             variant="danger"
                             disabled={props.busy}
                             onClick={() => {
@@ -781,8 +781,8 @@ function AdminContent(props: AdminContentProps) {
                             确认回滚
                           </Button>
                           <Button
-                            size="small"
-                            variant="quiet"
+                            size="sm"
+                            variant="ghost"
                             disabled={props.busy}
                             onClick={() => setRollbackCandidate(null)}
                           >
@@ -791,8 +791,8 @@ function AdminContent(props: AdminContentProps) {
                         </span>
                       ) : (
                         <Button
-                          size="small"
-                          variant="quiet"
+                          size="sm"
+                          variant="ghost"
                           disabled={props.busy}
                           onClick={() => setRollbackCandidate(item.id)}
                         >
@@ -870,10 +870,10 @@ function ImportPreview({
         </div>
       )}
       <div className={page.actions}>
-        <Button disabled={busy || publicationBlocked} onClick={onApply}>
+        <Button variant="primary" disabled={busy || publicationBlocked} onClick={onApply}>
           {publicationBlocked ? '修正后发布' : '确认导入'}
         </Button>
-        <Button variant="quiet" disabled={busy} onClick={onCancel}>
+        <Button variant="ghost" disabled={busy} onClick={onCancel}>
           返回修改
         </Button>
       </div>
@@ -930,14 +930,14 @@ function AdminInvites(props: AdminInvitesProps) {
                 onChange={(event) => props.onChangeExpiresInDays(Number(event.target.value))}
               />
             </div>
-            <Button type="submit" disabled={props.busy}>
+            <Button variant="primary" type="submit" disabled={props.busy}>
               生成邀请码
             </Button>
             {props.newInvite && (
               <div className={styles.inviteResult}>
                 <p>新邀请码</p>
                 <code>{props.newInvite}</code>
-                <Button size="small" variant="secondary" onClick={props.onCopyInvite}>
+                <Button size="sm" variant="secondary" onClick={props.onCopyInvite}>
                   复制邀请码
                 </Button>
               </div>
@@ -968,8 +968,8 @@ function AdminInvites(props: AdminInvitesProps) {
                     <td>
                       {!invite.revoked && (
                         <Button
-                          size="small"
-                          variant="quiet"
+                          size="sm"
+                          variant="ghost"
                           disabled={props.busy}
                           onClick={() => props.onRevokeInvite(invite.id)}
                         >
@@ -1040,7 +1040,7 @@ function AdminAi({
             onChange={(event) => onChangeApiKey(event.target.value)}
           />
           <div className={page.actions}>
-            <Button disabled={busy} onClick={onSave}>
+            <Button variant="primary" disabled={busy} onClick={onSave}>
               保存配置
             </Button>
             <Button variant="secondary" disabled={busy} onClick={onTest}>

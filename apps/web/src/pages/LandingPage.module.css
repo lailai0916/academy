@@ -1,6 +1,6 @@
 .page {
   min-height: 100vh;
-  background: var(--lui-color-canvas);
+  background: var(--lk-background-color);
 }
 
 .page main {
@@ -25,7 +25,7 @@
 
 .sectionHeader > p,
 .sectionLabel {
-  color: var(--lui-color-accent-label);
+  color: var(--lk-color-primary-label);
   font-size: 13px;
   font-weight: 650;
   letter-spacing: 0.02em;
@@ -41,7 +41,7 @@
 
 .intro {
   max-width: 34em;
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 16px;
   line-height: 1.75;
 }
@@ -57,33 +57,33 @@
 .primaryButton,
 .secondaryButton {
   display: inline-flex;
-  min-height: var(--lui-control-height);
+  min-height: var(--lk-control-height);
   align-items: center;
   justify-content: center;
   gap: 8px;
   padding: 0 16px;
-  border-radius: var(--lui-radius-control);
+  border-radius: var(--lk-radius-control);
   font-size: 14px;
   font-weight: 600;
   transition:
-    background-color var(--lui-motion-control),
-    border-color var(--lui-motion-control),
-    color var(--lui-motion-control),
-    transform var(--lui-motion-control);
+    background-color var(--lk-transition),
+    border-color var(--lk-transition),
+    color var(--lk-transition),
+    transform var(--lk-transition);
 }
 
 .primaryButton {
-  background: var(--lui-color-accent-fill);
+  background: var(--lk-color-primary);
   color: #ffffff;
 }
 
 .primaryButton:hover {
-  background: var(--lui-color-accent-fill-hover);
+  background: var(--lk-color-primary-dark);
 }
 
 .primaryButton svg {
   width: 16px;
-  transition: transform var(--lui-motion-control);
+  transition: transform var(--lk-transition);
 }
 
 .primaryButton:hover svg {
@@ -91,14 +91,14 @@
 }
 
 .secondaryButton {
-  border: 1px solid var(--lui-color-separator);
-  background: var(--lui-color-surface);
-  color: var(--lui-color-label);
+  border: 1px solid var(--lk-color-emphasis-300);
+  background: var(--lk-card-background-color);
+  color: var(--lk-font-color-base);
 }
 
 .secondaryButton:hover {
-  border-color: var(--lui-color-separator-strong);
-  background: var(--lui-color-surface-muted);
+  border-color: var(--lk-color-emphasis-400);
+  background: var(--lk-color-emphasis-100);
 }
 
 .primaryButton:active,
@@ -110,9 +110,9 @@
   display: grid;
   gap: 20px;
   padding: 26px;
-  border: 1px solid var(--lui-color-separator);
-  border-radius: var(--lui-radius-feature);
-  background: var(--lui-color-surface);
+  border: 1px solid var(--lk-color-emphasis-300);
+  border-radius: var(--lk-radius-lg);
+  background: var(--lk-card-background-color);
 }
 
 .previewHeader {
@@ -131,7 +131,7 @@
 .previewSubjects span,
 .previewMetrics span,
 .activityHeader span {
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 12px;
 }
 
@@ -143,8 +143,8 @@
 .previewStatus {
   padding: 4px 8px;
   border-radius: 6px;
-  background: var(--lui-color-surface-muted);
-  color: var(--lui-color-label-secondary);
+  background: var(--lk-color-emphasis-100);
+  color: var(--lk-font-color-secondary);
   font-variant-numeric: tabular-nums;
   font-weight: 650;
 }
@@ -153,14 +153,14 @@
   overflow: hidden;
   height: 6px;
   border-radius: 3px;
-  background: var(--lui-color-surface-muted);
+  background: var(--lk-color-emphasis-100);
 }
 
 .previewProgress span {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: var(--lui-color-accent);
+  background: var(--lk-color-primary);
 }
 
 .previewSubjects {
@@ -175,9 +175,9 @@
   align-items: center;
   gap: 13px;
   padding: 12px;
-  border: 1px solid var(--lui-color-separator);
+  border: 1px solid var(--lk-color-emphasis-300);
   border-radius: 10px;
-  background: var(--lui-color-surface-raised);
+  background: var(--lk-background-raised);
 }
 
 .previewSubjects article > div {
@@ -187,7 +187,7 @@
 
 .previewSubjects article > svg {
   width: 17px;
-  color: var(--lui-color-label-tertiary);
+  color: var(--lk-font-color-tertiary);
 }
 
 .previewSubjects strong {
@@ -200,8 +200,8 @@
   flex: none;
   place-items: center;
   border-radius: 9px;
-  background: var(--lui-color-accent-soft);
-  color: var(--lui-color-accent-label);
+  background: var(--lk-color-primary-soft);
+  color: var(--lk-color-primary-label);
 }
 
 .previewIcon {
@@ -218,16 +218,16 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1px;
   overflow: hidden;
-  border: 1px solid var(--lui-color-separator);
+  border: 1px solid var(--lk-color-emphasis-300);
   border-radius: 10px;
-  background: var(--lui-color-separator);
+  background: var(--lk-color-emphasis-300);
 }
 
 .previewMetrics div {
   display: grid;
   gap: 5px;
   padding: 13px;
-  background: var(--lui-color-surface);
+  background: var(--lk-card-background-color);
 }
 
 .previewMetrics strong {
@@ -242,8 +242,8 @@
   width: min(100% - 40px, 1120px);
   grid-template-columns: repeat(3, 1fr);
   margin-inline: auto;
-  border-top: 1px solid var(--lui-color-separator);
-  border-bottom: 1px solid var(--lui-color-separator);
+  border-top: 1px solid var(--lk-color-emphasis-300);
+  border-bottom: 1px solid var(--lk-color-emphasis-300);
 }
 
 .principles div {
@@ -254,11 +254,11 @@
 }
 
 .principles div + div {
-  border-left: 1px solid var(--lui-color-separator);
+  border-left: 1px solid var(--lk-color-emphasis-300);
 }
 
 .principles span {
-  color: var(--lui-color-label-tertiary);
+  color: var(--lk-font-color-tertiary);
   font-size: 12px;
 }
 
@@ -290,7 +290,7 @@
 
 .sectionHeader > span,
 .communityCopy > span {
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 15px;
   line-height: 1.7;
 }
@@ -303,9 +303,9 @@
 
 .systemPrimary,
 .systemCard {
-  border: 1px solid var(--lui-color-separator);
+  border: 1px solid var(--lk-color-emphasis-300);
   border-radius: 14px;
-  background: var(--lui-color-surface);
+  background: var(--lk-card-background-color);
 }
 
 .systemPrimary {
@@ -340,7 +340,7 @@
 .systemPrimary > p,
 .systemCard p,
 .steps p {
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 13px;
   line-height: 1.65;
 }
@@ -373,13 +373,13 @@
   gap: 8px;
   padding: 18px;
   border-radius: 10px;
-  background: var(--lui-color-surface-muted);
+  background: var(--lk-color-emphasis-100);
 }
 
 .schedule span {
   min-height: 24px;
   border-radius: 4px 4px 2px 2px;
-  background: var(--lui-color-separator-strong);
+  background: var(--lk-color-emphasis-400);
 }
 
 .schedule span:nth-child(1) {
@@ -420,11 +420,11 @@
 
 .schedule span:nth-child(10) {
   height: 94%;
-  background: var(--lui-color-accent);
+  background: var(--lk-color-primary);
 }
 
 .method {
-  border-top: 1px solid var(--lui-color-separator);
+  border-top: 1px solid var(--lk-color-emphasis-300);
 }
 
 .steps {
@@ -442,7 +442,7 @@
   align-content: start;
   gap: 10px;
   padding: 0 24px;
-  border-left: 1px solid var(--lui-color-separator);
+  border-left: 1px solid var(--lk-color-emphasis-300);
 }
 
 .steps li:first-child {
@@ -455,7 +455,7 @@
 }
 
 .steps li > span {
-  color: var(--lui-color-label-tertiary);
+  color: var(--lk-font-color-tertiary);
   font-size: 12px;
   font-variant-numeric: tabular-nums;
   font-weight: 650;
@@ -465,7 +465,7 @@
   grid-template-columns: minmax(0, 0.8fr) minmax(420px, 1.2fr);
   align-items: center;
   gap: clamp(48px, 8vw, 110px);
-  border-top: 1px solid var(--lui-color-separator);
+  border-top: 1px solid var(--lk-color-emphasis-300);
 }
 
 .communityCopy {
@@ -479,14 +479,14 @@
   align-items: center;
   gap: 7px;
   margin-top: 8px;
-  color: var(--lui-color-accent-label);
+  color: var(--lk-color-primary-label);
   font-size: 14px;
   font-weight: 650;
 }
 
 .communityCopy > a svg {
   width: 15px;
-  transition: transform var(--lui-motion-control);
+  transition: transform var(--lk-transition);
 }
 
 .communityCopy > a:hover svg {
@@ -497,9 +497,9 @@
   display: grid;
   gap: 20px;
   padding: 26px;
-  border: 1px solid var(--lui-color-separator);
+  border: 1px solid var(--lk-color-emphasis-300);
   border-radius: 14px;
-  background: var(--lui-color-surface);
+  background: var(--lk-card-background-color);
 }
 
 .activityHeader {
@@ -519,8 +519,8 @@
   height: 40px;
   place-items: center;
   border-radius: 50%;
-  background: var(--lui-color-accent-soft);
-  color: var(--lui-color-accent-label);
+  background: var(--lk-color-primary-soft);
+  color: var(--lk-color-primary-label);
   font-weight: 700;
 }
 
@@ -538,8 +538,8 @@
 .activityActions span {
   padding: 6px 9px;
   border-radius: 7px;
-  background: var(--lui-color-surface-muted);
-  color: var(--lui-color-label-secondary);
+  background: var(--lk-color-emphasis-100);
+  color: var(--lk-font-color-secondary);
   font-size: 12px;
   font-weight: 600;
 }
@@ -552,7 +552,7 @@
   justify-content: space-between;
   gap: 24px;
   margin-inline: auto;
-  border-top: 1px solid var(--lui-color-separator);
+  border-top: 1px solid var(--lk-color-emphasis-300);
 }
 
 .footer > div,
@@ -564,17 +564,17 @@
 
 .footer span,
 .footer a {
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 12px;
 }
 
 .footer > div span:first-child {
-  color: var(--lui-color-label);
+  color: var(--lk-font-color-base);
   font-weight: 650;
 }
 
 .footer a:hover {
-  color: var(--lui-color-label);
+  color: var(--lk-font-color-base);
 }
 
 @media (max-width: 900px) {
@@ -649,7 +649,7 @@
   }
 
   .principles div + div {
-    border-top: 1px solid var(--lui-color-separator);
+    border-top: 1px solid var(--lk-color-emphasis-300);
     border-left: 0;
   }
 
@@ -676,12 +676,12 @@
   .steps li:first-child,
   .steps li:last-child {
     padding: 22px 0;
-    border-top: 1px solid var(--lui-color-separator);
+    border-top: 1px solid var(--lk-color-emphasis-300);
     border-left: 0;
   }
 
   .steps li:last-child {
-    border-bottom: 1px solid var(--lui-color-separator);
+    border-bottom: 1px solid var(--lk-color-emphasis-300);
   }
 
   .footer {

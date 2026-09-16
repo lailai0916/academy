@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { Button, Panel, SelectField, TextField } from '@lailai/ui';
+import { Button, Panel, SelectField, TextField } from '@lailai0916/ui';
 import type { ContentKind, Grade, Profile } from '@lailai/academy-shared';
 import { useAuth } from '../auth/AuthProvider';
 import { Icon } from '../components/Icon';
@@ -160,7 +160,12 @@ export function OnboardingPage() {
 
             <footer className={styles.footer}>
               <span>之后可在设置中修改。</span>
-              <Button type="submit" size="large" disabled={submitting || !displayName.trim()}>
+              <Button
+                variant="primary"
+                type="submit"
+                size="lg"
+                disabled={submitting || !displayName.trim()}
+              >
                 {submitting ? '正在保存' : '保存并继续'}
                 <Icon icon="lucide:arrow-right" />
               </Button>

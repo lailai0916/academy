@@ -23,8 +23,8 @@
   height: 50px;
   place-items: center;
   border-radius: 13px;
-  background: var(--lui-color-accent-soft);
-  color: var(--lui-color-accent-label);
+  background: var(--lk-color-primary-soft);
+  color: var(--lk-color-primary-label);
   font-size: 23px;
 }
 
@@ -47,13 +47,13 @@
 }
 
 .subjectHeading span {
-  color: var(--lui-color-label-tertiary);
+  color: var(--lk-font-color-tertiary);
   font-size: 12px;
   font-weight: 650;
 }
 
 .subjectCopy > p {
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 14px;
 }
 
@@ -66,15 +66,15 @@
 .subjectStats span,
 .pending {
   padding: 5px 10px;
-  border: 1px solid var(--lui-color-separator);
+  border: 1px solid var(--lk-color-emphasis-300);
   border-radius: 8px;
-  background: var(--lui-color-surface-muted);
-  color: var(--lui-color-label-secondary);
+  background: var(--lk-color-emphasis-100);
+  color: var(--lk-font-color-secondary);
   font-size: 12px;
 }
 
 .subjectStats strong {
-  color: var(--lui-color-label);
+  color: var(--lk-font-color-base);
   font-variant-numeric: tabular-nums;
 }
 
@@ -93,7 +93,7 @@
   width: 20px;
   height: 20px;
   margin-top: 2px;
-  color: var(--lui-color-accent-label);
+  color: var(--lk-color-primary-label);
 }
 
 .method div {
@@ -106,7 +106,7 @@
 }
 
 .method p {
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 13px;
 }
 
@@ -122,7 +122,7 @@
   gap: 28px;
   min-height: 104px;
   padding: 18px 0;
-  border-bottom: 1px solid var(--lui-color-separator);
+  border-bottom: 1px solid var(--lk-color-emphasis-300);
 }
 
 .unitRow:last-child {
@@ -137,7 +137,7 @@
 
 .unitCopy > span,
 .unitCopy small {
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 12px;
 }
 
@@ -164,7 +164,7 @@
 
 .mastery {
   flex: none;
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 13px;
   font-variant-numeric: tabular-nums;
 }
@@ -182,20 +182,20 @@
   align-items: center;
   gap: 12px;
   padding: 12px 15px;
-  border: 1px solid var(--lui-color-separator);
-  border-radius: var(--lui-radius-panel);
-  background: var(--lui-color-surface);
-  color: var(--lui-color-label-secondary);
+  border: 1px solid var(--lk-color-emphasis-300);
+  border-radius: var(--lk-radius-md);
+  background: var(--lk-card-background-color);
+  color: var(--lk-font-color-secondary);
   text-align: left;
   transition:
-    border-color var(--lui-motion-control),
-    background-color var(--lui-motion-control),
-    transform var(--lui-motion-control);
+    border-color var(--lk-transition),
+    background-color var(--lk-transition),
+    transform var(--lk-transition);
 }
 
 .quickLinks button:hover {
-  border-color: var(--lui-color-separator-strong);
-  background: var(--lui-color-surface-muted);
+  border-color: var(--lk-color-emphasis-400);
+  background: var(--lk-color-emphasis-100);
 }
 
 .quickLinks button:active {
@@ -205,7 +205,7 @@
 .quickLinks button > svg:first-child {
   width: 20px;
   height: 20px;
-  color: var(--lui-color-accent-label);
+  color: var(--lk-color-primary-label);
 }
 
 .quickLinks button > svg:last-child {
@@ -219,12 +219,12 @@
 }
 
 .quickLinks strong {
-  color: var(--lui-color-label);
+  color: var(--lk-font-color-base);
   font-size: 14px;
 }
 
 .quickLinks small {
-  color: var(--lui-color-label-secondary);
+  color: var(--lk-font-color-secondary);
   font-size: 12px;
 }
 

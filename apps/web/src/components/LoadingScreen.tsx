@@ -1,4 +1,4 @@
-import { Brand } from '@lailai/ui';
+import { Brand } from '@lailai0916/ui';
 
 export function LoadingScreen() {
   return (

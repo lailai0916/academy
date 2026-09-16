@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Avatar, Brand, IconButton, ThemeControl } from '@lailai/ui';
+import { Avatar, Brand, IconButton, ThemeControl } from '@lailai0916/ui';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router';
 import { useAuth } from '../auth/AuthProvider';
 import { GlobalSearch } from './GlobalSearch';
@@ -138,7 +138,7 @@ export function AppShell() {
           <IconButton
             className={styles.logoutButton}
             label="退出登录"
-            size="small"
+            size="sm"
             disabled={loggingOut}
             onClick={() => void handleLogout()}
           >
