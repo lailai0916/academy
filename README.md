@@ -13,10 +13,17 @@
 
 ## Project Introduction
 
-An invite-only adaptive learning platform for individual Chinese high school students at
-[academy.lailai.one](https://academy.lailai.one). The first learning systems cover English
-vocabulary and classical Chinese poetry, with progress measured through mastery, delayed
-test accuracy and long-term retention.
+Academy is an open-source AI self-study platform I am building to catch up on high school subjects
+after informatics competition training.
+
+It currently supports English vocabulary, classical Chinese poetry, spaced review and AI
+explanations. Continuous courses and questions during lessons are next, with a longer-term goal of
+covering all six subjects in my Zhejiang Gaokao preparation.
+
+[Introduction](docs/project-brief.md) · [Project details](docs/project-overview.md) ·
+[PDF](output/pdf/academy-project-brief.pdf) · [Documentation](docs/README.md)
+
+The project and teaching documents are in Simplified Chinese.
 
 ## Project Features
 
@@ -80,15 +87,26 @@ academy/
 │   └── web/                        # React and Vite web interface
 ├── deployment/                     # Caddy, Docker and operations scripts
 ├── design-system/                  # Academy interface specification
-├── docs/                           # Architecture and operations documentation
+├── docs/                           # Project, teaching, research and engineering documentation
+├── output/pdf/                     # Shareable project introduction
 ├── packages/                       # Internal packages
 │   └── shared/                     # Shared Zod models and TypeScript types
+├── scripts/                        # Project document generation
 ├── brand-spec.md                   # Brand rules
 ├── CONTEXT.md                      # Content and learning domain language
 ├── package-lock.json               # Locked workspace dependency graph
 ├── package.json                    # Workspace scripts and dependencies
 └── tsconfig.json                   # Shared TypeScript configuration
 ```
+
+## Project Direction
+
+The next step is a topic I currently need to study, with explanations, questions, practice and
+follow-up review in one course. A [momentum lesson draft](docs/learning-pilot.md) contains exercises
+and feedback rules; it has not yet been integrated.
+
+Further courses will follow my studies, gradually adding plans across Chinese, mathematics,
+English, physics, chemistry and technology. See the [development plan](docs/project-roadmap.md).
 
 ## Architecture
 

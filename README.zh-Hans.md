@@ -13,8 +13,11 @@
 
 ## 项目简介
 
-[academy.lailai.one](https://academy.lailai.one) 是面向中国高中生个人用户的邀请码制自适应
-学习平台。首期学习系统覆盖英语单词和古诗词，以掌握度、延迟测试正确率与长期记忆衡量进步。
+Academy 是我为高中学习开发的开源 AI 自学平台，源于信息学竞赛退役后的补学需求。
+
+目前支持英语词汇、古诗词、间隔复习和 AI 讲解。下一步增加连续课程与课中追问，逐步覆盖浙江高考六科。
+
+[项目简介](docs/project-brief.md) · [项目说明](docs/project-overview.md) · [PDF](output/pdf/academy-project-brief.pdf) · [全部文档](docs/README.md)
 
 ## 项目特性
 
@@ -27,7 +30,7 @@
 🧠 **自适应复习** — FSRS 负责跨天调度；答错内容经过间隔后在本组回练。主动回忆、延迟
 测试与多种题型共同调整每日计划。
 
-🗂️ **教材与错题闭环** — 学生可按教材单元学习、执行水平诊断、集中巩固错题、继续未完成
+🗂️ **教材学习与错题巩固** — 学生可按教材单元学习、执行水平诊断、集中巩固错题、继续未完成
 任务，并查看每组学习结果与近 7–90 天分析。
 
 🤖 **可配置 AI** — 默认模型为 `gpt-5.6-sol`。管理员配置 OpenAI 兼容服务与加密
@@ -72,15 +75,23 @@ academy/
 │   └── web/                        # React 与 Vite 网页界面
 ├── deployment/                     # Caddy、Docker 与运维脚本
 ├── design-system/                  # Academy 界面规范
-├── docs/                           # 架构与运维文档
+├── docs/                           # 项目、教学、研究与工程文档
+├── output/pdf/                     # 便于分享的项目介绍册
 ├── packages/                       # 内部软件包
 │   └── shared/                     # 共用 Zod 模型与 TypeScript 类型
+├── scripts/                        # 项目文档生成
 ├── brand-spec.md                   # 品牌规范
 ├── CONTEXT.md                      # 内容与学习领域语言
 ├── package-lock.json               # 锁定的 workspace 依赖关系
 ├── package.json                    # Workspace 脚本与依赖
 └── tsconfig.json                   # 共用 TypeScript 配置
 ```
+
+## 项目方向
+
+接下来先做一个当前需要的专题，让讲解、提问、练习和复习能在平台里连续完成。[动量定理课程样例](docs/learning-pilot.md)已经整理了题目和提示规则，尚未接入。
+
+之后随自己的学习进度增加课程，逐步安排语文、数学、英语、物理、化学、技术六科。具体工作见[后续计划](docs/project-roadmap.md)。
 
 ## 技术架构
 
