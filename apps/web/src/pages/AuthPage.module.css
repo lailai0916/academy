@@ -47,10 +47,6 @@
   font-size: 13px;
 }
 
-.form :global([data-lk='button']) {
-  width: 100%;
-}
-
 .switchMode {
   text-align: center;
 }
