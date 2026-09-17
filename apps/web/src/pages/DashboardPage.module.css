@@ -1,3 +1,54 @@
+.coursePanel {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 18px;
+  padding: 22px;
+}
+
+.courseIcon {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border-radius: 14px;
+  background: var(--lk-color-primary-soft);
+  color: var(--lk-color-primary-label);
+}
+
+.courseIcon svg {
+  width: 23px;
+}
+
+.courseCopy {
+  display: grid;
+  gap: 4px;
+}
+
+.courseCopy > span,
+.courseStatus {
+  color: var(--lk-color-primary-label);
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.courseCopy h3 {
+  font-size: 17px;
+}
+
+.courseCopy p {
+  color: var(--lk-font-color-secondary);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.courseStatus {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--lk-color-primary-soft);
+  white-space: nowrap;
+}
+
 .workspaceGrid {
   display: grid;
   grid-template-columns: minmax(0, 1.7fr) minmax(260px, 0.7fr);
@@ -268,6 +319,16 @@
 }
 
 @media (max-width: 720px) {
+  .coursePanel {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .courseStatus,
+  .coursePanel > button {
+    grid-column: 2;
+    justify-self: start;
+  }
+
   .plan {
     grid-template-columns: 1fr;
     gap: 22px;

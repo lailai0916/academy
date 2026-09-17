@@ -42,6 +42,9 @@ with `ACADEMY_INTEGRATION_TEST=true` when changing authentication, learning, soc
 - Use semantic tokens and primitives from `@lailai0916/ui`; keep light, dark, and system modes complete.
 - Measure mastery, delayed accuracy, and long-term retention. Do not optimize product feedback for
   time spent.
+- Keep continuous course teaching separate from vocabulary and poetry memory training. FSRS cards
+  remain specific to repeatable memory items; compose course, assessment, and memory tasks only at
+  the planning boundary.
 - Treat reviewed textbook content as the factual source. AI may explain and generate variants but
   must not silently rewrite canonical answers.
 - Store invitation and session tokens as hashes. Store AI keys encrypted at rest and return only

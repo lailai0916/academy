@@ -90,7 +90,7 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
             disabled={starting}
           >
             <Icon icon="lucide:play" />
-            {activeSession ? '继续当前任务' : '开始今日计划'}
+            {activeSession ? '继续当前任务' : '开始记忆任务'}
           </Button>
         </header>
 
@@ -137,7 +137,7 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
                   <Icon icon="lucide:list-checks" />
                 </span>
                 <div className={page.panelTitleCopy}>
-                  <h3>今日计划</h3>
+                  <h3>今日记忆任务</h3>
                   <p>先处理到期内容，再按容量补充新内容。</p>
                 </div>
                 <Button
@@ -276,7 +276,10 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
   return (
     <div className={page.page}>
       <header className={page.pageHeader}>
-        <h1 className={page.pageHeading}>学习中心</h1>
+        <div className={styles.headingCopy}>
+          <h1 className={page.pageHeading}>记忆训练</h1>
+          <p>英语词汇与古诗词的背诵、复习和错题巩固。</p>
+        </div>
       </header>
 
       {error && <p className={page.error}>{error}</p>}

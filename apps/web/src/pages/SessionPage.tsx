@@ -229,7 +229,7 @@ export function SessionPage() {
     return (
       <div className={styles.page}>
         <header className={styles.header}>
-          <IconButton label="返回学习中心" onClick={() => navigate('/learn')}>
+          <IconButton label="返回记忆训练" onClick={() => navigate('/learn')}>
             <Icon icon="lucide:x" />
           </IconButton>
           <Progress label="本组进度" value={summaryProgress} showValue={false} />
@@ -285,7 +285,7 @@ export function SessionPage() {
                     )
                   }
                 >
-                  {completed ? '返回学习中心' : '开始新任务'}
+                  {completed ? '返回记忆训练' : '开始新任务'}
                 </Button>
                 {summary.mistakes.length > 0 && (
                   <Button variant="secondary" onClick={() => navigate('/learn/mistakes')}>
@@ -333,7 +333,7 @@ export function SessionPage() {
       <div className={styles.centerState}>
         <p className={page.error}>{error}</p>
         <Button variant="secondary" onClick={() => navigate('/learn')}>
-          返回学习中心
+          返回记忆训练
         </Button>
       </div>
     );
@@ -527,7 +527,7 @@ export function SessionPage() {
           <div className={styles.exitDialogCopy}>
             <h2 id="exit-dialog-title">退出当前任务？</h2>
             <p id="exit-dialog-description">
-              暂存后可从今日学习或学习中心继续。结束后保留已完成记录，未答内容不计入结果。
+              暂存后可从今日学习或记忆训练继续。结束后保留已完成记录，未答内容不计入结果。
             </p>
           </div>
           {exitError && (

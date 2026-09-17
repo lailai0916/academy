@@ -34,9 +34,9 @@ export function PublicHeader({ minimal = false }: { minimal?: boolean }) {
 
           {!minimal && (
             <nav className={styles.navigation} aria-label="官网导航">
-              <a href="#system">学习系统</a>
+              <a href="#architecture">平台结构</a>
               <a href="#method">学习方法</a>
-              <a href="#community">学习社区</a>
+              <a href="#progress">建设进度</a>
             </nav>
           )}
 

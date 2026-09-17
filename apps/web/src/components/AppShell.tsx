@@ -19,11 +19,17 @@ const navigation: { label: string; items: NavigationItem[] }[] = [
     label: '学习',
     items: [
       { to: '/dashboard', label: '今日学习', icon: 'lucide:house', end: true },
-      { to: '/learn', label: '学习中心', icon: 'lucide:book-open', end: true },
-      { to: '/learn/words', label: '英语词汇', icon: 'lucide:languages', end: true },
-      { to: '/learn/poems', label: '古诗词', icon: 'lucide:feather', end: true },
+      { to: '/courses', label: '学科课程', icon: 'lucide:book-open-check', end: true },
+      { to: '/learn', label: '记忆训练', icon: 'lucide:brain', end: true },
       { to: '/learn/mistakes', label: '错题本', icon: 'lucide:notebook-tabs', end: true },
       { to: '/progress', label: '学习分析', icon: 'lucide:chart-no-axes-combined', end: true },
+    ],
+  },
+  {
+    label: '记忆内容',
+    items: [
+      { to: '/learn/words', label: '英语词汇', icon: 'lucide:languages', end: true },
+      { to: '/learn/poems', label: '古诗词', icon: 'lucide:feather', end: true },
     ],
   },
   {

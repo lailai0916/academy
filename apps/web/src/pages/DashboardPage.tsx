@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Button, EmptyState, Panel } from '@lailai0916/ui';
 import { useNavigate } from 'react-router';
-import type { Dashboard, LearningInsights, LearningOverview } from '@lailai/academy-shared';
+import {
+  courseStatusLabels,
+  curriculumCatalog,
+  type Dashboard,
+  type LearningInsights,
+  type LearningOverview,
+} from '@lailai/academy-shared';
 import { ActiveSessionCard } from '../components/ActiveSessionCard';
 import { Icon } from '../components/Icon';
 import { api, errorMessage } from '../lib/api';
@@ -52,6 +58,7 @@ export function DashboardPage() {
   const maxDaily = Math.max(1, ...data.insights.daily.map((day) => day.reviews));
   const hasReviewActivity = data.insights.daily.some((day) => day.reviews > 0);
   const forecastTotal = data.insights.forecast.reduce((sum, day) => sum + day.total, 0);
+  const pilotCourse = curriculumCatalog.courses[0];
 
   return (
     <div className={page.page}>
@@ -60,10 +67,12 @@ export function DashboardPage() {
         <Button
           variant="primary"
           size="lg"
-          onClick={() => navigate(activeSession ? `/learn/session/${activeSession.id}` : '/learn')}
+          onClick={() =>
+            navigate(activeSession ? `/learn/session/${activeSession.id}` : '/courses')
+          }
         >
-          <Icon icon="lucide:play" />
-          {activeSession ? '继续学习' : '开始学习'}
+          <Icon icon={activeSession ? 'lucide:play' : 'lucide:book-open'} />
+          {activeSession ? '继续记忆训练' : '查看学科课程'}
         </Button>
       </header>
 
@@ -74,10 +83,34 @@ export function DashboardPage() {
         />
       )}
 
+      {pilotCourse && (
+        <section className={page.section}>
+          <div className={page.sectionHeader}>
+            <h2>课程建设</h2>
+            <p>首个连续课程正在接入</p>
+          </div>
+          <Panel feature className={styles.coursePanel}>
+            <span className={styles.courseIcon}>
+              <Icon icon="lucide:atom" />
+            </span>
+            <div className={styles.courseCopy}>
+              <span>{pilotCourse.grade} · 物理</span>
+              <h3>{pilotCourse.title}</h3>
+              <p>{pilotCourse.statusDetail}</p>
+            </div>
+            <span className={styles.courseStatus}>{courseStatusLabels[pilotCourse.status]}</span>
+            <Button variant="secondary" onClick={() => navigate('/courses')}>
+              查看课程架构
+              <Icon icon="lucide:arrow-right" />
+            </Button>
+          </Panel>
+        </section>
+      )}
+
       <div className={styles.workspaceGrid}>
         <section className={page.section}>
           <div className={page.sectionHeader}>
-            <h2>今日计划</h2>
+            <h2>今日记忆任务</h2>
             <p>
               {plan.completed} / {plan.total} 项
             </p>
@@ -88,7 +121,7 @@ export function DashboardPage() {
                 <div
                   className={styles.progressRing}
                   role="progressbar"
-                  aria-label="今日计划完成度"
+                  aria-label="今日记忆任务完成度"
                   aria-valuemin={0}
                   aria-valuemax={100}
                   aria-valuenow={boundedCompletion}
@@ -111,9 +144,9 @@ export function DashboardPage() {
                 <div className={styles.progressCopy}>
                   <strong>
                     {plan.total === 0
-                      ? '今天暂无计划'
+                      ? '今天暂无记忆任务'
                       : remaining === 0
-                        ? '今日计划已完成'
+                        ? '今日记忆任务已完成'
                         : `还需完成 ${remaining} 项`}
                   </strong>
                   <span>{plan.reason}</span>

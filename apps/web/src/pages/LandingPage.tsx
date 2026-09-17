@@ -5,16 +5,34 @@ import { PublicHeader } from '../components/PublicHeader';
 import styles from './LandingPage.module.css';
 
 const principles = [
-  ['教材范围', '人教版 · 部编版'],
-  ['首期内容', '英语词汇 · 古诗词'],
-  ['学习指标', '掌握度 · 延迟正确率'],
+  ['目标范围', '浙江高考六科'],
+  ['当前可用', '英语词汇 · 古诗词'],
+  ['正在接入', '物理 · 动量定理'],
 ] as const;
 
 const steps = [
-  ['01', '建立水平', '通过诊断和初次练习建立内容掌握记录。'],
-  ['02', '安排计划', '先处理到期复习，再加入适量新内容。'],
-  ['03', '调整题型', '从识别逐步进入拼写、语境、补空和接句。'],
-  ['04', '延迟检验', '间隔后的正确结果单独计入长期记忆指标。'],
+  ['01', '课前检查', '用少量问题确认前置知识，决定课程从哪里开始。'],
+  ['02', '讲解追问', '按知识关系讲解，学生可以随时打断、追问和继续推导。'],
+  ['03', '独立作答', '将教学中的提示撤掉，用新题检验是否真正会做。'],
+  ['04', '延迟复测', '隔一段时间重新测试，把短期听懂与长期掌握区分开。'],
+] as const;
+
+const progress = [
+  {
+    status: '已实现',
+    title: '记忆训练模块',
+    description: '英语词汇与古诗词学习、间隔复习、错题巩固和长期记忆指标。',
+  },
+  {
+    status: '接入中',
+    title: '首个连续课程',
+    description: '以高二物理“动量定理”为样例，接通讲解、追问、练习、测评和复测。',
+  },
+  {
+    status: '规划中',
+    title: '六科长期计划',
+    description: '把课程、独立测评和记忆复习放进同一份每日与长期学习计划。',
+  },
 ] as const;
 
 export function LandingPage() {
@@ -25,9 +43,10 @@ export function LandingPage() {
       <main id="main-content">
         <section className={styles.hero}>
           <div className={styles.heroCopy}>
-            <h1>按掌握情况安排每一次学习</h1>
+            <span className={styles.eyebrow}>面向浙江高中生的 AI 自学平台</span>
+            <h1>把六科课程、练习和长期复习接在一起</h1>
             <p className={styles.intro}>
-              围绕人教版高中教材，根据复习记录调整计划、题型和难度。当前提供英语词汇与古诗词学习。
+              学生可以按自己的节奏听讲、追问、练习和复测。当前英语词汇与古诗词记忆模块已经可用，连续学科课程从高二物理开始接入。
             </p>
             <div className={styles.heroActions}>
               <Link to="/login" className={styles.primaryButton}>
@@ -48,55 +67,55 @@ export function LandingPage() {
           >
             <div className={styles.previewHeader}>
               <div>
-                <span>今日学习</span>
-                <strong>8 月 25 日</strong>
+                <span>今日安排</span>
+                <strong>课程与复习</strong>
               </div>
-              <span className={styles.previewStatus}>4 / 16</span>
+              <span className={styles.previewStatus}>前期版本</span>
             </div>
             <div
               className={styles.previewProgress}
               role="progressbar"
-              aria-label="今日学习进度"
+              aria-label="平台模块接入进度"
               aria-valuemin={0}
-              aria-valuemax={16}
-              aria-valuenow={4}
+              aria-valuemax={3}
+              aria-valuenow={1}
             >
-              <span style={{ width: '25%' }} />
+              <span style={{ width: '33.333%' }} />
             </div>
             <div className={styles.previewSubjects}>
               <article>
                 <span className={styles.previewIcon}>
-                  <Icon icon="lucide:languages" />
+                  <Icon icon="lucide:atom" />
                 </span>
                 <div>
-                  <strong>英语词汇</strong>
-                  <span>8 项复习 · 4 项新学</span>
+                  <strong>物理 · 动量定理</strong>
+                  <span>连续课程 · 正在接入</span>
                 </div>
-                <Icon icon="lucide:chevron-right" />
+                <span className={styles.itemStatus}>接入中</span>
               </article>
               <article>
                 <span className={styles.previewIcon}>
-                  <Icon icon="lucide:feather" />
+                  <Icon icon="lucide:rotate-ccw" />
                 </span>
                 <div>
-                  <strong>古诗词</strong>
-                  <span>3 项复习 · 1 项新学</span>
+                  <strong>词汇与古诗词复习</strong>
+                  <span>间隔复习 · 已可学习</span>
                 </div>
-                <Icon icon="lucide:chevron-right" />
+                <span className={styles.itemStatus}>已实现</span>
               </article>
             </div>
-            <div className={styles.previewMetrics} role="group" aria-label="学习指标">
+            <div className={styles.previewMetrics} role="group" aria-label="平台结构">
               <div>
-                <span>掌握度</span>
-                <strong>78%</strong>
+                <span>学科范围</span>
+                <strong>6 科</strong>
               </div>
               <div>
-                <span>延迟正确率</span>
-                <strong>86%</strong>
+                <span>课程样例</span>
+                <strong>1 个</strong>
               </div>
               <div>
-                <span>长期记忆</span>
-                <strong>42</strong>
+                <span>可用模块</span>
+                <strong>记忆</strong>
               </div>
             </div>
           </Panel>
@@ -111,53 +130,52 @@ export function LandingPage() {
           ))}
         </section>
 
-        <section className={styles.section} id="system">
+        <section className={styles.section} id="architecture">
           <header className={styles.sectionHeader}>
-            <p>学习系统</p>
-            <h2>计划来自学习记录</h2>
-            <span>系统记录每个知识项目的复习间隔、答题结果和记忆稳定性。</span>
+            <p>平台结构</p>
+            <h2>三类任务，各自解决一个问题</h2>
+            <span>
+              课程负责教会，测评负责确认，记忆训练负责长期保持；学习计划再把它们安排到一起。
+            </span>
           </header>
 
           <div className={styles.systemGrid}>
             <article className={styles.systemPrimary}>
               <div className={styles.featureHeading}>
                 <span className={styles.featureIcon}>
-                  <Icon icon="lucide:list-checks" />
+                  <Icon icon="lucide:messages-square" />
                 </span>
                 <div>
-                  <span>每日计划</span>
-                  <h3>先复习到期内容</h3>
+                  <span>课程教学</span>
+                  <h3>讲解可以被随时打断</h3>
                 </div>
               </div>
-              <div className={styles.schedule} aria-hidden="true">
-                <span />
-                <span />
-                <span />
-                <span />
-                <span />
-                <span />
-                <span />
-                <span />
-                <span />
-                <span />
+              <div className={styles.lessonFlow} aria-label="计划中的课程流程">
+                <span>基础检查</span>
+                <span>概念讲解</span>
+                <span>学生追问</span>
+                <span>分层练习</span>
+                <span>独立测评</span>
               </div>
-              <p>新内容不会挤占已经到期的复习。</p>
+              <p>
+                课程按知识关系组织。学生可以追问原因、补前置知识，也可以在已经理解时直接进入练习。
+              </p>
             </article>
 
             <article className={styles.systemCard}>
               <span className={styles.featureIcon}>
-                <Icon icon="lucide:brain" />
+                <Icon icon="lucide:clipboard-check" />
               </span>
-              <h3>自适应题型</h3>
-              <p>掌握度提高后，题目从识别转向主动回忆和应用。</p>
+              <h3>独立测评</h3>
+              <p>撤掉讲解中的提示，用新题判断学生是否能够独立完成。</p>
             </article>
 
             <article className={styles.systemCard}>
               <span className={styles.featureIcon}>
-                <Icon icon="lucide:target" />
+                <Icon icon="lucide:calendar-range" />
               </span>
-              <h3>结果指标</h3>
-              <p>重点观察延迟测试与长期稳定性，不以使用时长排名。</p>
+              <h3>长期计划</h3>
+              <p>根据测评、错题和到期复习调整后续安排，持续检查长期掌握。</p>
             </article>
           </div>
         </section>
@@ -165,7 +183,7 @@ export function LandingPage() {
         <section className={`${styles.section} ${styles.method}`} id="method">
           <header className={styles.sectionHeader}>
             <p>学习方法</p>
-            <h2>从诊断到延迟检验</h2>
+            <h2>从听懂到能够长期独立作答</h2>
           </header>
           <ol className={styles.steps}>
             {steps.map(([index, title, description]) => (
@@ -178,11 +196,31 @@ export function LandingPage() {
           </ol>
         </section>
 
+        <section className={`${styles.section} ${styles.progressSection}`} id="progress">
+          <header className={styles.sectionHeader}>
+            <p>建设进度</p>
+            <h2>现有功能保留，新的课程系统逐步接入</h2>
+            <span>这里展示真实进度。规划中的模块不会被写成已经完成的产品能力。</span>
+          </header>
+          <div className={styles.progressGrid}>
+            {progress.map((item, index) => (
+              <article key={item.title}>
+                <div>
+                  <span>{String(index + 1).padStart(2, '0')}</span>
+                  <strong>{item.status}</strong>
+                </div>
+                <h3>{item.title}</h3>
+                <p>{item.description}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
         <section className={`${styles.section} ${styles.community}`} id="community">
           <div className={styles.communityCopy}>
-            <p className={styles.sectionLabel}>学习社区</p>
-            <h2>交流方法，不比较在线时长</h2>
-            <span>动态、好友、小组和挑战围绕实际学习结果展开。</span>
+            <p className={styles.sectionLabel}>辅助模块</p>
+            <h2>用同伴反馈帮助坚持</h2>
+            <span>动态、好友、小组和挑战记录实际学习结果，为长期自学提供轻量监督。</span>
             <Link to="/login">
               登录后查看
               <Icon icon="lucide:arrow-right" />

@@ -1,6 +1,6 @@
 # Academy 资料来源
 
-核对日期：2026 年 9 月 15 日。
+核对日期：2026 年 9 月 17 日。
 
 本页保留经历、成果与功能状态的出处，供材料更新时核对。
 
@@ -25,12 +25,14 @@
 
 ## 当前实现
 
-| 代码或文档                                                                          | 核对内容                  |
-| :---------------------------------------------------------------------------------- | :------------------------ |
-| [数据表](../apps/api/src/db/schema.ts)、[共享模型](../packages/shared/src/index.ts) | 内容类型为 `word`、`poem` |
-| [AI 服务](../apps/api/src/services/ai.ts)                                           | 词汇与古诗词讲解          |
-| [学习会话](../apps/api/src/services/study-sessions.ts)                              | 会话恢复、练习与事件      |
-| [记忆模型](../apps/api/src/services/memory-model.ts)                                | FSRS 调度                 |
-| [架构说明](architecture.md)                                                         | 服务端与数据流            |
+| 代码或文档                                                                          | 核对内容                         |
+| :---------------------------------------------------------------------------------- | :------------------------------- |
+| [数据表](../apps/api/src/db/schema.ts)、[共享模型](../packages/shared/src/index.ts) | 内容类型为 `word`、`poem`        |
+| [AI 服务](../apps/api/src/services/ai.ts)                                           | 词汇与古诗词讲解                 |
+| [学习会话](../apps/api/src/services/study-sessions.ts)                              | 会话恢复、练习与事件             |
+| [记忆模型](../apps/api/src/services/memory-model.ts)                                | FSRS 调度                        |
+| [六科目录](../packages/shared/src/curriculum.ts)                                    | 六科范围、课程状态与任务类型     |
+| [课程入口](../apps/web/src/pages/CoursesPage.tsx)                                   | 已实现、接入中与规划中的界面标记 |
+| [架构说明](architecture.md)                                                         | 模块边界与数据流                 |
 
-个人网站的 Academy 页面仍描述早期本地存储版本，当前能力以仓库为准。连续理科课程、教学分支和跨科计划尚未实现，动量课程尚未接入。
+个人网站的 Academy 页面仍描述早期本地存储版本，当前能力以仓库为准。六科目录和课程入口已经建立；连续课堂运行、教学分支和跨科计划尚未实现，动量课程正在接入。

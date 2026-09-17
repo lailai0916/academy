@@ -7,7 +7,8 @@ import styles from './GlobalSearch.module.css';
 
 const destinations = [
   { id: 'today', title: '今日学习', detail: '计划与长期记忆指标', href: '/dashboard' },
-  { id: 'learn', title: '学习中心', detail: '英语词汇、古诗词与教材单元', href: '/learn' },
+  { id: 'courses', title: '学科课程', detail: '六科课程与首个物理样例', href: '/courses' },
+  { id: 'learn', title: '记忆训练', detail: '英语词汇、古诗词与间隔复习', href: '/learn' },
   { id: 'words', title: '英语词汇', detail: '人教版教材词汇', href: '/learn/words' },
   { id: 'poems', title: '古诗词', detail: '部编版教材古诗词', href: '/learn/poems' },
   { id: 'mistakes', title: '错题本', detail: '历史错误与针对性巩固', href: '/learn/mistakes' },
@@ -147,7 +148,7 @@ export function GlobalSearch() {
                 ref={inputRef}
                 id="workspace-search"
                 value={query}
-                placeholder="搜索词汇、古诗词、同学或功能"
+                placeholder="搜索课程、词汇、古诗词、同学或功能"
                 autoComplete="off"
                 onChange={(event) => setQuery(event.target.value)}
               />
@@ -195,7 +196,7 @@ export function GlobalSearch() {
 
               {loading && <p className={styles.status}>正在搜索……</p>}
               {!loading && query.trim() && localResults.length === 0 && results.length === 0 && (
-                <p className={styles.status}>没有匹配结果，请尝试教材单元、内容名称或用户名。</p>
+                <p className={styles.status}>没有匹配结果，请尝试课程、教材单元或用户名。</p>
               )}
             </div>
           </section>

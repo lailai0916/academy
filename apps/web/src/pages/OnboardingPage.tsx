@@ -15,12 +15,17 @@ const workloads = [
 ] as const;
 
 const destinations: {
-  value: 'learn' | ContentKind;
+  value: 'courses' | ContentKind;
   label: string;
   detail: string;
   icon: string;
 }[] = [
-  { value: 'learn', label: '学习中心', detail: '先查看教材与计划', icon: 'lucide:book-open' },
+  {
+    value: 'courses',
+    label: '学科课程',
+    detail: '查看六科范围与建设进度',
+    icon: 'lucide:book-open',
+  },
   { value: 'word', label: '词汇诊断', detail: '抽取 10 项教材词汇', icon: 'lucide:languages' },
   { value: 'poem', label: '古诗词诊断', detail: '抽取 10 项教材内容', icon: 'lucide:feather' },
 ];
@@ -31,7 +36,7 @@ export function OnboardingPage() {
   const [grade, setGrade] = useState<Grade>(user?.grade ?? '高一');
   const [targetScore, setTargetScore] = useState(600);
   const [dailyGoal, setDailyGoal] = useState(20);
-  const [destination, setDestination] = useState<'learn' | ContentKind>('learn');
+  const [destination, setDestination] = useState<'courses' | ContentKind>('courses');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
@@ -46,7 +51,7 @@ export function OnboardingPage() {
         body: JSON.stringify({ displayName, grade, targetScore, dailyGoal }),
       });
       let sessionId = '';
-      if (destination !== 'learn') {
+      if (destination !== 'courses') {
         try {
           const session = await api<{ sessionId: string }>('/learn/sessions', {
             method: 'POST',
@@ -59,7 +64,7 @@ export function OnboardingPage() {
           }
         }
       }
-      window.location.replace(sessionId ? `/learn/session/${sessionId}` : '/learn');
+      window.location.replace(sessionId ? `/learn/session/${sessionId}` : '/courses');
     } catch (nextError) {
       setError(errorMessage(nextError));
       setSubmitting(false);

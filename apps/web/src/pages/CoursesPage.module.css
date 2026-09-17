@@ -1,0 +1,223 @@
+.headingCopy {
+  display: grid;
+  gap: 8px;
+}
+
+.headingCopy > p {
+  max-width: 660px;
+  color: var(--lk-font-color-secondary);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.milestone {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  padding: 22px;
+}
+
+.milestoneIcon {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border-radius: 14px;
+  background: var(--lk-color-primary-soft);
+  color: var(--lk-color-primary-label);
+}
+
+.milestoneIcon svg {
+  width: 23px;
+}
+
+.milestone > div {
+  display: grid;
+  gap: 5px;
+}
+
+.milestone > div > span,
+.pilotIntro > span,
+.pilotDetails > div > span {
+  color: var(--lk-color-primary-label);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.milestone h2 {
+  font-size: 17px;
+  line-height: 1.45;
+}
+
+.milestone p,
+.subjectCopy p,
+.pilotIntro p,
+.pilotIntro small,
+.subjectFooter > span {
+  color: var(--lk-font-color-secondary);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.subjectGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.subjectCard {
+  display: grid;
+  min-height: 220px;
+  align-content: space-between;
+  gap: 22px;
+  padding: 20px;
+}
+
+.subjectHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.subjectCopy {
+  display: grid;
+  gap: 7px;
+}
+
+.subjectCopy h3,
+.pilotIntro h3 {
+  font-size: 18px;
+  letter-spacing: -0.02em;
+}
+
+.status {
+  width: fit-content;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--lk-color-emphasis-100);
+  color: var(--lk-font-color-secondary);
+  font-size: 11px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.status[data-status='building'],
+.status[data-status='pilot'],
+.status[data-status='available'] {
+  background: var(--lk-color-primary-soft);
+  color: var(--lk-color-primary-label);
+}
+
+.subjectFooter {
+  min-height: 28px;
+}
+
+.subjectFooter a {
+  display: inline-flex;
+  min-height: 28px;
+  align-items: center;
+  gap: 6px;
+  color: var(--lk-color-primary-label);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.subjectFooter a svg {
+  width: 14px;
+}
+
+.pilotCard {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.72fr) minmax(0, 1.28fr);
+  gap: 30px;
+  padding: 26px;
+}
+
+.pilotIntro {
+  display: grid;
+  align-content: start;
+  gap: 9px;
+  padding-right: 28px;
+  border-right: 1px solid var(--lk-color-emphasis-300);
+}
+
+.pilotDetails {
+  display: grid;
+  gap: 24px;
+}
+
+.pilotDetails > div {
+  display: grid;
+  gap: 10px;
+}
+
+.pilotDetails ul {
+  display: grid;
+  gap: 6px;
+  padding-left: 18px;
+  color: var(--lk-font-color-secondary);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.flow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  list-style: none;
+}
+
+.flow li {
+  display: grid;
+  min-height: 70px;
+  align-content: space-between;
+  gap: 8px;
+  padding: 11px;
+  border: 1px solid var(--lk-color-emphasis-300);
+  border-radius: 10px;
+  background: var(--lk-background-raised);
+}
+
+.flow small {
+  color: var(--lk-font-color-tertiary);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.flow strong {
+  font-size: 12px;
+}
+
+@media (max-width: 900px) {
+  .subjectGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pilotCard {
+    grid-template-columns: 1fr;
+  }
+
+  .pilotIntro {
+    padding-right: 0;
+    padding-bottom: 24px;
+    border-right: 0;
+    border-bottom: 1px solid var(--lk-color-emphasis-300);
+  }
+}
+
+@media (max-width: 620px) {
+  .milestone {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .milestone > .status {
+    grid-column: 2;
+  }
+
+  .subjectGrid,
+  .flow {
+    grid-template-columns: 1fr;
+  }
+}

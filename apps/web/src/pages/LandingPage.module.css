@@ -23,6 +23,7 @@
   gap: 20px;
 }
 
+.eyebrow,
 .sectionHeader > p,
 .sectionLabel {
   color: var(--lk-color-primary-label);
@@ -185,6 +186,16 @@
 .previewSubjects article > svg {
   width: 17px;
   color: var(--lk-font-color-tertiary);
+}
+
+.previewSubjects .itemStatus {
+  padding: 4px 7px;
+  border-radius: 999px;
+  background: var(--lk-color-primary-soft);
+  color: var(--lk-color-primary-label);
+  font-size: 10px;
+  font-weight: 650;
+  white-space: nowrap;
 }
 
 .previewSubjects strong {
@@ -362,62 +373,27 @@
   margin-bottom: 8px;
 }
 
-.schedule {
+.lessonFlow {
   display: grid;
-  height: 170px;
-  grid-template-columns: repeat(10, 1fr);
-  align-items: end;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 8px;
   padding: 18px;
   border-radius: 10px;
   background: var(--lk-color-emphasis-100);
 }
 
-.schedule span {
-  min-height: 24px;
-  border-radius: 4px 4px 2px 2px;
-  background: var(--lk-color-emphasis-400);
-}
-
-.schedule span:nth-child(1) {
-  height: 34%;
-}
-
-.schedule span:nth-child(2) {
-  height: 48%;
-}
-
-.schedule span:nth-child(3) {
-  height: 42%;
-}
-
-.schedule span:nth-child(4) {
-  height: 66%;
-}
-
-.schedule span:nth-child(5) {
-  height: 58%;
-}
-
-.schedule span:nth-child(6) {
-  height: 76%;
-}
-
-.schedule span:nth-child(7) {
-  height: 68%;
-}
-
-.schedule span:nth-child(8) {
-  height: 86%;
-}
-
-.schedule span:nth-child(9) {
-  height: 79%;
-}
-
-.schedule span:nth-child(10) {
-  height: 94%;
-  background: var(--lk-color-primary);
+.lessonFlow span {
+  display: grid;
+  min-height: 74px;
+  place-items: center;
+  padding: 8px;
+  border: 1px solid var(--lk-color-emphasis-300);
+  border-radius: 8px;
+  background: var(--lk-card-background-color);
+  color: var(--lk-font-color-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
 }
 
 .method {
@@ -456,6 +432,59 @@
   font-size: 12px;
   font-variant-numeric: tabular-nums;
   font-weight: 650;
+}
+
+.progressSection {
+  border-top: 1px solid var(--lk-color-emphasis-300);
+}
+
+.progressGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.progressGrid article {
+  display: grid;
+  min-height: 230px;
+  align-content: start;
+  gap: 14px;
+  padding: 24px;
+  border: 1px solid var(--lk-color-emphasis-300);
+  border-radius: var(--lk-radius-md);
+  background: var(--lk-card-background-color);
+}
+
+.progressGrid article > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.progressGrid article > div > span {
+  color: var(--lk-font-color-tertiary);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.progressGrid article > div > strong {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--lk-color-primary-soft);
+  color: var(--lk-color-primary-label);
+  font-size: 11px;
+}
+
+.progressGrid h3 {
+  margin-top: 16px;
+  font-size: 18px;
+}
+
+.progressGrid p {
+  color: var(--lk-font-color-secondary);
+  font-size: 13px;
+  line-height: 1.7;
 }
 
 .community {
@@ -583,6 +612,7 @@
   }
 
   .systemGrid,
+  .progressGrid,
   .community {
     grid-template-columns: 1fr;
   }
@@ -708,8 +738,12 @@
     grid-row: 1;
   }
 
-  .schedule {
-    gap: 5px;
-    padding: 14px;
+  .lessonFlow {
+    grid-template-columns: 1fr;
+    padding: 12px;
+  }
+
+  .lessonFlow span {
+    min-height: 48px;
   }
 }

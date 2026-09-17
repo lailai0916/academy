@@ -16,9 +16,9 @@
 Academy is an open-source AI self-study platform I am building to catch up on high school subjects
 after informatics competition training.
 
-It currently supports English vocabulary, classical Chinese poetry, spaced review and AI
-explanations. Continuous courses and questions during lessons are next, with a longer-term goal of
-covering all six subjects in my Zhejiang Gaokao preparation.
+The target scope is all six subjects in my Zhejiang Gaokao preparation. English vocabulary and
+classical Chinese poetry memory training, spaced review and AI explanations are available now. The
+six-subject course catalogue is in place, and the first continuous momentum course is being integrated.
 
 [Introduction](docs/project-brief.md) · [Project details](docs/project-overview.md) ·
 [PDF](output/pdf/academy-project-brief.pdf) · [Documentation](docs/README.md)
@@ -26,6 +26,10 @@ covering all six subjects in my Zhejiang Gaokao preparation.
 The project and teaching documents are in Simplified Chinese.
 
 ## Project Features
+
+🧭 **Six-subject course architecture** — Chinese, mathematics, English, physics, chemistry and
+technology share one course catalogue. Course teaching, independent assessment and memory training
+keep separate state models before a long-term plan composes their tasks.
 
 📚 **Structured learning** — reviewed content is organised by grade, textbook, volume and
 unit instead of being generated as an unverified exercise feed.
@@ -54,8 +58,9 @@ invite code. First entry confirms grade, score target and daily load; sessions u
 Learners can change their password, inspect signed-in devices and revoke other sessions from
 settings.
 
-🖥️ **Public website and study workspace** — visitors receive a clear product overview,
-while signed-in learners use a grouped sidebar, top-bar search, notifications and theme controls.
+🖥️ **Public website and study workspace** — public and signed-in course pages distinguish what is
+available, being integrated and planned. Learners use a grouped sidebar, top-bar search,
+notifications and theme controls.
 
 ## Getting Started
 
@@ -101,16 +106,17 @@ academy/
 
 ## Project Direction
 
-The next step is a topic I currently need to study, with explanations, questions, practice and
-follow-up review in one course. A [momentum lesson draft](docs/learning-pilot.md) contains exercises
-and feedback rules; it has not yet been integrated.
+The next step is to integrate the [momentum lesson draft](docs/learning-pilot.md), connecting its
+prerequisite check, explanations, questions, practice, independent assessment and delayed retest.
 
 Further courses will follow my studies, gradually adding plans across Chinese, mathematics,
 English, physics, chemistry and technology. See the [development plan](docs/project-roadmap.md).
 
 ## Architecture
 
-The npm workspace separates the React client, Fastify API and shared validation models.
+The npm workspace separates the React client, Fastify API and shared validation models. Existing
+FSRS cards remain specific to vocabulary and poetry memory training; continuous courses use their
+own lesson-run and evidence model.
 Caddy serves the website and proxies `/api` to Fastify; PostgreSQL stores identity,
 learning and social data. Shared interface primitives come directly from
 [`@lailai0916/ui`](https://github.com/lailai0916/ui) from npm.
