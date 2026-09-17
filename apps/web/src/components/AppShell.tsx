@@ -19,7 +19,7 @@ const navigation: { label: string; items: NavigationItem[] }[] = [
     label: '学习',
     items: [
       { to: '/dashboard', label: '今日学习', icon: 'lucide:house', end: true },
-      { to: '/courses', label: '学科课程', icon: 'lucide:book-open-check', end: true },
+      { to: '/courses', label: '学科课程', icon: 'lucide:book-open-check' },
       { to: '/learn', label: '记忆训练', icon: 'lucide:brain', end: true },
       { to: '/learn/mistakes', label: '错题本', icon: 'lucide:notebook-tabs', end: true },
       { to: '/progress', label: '学习分析', icon: 'lucide:chart-no-axes-combined', end: true },
@@ -85,11 +85,13 @@ export function AppShell() {
     );
   const currentLabel = location.pathname.startsWith('/admin')
     ? '管理'
-    : location.pathname.startsWith('/learn/session')
-      ? '学习任务'
-      : location.pathname === '/profile' || location.pathname.startsWith('/profile/')
-        ? '个人主页'
-        : (current?.label ?? 'Academy');
+    : location.pathname.includes('/run/') && location.pathname.startsWith('/courses/')
+      ? '课堂'
+      : location.pathname.startsWith('/learn/session')
+        ? '学习任务'
+        : location.pathname === '/profile' || location.pathname.startsWith('/profile/')
+          ? '个人主页'
+          : (current?.label ?? 'Academy');
 
   const handleLogout = async () => {
     if (loggingOut) return;

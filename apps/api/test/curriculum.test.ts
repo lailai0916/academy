@@ -16,7 +16,7 @@ describe('curriculum catalog', () => {
 
     expect(chinese?.memoryModules).toEqual(['poem']);
     expect(english?.memoryModules).toEqual(['word']);
-    expect(momentum).toMatchObject({ subject: 'physics', status: 'building' });
+    expect(momentum).toMatchObject({ subject: 'physics', status: 'pilot' });
   });
 
   it('keeps course and memory tasks distinct at the planning boundary', () => {

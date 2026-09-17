@@ -17,8 +17,8 @@ Academy is an open-source AI self-study platform I am building to catch up on hi
 after informatics competition training.
 
 The target scope is all six subjects in my Zhejiang Gaokao preparation. English vocabulary and
-classical Chinese poetry memory training, spaced review and AI explanations are available now. The
-six-subject course catalogue is in place, and the first continuous momentum course is being integrated.
+classical Chinese poetry memory training, spaced review and AI explanations are available now,
+together with the first resumable momentum course. Courses for the other subjects remain planned.
 
 [Introduction](docs/project-brief.md) · [Project details](docs/project-overview.md) ·
 [PDF](output/pdf/academy-project-brief.pdf) · [Documentation](docs/README.md)
@@ -30,6 +30,10 @@ The project and teaching documents are in Simplified Chinese.
 🧭 **Six-subject course architecture** — Chinese, mathematics, English, physics, chemistry and
 technology share one course catalogue. Course teaching, independent assessment and memory training
 keep separate state models before a long-term plan composes their tasks.
+
+⚛️ **Continuous course pilot** — The momentum course connects prerequisite checks, structured
+lesson steps, recorded hints, in-context AI questions, independent assessment and a seven-day
+delayed retest. Progress and attempts are stored server-side so a learner can resume later.
 
 📚 **Structured learning** — reviewed content is organised by grade, textbook, volume and
 unit instead of being generated as an unverified exercise feed.
@@ -59,7 +63,7 @@ Learners can change their password, inspect signed-in devices and revoke other s
 settings.
 
 🖥️ **Public website and study workspace** — public and signed-in course pages distinguish what is
-available, being integrated and planned. Learners use a grouped sidebar, top-bar search,
+available, in pilot and planned. Learners use a grouped sidebar, top-bar search,
 notifications and theme controls.
 
 ## Getting Started
@@ -106,8 +110,8 @@ academy/
 
 ## Project Direction
 
-The next step is to integrate the [momentum lesson draft](docs/learning-pilot.md), connecting its
-prerequisite check, explanations, questions, practice, independent assessment and delayed retest.
+The next step is to use the implemented [momentum course](docs/learning-pilot.md) for real study,
+check its content, scoring, hint dependence and model cost, then apply the useful structure to new units.
 
 Further courses will follow my studies, gradually adding plans across Chinese, mathematics,
 English, physics, chemistry and technology. See the [development plan](docs/project-roadmap.md).

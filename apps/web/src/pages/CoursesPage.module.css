@@ -114,18 +114,45 @@
   min-height: 28px;
 }
 
-.subjectFooter a {
+.subjectFooter {
+  display: grid;
+  align-content: end;
+  gap: 5px;
+}
+
+.subjectFooter a,
+.subjectFooter button {
   display: inline-flex;
+  width: fit-content;
   min-height: 28px;
   align-items: center;
   gap: 6px;
+  padding: 0;
+  border: 0;
+  background: transparent;
   color: var(--lk-color-primary-label);
   font-size: 12px;
   font-weight: 600;
+  text-align: left;
 }
 
-.subjectFooter a svg {
+.subjectFooter a svg,
+.subjectFooter button svg {
   width: 14px;
+}
+
+.courseAction {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.courseAction > span,
+.courseProgress small {
+  color: var(--lk-font-color-tertiary);
+  font-size: 11px;
 }
 
 .pilotCard {
@@ -151,6 +178,11 @@
 .pilotDetails > div {
   display: grid;
   gap: 10px;
+}
+
+.courseProgress {
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--lk-color-emphasis-300);
 }
 
 .pilotDetails ul {

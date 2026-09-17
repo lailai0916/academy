@@ -8,6 +8,7 @@ import authPlugin from './plugins/auth.js';
 import { adminRoutes } from './routes/admin.js';
 import { aiRoutes } from './routes/ai.js';
 import { authRoutes } from './routes/auth.js';
+import { courseRoutes } from './routes/courses.js';
 import { dashboardRoutes } from './routes/dashboard.js';
 import { learningRoutes } from './routes/learning.js';
 import { profileRoutes } from './routes/profile.js';
@@ -51,6 +52,7 @@ export async function buildApp() {
         }
       });
       await api.register(authRoutes);
+      await api.register(courseRoutes);
       await api.register(dashboardRoutes);
       await api.register(profileRoutes);
       await api.register(learningRoutes);

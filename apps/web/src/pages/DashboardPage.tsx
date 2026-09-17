@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react';
 import { Button, EmptyState, Panel } from '@lailai0916/ui';
 import { useNavigate } from 'react-router';
 import {
-  courseStatusLabels,
-  curriculumCatalog,
+  type CourseListItem,
   type Dashboard,
   type LearningInsights,
   type LearningOverview,
@@ -19,12 +18,23 @@ type DashboardData = {
   insights: LearningInsights;
   words: LearningOverview;
   poems: LearningOverview;
+  course: CourseListItem | null;
+};
+
+const courseProgressLabels: Record<CourseListItem['progress']['status'], string> = {
+  'not-started': '尚未开始',
+  'lesson-in-progress': '课堂进行中',
+  'retest-scheduled': '等待延迟复测',
+  'retest-due': '复测已到期',
+  'retest-in-progress': '复测进行中',
+  completed: '课程与复测已完成',
 };
 
 export function DashboardPage() {
   const navigate = useNavigate();
   const [data, setData] = useState<DashboardData | null>(null);
   const [error, setError] = useState('');
+  const [startingCourse, setStartingCourse] = useState(false);
 
   useEffect(() => {
     Promise.all([
@@ -32,13 +42,15 @@ export function DashboardPage() {
       api<{ insights: LearningInsights }>('/learn/insights?days=14'),
       api<{ overview: LearningOverview }>('/learn/overview/word'),
       api<{ overview: LearningOverview }>('/learn/overview/poem'),
+      api<{ courses: CourseListItem[] }>('/courses'),
     ])
-      .then(([dashboard, insights, words, poems]) =>
+      .then(([dashboard, insights, words, poems, courses]) =>
         setData({
           dashboard: dashboard.dashboard,
           insights: insights.insights,
           words: words.overview,
           poems: poems.overview,
+          course: courses.courses[0] ?? null,
         })
       )
       .catch((nextError) => setError(errorMessage(nextError)));
@@ -58,7 +70,30 @@ export function DashboardPage() {
   const maxDaily = Math.max(1, ...data.insights.daily.map((day) => day.reviews));
   const hasReviewActivity = data.insights.daily.some((day) => day.reviews > 0);
   const forecastTotal = data.insights.forecast.reduce((sum, day) => sum + day.total, 0);
-  const pilotCourse = curriculumCatalog.courses[0];
+  const pilotCourse = data.course;
+
+  const openCourse = async () => {
+    if (!pilotCourse || startingCourse) return;
+    if (pilotCourse.progress.status === 'retest-scheduled') {
+      navigate('/courses');
+      return;
+    }
+    if (pilotCourse.progress.runId) {
+      navigate('/courses/' + pilotCourse.slug + '/run/' + pilotCourse.progress.runId);
+      return;
+    }
+    setStartingCourse(true);
+    setError('');
+    try {
+      const response = await api<{ runId: string }>('/courses/' + pilotCourse.slug + '/start', {
+        method: 'POST',
+      });
+      navigate('/courses/' + pilotCourse.slug + '/run/' + response.runId);
+    } catch (nextError) {
+      setError(errorMessage(nextError));
+      setStartingCourse(false);
+    }
+  };
 
   return (
     <div className={page.page}>
@@ -86,8 +121,8 @@ export function DashboardPage() {
       {pilotCourse && (
         <section className={page.section}>
           <div className={page.sectionHeader}>
-            <h2>课程建设</h2>
-            <p>首个连续课程正在接入</p>
+            <h2>当前课程</h2>
+            <p>课程进度与记忆任务分别记录</p>
           </div>
           <Panel feature className={styles.coursePanel}>
             <span className={styles.courseIcon}>
@@ -96,11 +131,29 @@ export function DashboardPage() {
             <div className={styles.courseCopy}>
               <span>{pilotCourse.grade} · 物理</span>
               <h3>{pilotCourse.title}</h3>
-              <p>{pilotCourse.statusDetail}</p>
+              <p>
+                已完成 {pilotCourse.progress.completedSteps} / {pilotCourse.progress.totalSteps} 步
+                {pilotCourse.progress.assessmentTotal
+                  ? ' · 独立测评 ' +
+                    pilotCourse.progress.assessmentCorrect +
+                    '/' +
+                    pilotCourse.progress.assessmentTotal
+                  : ''}
+              </p>
             </div>
-            <span className={styles.courseStatus}>{courseStatusLabels[pilotCourse.status]}</span>
-            <Button variant="secondary" onClick={() => navigate('/courses')}>
-              查看课程架构
+            <span className={styles.courseStatus}>
+              {courseProgressLabels[pilotCourse.progress.status]}
+            </span>
+            <Button variant="secondary" disabled={startingCourse} onClick={() => void openCourse()}>
+              {startingCourse
+                ? '正在准备'
+                : pilotCourse.progress.status === 'not-started'
+                  ? '开始课程'
+                  : pilotCourse.progress.status === 'retest-scheduled'
+                    ? '查看复测时间'
+                    : pilotCourse.progress.status === 'completed'
+                      ? '查看结果'
+                      : '继续学习'}
               <Icon icon="lucide:arrow-right" />
             </Button>
           </Panel>

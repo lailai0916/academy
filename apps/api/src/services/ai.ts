@@ -13,6 +13,11 @@ type AiTeachingResponse = {
   };
 };
 
+type AiCourseQuestionResponse = {
+  answer: string;
+  keyPoints: string[];
+};
+
 async function configuredClient() {
   const [settings] = await db.select().from(aiSettings).where(eq(aiSettings.id, 1)).limit(1);
   if (!settings?.encryptedApiKey) {
@@ -88,6 +93,58 @@ export async function generateTeachingResponse(input: {
     typeof parsed.practice?.question !== 'string' ||
     typeof parsed.practice?.answer !== 'string'
   ) {
+    throw new Error('AI provider returned an invalid response shape.');
+  }
+  return parsed;
+}
+
+export async function generateCourseQuestionResponse(input: {
+  courseTitle: string;
+  stepTitle: string;
+  source: unknown;
+  question: string;
+}) {
+  const client = await configuredClient();
+  if (!client) {
+    return null;
+  }
+  const response = await fetch(`${client.baseUrl}/chat/completions`, {
+    method: 'POST',
+    headers: {
+      authorization: `Bearer ${client.apiKey}`,
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: client.model,
+      temperature: 0.2,
+      response_format: { type: 'json_object' },
+      messages: [
+        {
+          role: 'system',
+          content:
+            '你是面向浙江高中物理学习的课程助教。只根据提供的课程材料回答当前问题；若材料不足，明确说明不足，不编造教材结论。回答应先直接解决问题，再说明关键推理。输出 JSON：answer 字符串，keyPoints 字符串数组。',
+        },
+        {
+          role: 'user',
+          content: JSON.stringify(input),
+        },
+      ],
+    }),
+    signal: AbortSignal.timeout(30_000),
+  });
+  if (!response.ok) {
+    throw new Error(`AI provider returned ${response.status}.`);
+  }
+  const payload = (await response.json()) as {
+    choices?: Array<{ message?: { content?: string } }>;
+  };
+  const content = payload.choices?.[0]?.message?.content;
+  if (!content) {
+    throw new Error('AI provider returned an empty response.');
+  }
+  const fenced = content.match(/```(?:json)?\s*([\s\S]*?)```/i)?.[1];
+  const parsed = JSON.parse(fenced ?? content) as AiCourseQuestionResponse;
+  if (typeof parsed.answer !== 'string' || !Array.isArray(parsed.keyPoints)) {
     throw new Error('AI provider returned an invalid response shape.');
   }
   return parsed;

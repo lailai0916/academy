@@ -6,6 +6,7 @@ import { AdminPage } from './pages/AdminPage';
 import { AuthPage } from './pages/AuthPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { CoursesPage } from './pages/CoursesPage';
+import { CoursePlayerPage } from './pages/CoursePlayerPage';
 import { LearnPage } from './pages/LearnPage';
 import { LandingPage } from './pages/LandingPage';
 import { MistakesPage } from './pages/MistakesPage';
@@ -56,6 +57,7 @@ export function App() {
       <Route element={<ProtectedLayout />}>
         <Route path="dashboard" element={<DashboardPage />} />
         <Route path="courses" element={<CoursesPage />} />
+        <Route path="courses/:courseSlug/run/:runId" element={<CoursePlayerPage />} />
         <Route path="learn" element={<LearnPage />} />
         <Route path="learn/words" element={<LearnPage kind="word" />} />
         <Route path="learn/poems" element={<LearnPage kind="poem" />} />

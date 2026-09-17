@@ -7,7 +7,7 @@ import styles from './LandingPage.module.css';
 const principles = [
   ['目标范围', '浙江高考六科'],
   ['当前可用', '英语词汇 · 古诗词'],
-  ['正在接入', '物理 · 动量定理'],
+  ['开放试用', '物理 · 动量定理'],
 ] as const;
 
 const steps = [
@@ -24,9 +24,9 @@ const progress = [
     description: '英语词汇与古诗词学习、间隔复习、错题巩固和长期记忆指标。',
   },
   {
-    status: '接入中',
+    status: '试用中',
     title: '首个连续课程',
-    description: '以高二物理“动量定理”为样例，接通讲解、追问、练习、测评和复测。',
+    description: '高二物理“动量定理”已经接通可恢复课堂、追问、练习、测评和延迟复测。',
   },
   {
     status: '规划中',
@@ -89,9 +89,9 @@ export function LandingPage() {
                 </span>
                 <div>
                   <strong>物理 · 动量定理</strong>
-                  <span>连续课程 · 正在接入</span>
+                  <span>连续课程 · 已开放试用</span>
                 </div>
-                <span className={styles.itemStatus}>接入中</span>
+                <span className={styles.itemStatus}>试用中</span>
               </article>
               <article>
                 <span className={styles.previewIcon}>

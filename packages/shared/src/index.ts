@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 export * from './curriculum.js';
+export * from './course.js';
 
 export const usernameSchema = z
   .string()

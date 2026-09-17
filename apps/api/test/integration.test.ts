@@ -1,8 +1,10 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { FastifyInstance } from 'fastify';
+import { eq } from 'drizzle-orm';
 import { buildApp } from '../src/app.js';
 import { config } from '../src/config.js';
-import { closeDatabase } from '../src/db/index.js';
+import { closeDatabase, db } from '../src/db/index.js';
+import { courseRuns } from '../src/db/schema.js';
 
 let app: FastifyInstance;
 let adminCookie = '';
@@ -409,6 +411,213 @@ integrationDescribe('Academy API integration', () => {
       },
     });
     expect(mismatchedContent.statusCode).toBe(400);
+  });
+
+  it('completes a resumable course and its delayed retest', async () => {
+    const initialList = await app.inject({
+      method: 'GET',
+      url: '/api/courses',
+      headers: { cookie: userCookie },
+    });
+    expect(initialList.statusCode).toBe(200);
+    expect(initialList.json().courses[0]).toMatchObject({
+      slug: 'physics-momentum',
+      progress: { status: 'not-started', completedSteps: 0 },
+    });
+
+    const startRequest = {
+      method: 'POST',
+      url: '/api/courses/physics-momentum/start',
+      headers: mutationHeaders(userCookie),
+    } as const;
+    const starts = await Promise.all([app.inject(startRequest), app.inject(startRequest)]);
+    expect(starts.map((response) => response.statusCode).sort()).toEqual([200, 201]);
+    expect(starts.map((response) => response.json().runId)).toEqual([
+      starts[0].json().runId,
+      starts[0].json().runId,
+    ]);
+    expect(starts.map((response) => response.json().resumed).sort()).toEqual([false, true]);
+    const lessonRunId = starts[0].json().runId as string;
+
+    const getRun = () =>
+      app.inject({
+        method: 'GET',
+        url: `/api/course-runs/${lessonRunId}`,
+        headers: { cookie: userCookie },
+      });
+    const complete = (stepId: string) =>
+      app.inject({
+        method: 'POST',
+        url: `/api/course-runs/${lessonRunId}/complete`,
+        headers: mutationHeaders(userCookie),
+        payload: { stepId },
+      });
+    const answer = (stepId: string, value: string) =>
+      app.inject({
+        method: 'POST',
+        url: `/api/course-runs/${lessonRunId}/answer`,
+        headers: mutationHeaders(userCookie),
+        payload: { stepId, answer: value },
+      });
+
+    const orientation = await getRun();
+    expect(orientation.statusCode).toBe(200);
+    expect(orientation.json().run.step).toMatchObject({
+      id: 'orientation',
+      kind: 'reading',
+      questionsAvailable: true,
+    });
+    expect(JSON.stringify(orientation.json().run.step)).not.toContain('accepted');
+    expect((await complete('orientation')).statusCode).toBe(200);
+
+    const direction = await getRun();
+    expect(direction.json().run.step.id).toBe('foundation-direction');
+    const hint = await app.inject({
+      method: 'POST',
+      url: `/api/course-runs/${lessonRunId}/assistance`,
+      headers: mutationHeaders(userCookie),
+      payload: { stepId: 'foundation-direction', kind: 'hint' },
+    });
+    expect(hint.statusCode).toBe(200);
+    expect(hint.json().assistance.kind).toBe('hint');
+
+    const incorrectDirection = await answer('foundation-direction', '+6 m/s');
+    expect(incorrectDirection.statusCode).toBe(200);
+    expect(incorrectDirection.json().result).toMatchObject({
+      correct: false,
+      advanced: false,
+      assistanceLevel: 'hint',
+    });
+    expect((await getRun()).json().run.step.id).toBe('foundation-direction');
+
+    const correctDirection = await answer('foundation-direction', '-6 m/s');
+    expect(correctDirection.json().result).toMatchObject({
+      correct: true,
+      advanced: true,
+      assistanceLevel: 'hint',
+    });
+    expect(
+      (await answer('foundation-system', '不能，因为地面对球有明显外力冲量')).json().result.correct
+    ).toBe(true);
+    expect((await complete('impulse-momentum')).statusCode).toBe(200);
+
+    const solution = await app.inject({
+      method: 'POST',
+      url: `/api/course-runs/${lessonRunId}/assistance`,
+      headers: mutationHeaders(userCookie),
+      payload: { stepId: 'practice-momentum-change', kind: 'solution' },
+    });
+    expect(solution.statusCode).toBe(200);
+    const wrongPractice = await answer('practice-momentum-change', '4');
+    expect(wrongPractice.json().result).toMatchObject({
+      correct: false,
+      advanced: false,
+      assistanceLevel: 'solution',
+      expectedAnswer: null,
+    });
+    const correctedPractice = await answer('practice-momentum-change', '5 kg·m/s');
+    expect(correctedPractice.json().result).toMatchObject({ correct: true, advanced: true });
+    expect((await answer('practice-contact-force', '255')).json().result.correct).toBe(true);
+
+    const blockedAssessmentHint = await app.inject({
+      method: 'POST',
+      url: `/api/course-runs/${lessonRunId}/assistance`,
+      headers: mutationHeaders(userCookie),
+      payload: { stepId: 'assessment-bounce', kind: 'hint' },
+    });
+    expect(blockedAssessmentHint.statusCode).toBe(409);
+
+    const missedAssessment = await answer('assessment-bounce', '60');
+    expect(missedAssessment.json().result).toMatchObject({ correct: false, advanced: true });
+    const finalAssessment = await answer('assessment-wall', '140');
+    expect(finalAssessment.json().result).toMatchObject({
+      correct: true,
+      advanced: true,
+      runComplete: true,
+    });
+
+    const lessonSummary = await getRun();
+    expect(lessonSummary.json().run).toMatchObject({
+      status: 'completed',
+      step: null,
+      summary: { mode: 'lesson', assessmentCorrect: 1, assessmentTotal: 2 },
+    });
+    expect(lessonSummary.json().run.summary.retestDueAt).toBeTypeOf('string');
+
+    const scheduledList = await app.inject({
+      method: 'GET',
+      url: '/api/courses',
+      headers: { cookie: userCookie },
+    });
+    expect(scheduledList.json().courses[0].progress).toMatchObject({
+      status: 'retest-scheduled',
+      runId: null,
+    });
+    const tooEarly = await app.inject({
+      method: 'POST',
+      url: '/api/courses/physics-momentum/start',
+      headers: mutationHeaders(userCookie),
+    });
+    expect(tooEarly.statusCode).toBe(409);
+
+    await db
+      .update(courseRuns)
+      .set({ retestDueAt: new Date(Date.now() - 60_000) })
+      .where(eq(courseRuns.id, lessonRunId));
+
+    const dueList = await app.inject({
+      method: 'GET',
+      url: '/api/courses',
+      headers: { cookie: userCookie },
+    });
+    expect(dueList.json().courses[0].progress.status).toBe('retest-due');
+
+    const retestStarted = await app.inject({
+      method: 'POST',
+      url: '/api/courses/physics-momentum/start',
+      headers: mutationHeaders(userCookie),
+    });
+    expect(retestStarted.statusCode).toBe(201);
+    const retestRunId = retestStarted.json().runId as string;
+    const getRetest = () =>
+      app.inject({
+        method: 'GET',
+        url: `/api/course-runs/${retestRunId}`,
+        headers: { cookie: userCookie },
+      });
+    const answerRetest = (stepId: string, value: string) =>
+      app.inject({
+        method: 'POST',
+        url: `/api/course-runs/${retestRunId}/answer`,
+        headers: mutationHeaders(userCookie),
+        payload: { stepId, answer: value },
+      });
+
+    expect((await getRetest()).json().run.step).toMatchObject({
+      id: 'retest-bounce',
+      assistanceAvailable: false,
+      questionsAvailable: false,
+    });
+    expect((await answerRetest('retest-bounce', '57')).json().result.correct).toBe(true);
+    expect((await answerRetest('retest-wall', '90')).json().result.correct).toBe(false);
+    expect((await answerRetest('retest-impulse', '3')).json().result.runComplete).toBe(true);
+
+    const retestSummary = await getRetest();
+    expect(retestSummary.json().run).toMatchObject({
+      status: 'completed',
+      summary: { mode: 'retest', assessmentCorrect: 2, assessmentTotal: 3 },
+    });
+    const completedList = await app.inject({
+      method: 'GET',
+      url: '/api/courses',
+      headers: { cookie: userCookie },
+    });
+    expect(completedList.json().courses[0].progress).toMatchObject({
+      status: 'completed',
+      runId: retestRunId,
+      assessmentCorrect: 2,
+      assessmentTotal: 3,
+    });
   });
 
   it('updates the password and revokes other login sessions', async () => {

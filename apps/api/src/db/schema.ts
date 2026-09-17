@@ -38,6 +38,21 @@ export const contentChangeKind = pgEnum('content_change_kind', [
 ]);
 export const sessionStatus = pgEnum('study_session_status', ['active', 'completed', 'abandoned']);
 export const sessionMode = pgEnum('study_session_mode', ['plan', 'review', 'diagnostic']);
+export const courseRunMode = pgEnum('course_run_mode', ['lesson', 'retest']);
+export const courseRunStatus = pgEnum('course_run_status', ['active', 'completed']);
+export const courseStepPhase = pgEnum('course_step_phase', [
+  'foundation',
+  'lesson',
+  'practice',
+  'assessment',
+  'retest',
+]);
+export const courseAssistanceKind = pgEnum('course_assistance_kind', ['hint', 'solution']);
+export const courseAssistanceLevel = pgEnum('course_assistance_level', [
+  'independent',
+  'hint',
+  'solution',
+]);
 export const friendshipStatus = pgEnum('friendship_status', ['pending', 'accepted', 'declined']);
 export const groupRole = pgEnum('group_role', ['owner', 'moderator', 'member']);
 export const postVisibility = pgEnum('post_visibility', ['platform', 'friends', 'group']);
@@ -265,6 +280,95 @@ export const studySessions = pgTable(
       .on(table.userId)
       .where(sql`${table.status} = 'active'`),
   ]
+);
+
+export const courseRuns = pgTable(
+  'course_runs',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    courseSlug: varchar('course_slug', { length: 120 }).notNull(),
+    courseVersion: varchar('course_version', { length: 40 }).notNull(),
+    mode: courseRunMode('mode').notNull(),
+    status: courseRunStatus('status').notNull().default('active'),
+    currentStep: integer('current_step').notNull().default(0),
+    assessmentCorrect: integer('assessment_correct').notNull().default(0),
+    assessmentTotal: integer('assessment_total').notNull().default(0),
+    retestDueAt: timestamp('retest_due_at', { withTimezone: true }),
+    startedAt: timestamp('started_at', { withTimezone: true }).notNull().defaultNow(),
+    completedAt: timestamp('completed_at', { withTimezone: true }),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex('course_runs_user_course_mode_unique').on(
+      table.userId,
+      table.courseSlug,
+      table.courseVersion,
+      table.mode
+    ),
+    index('course_runs_user_status_idx').on(table.userId, table.status, table.updatedAt),
+  ]
+);
+
+export const courseStepAttempts = pgTable(
+  'course_step_attempts',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    runId: uuid('run_id')
+      .notNull()
+      .references(() => courseRuns.id, { onDelete: 'cascade' }),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    stepId: varchar('step_id', { length: 80 }).notNull(),
+    phase: courseStepPhase('phase').notNull(),
+    response: text('response').notNull(),
+    correct: boolean('correct').notNull(),
+    assistanceLevel: courseAssistanceLevel('assistance_level').notNull(),
+    feedback: varchar('feedback', { length: 600 }).notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    index('course_step_attempts_run_step_idx').on(table.runId, table.stepId, table.createdAt),
+  ]
+);
+
+export const courseAssistanceEvents = pgTable(
+  'course_assistance_events',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    runId: uuid('run_id')
+      .notNull()
+      .references(() => courseRuns.id, { onDelete: 'cascade' }),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    stepId: varchar('step_id', { length: 80 }).notNull(),
+    kind: courseAssistanceKind('kind').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [index('course_assistance_events_run_step_idx').on(table.runId, table.stepId)]
+);
+
+export const courseQuestionBranches = pgTable(
+  'course_question_branches',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    runId: uuid('run_id')
+      .notNull()
+      .references(() => courseRuns.id, { onDelete: 'cascade' }),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    stepId: varchar('step_id', { length: 80 }).notNull(),
+    question: text('question').notNull(),
+    answer: text('answer').notNull(),
+    keyPoints: text('key_points').array().notNull().default([]),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [index('course_question_branches_run_step_idx').on(table.runId, table.stepId)]
 );
 
 export const reviewEvents = pgTable(

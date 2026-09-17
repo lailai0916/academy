@@ -57,6 +57,13 @@
       "when": 1787854436418,
       "tag": "0007_sparkling_bloodstorm",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1789660902259,
+      "tag": "0008_smiling_harpoon",
+      "breakpoints": true
     }
   ]
 }
