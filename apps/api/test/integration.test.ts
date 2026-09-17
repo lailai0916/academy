@@ -715,6 +715,17 @@ integrationDescribe('Academy API integration', () => {
     });
     expect(dashboard.statusCode).toBe(200);
     expect(dashboard.json().dashboard.plan.total).toBeGreaterThan(0);
+    expect(dashboard.json().dashboard.plan.tasks).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          kind: 'memory-review',
+          status: expect.stringMatching(/^(planned|active|completed)$/),
+        }),
+      ])
+    );
+    expect(
+      dashboard.json().dashboard.plan.tasks.some((task: { kind: string }) => task.kind === 'course')
+    ).toBe(false);
 
     const created = await app.inject({
       method: 'POST',

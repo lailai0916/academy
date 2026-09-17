@@ -33,8 +33,10 @@
 | [记忆模型](../apps/api/src/services/memory-model.ts)                                | FSRS 调度                        |
 | [六科目录](../packages/shared/src/curriculum.ts)                                    | 六科范围、课程状态与任务类型     |
 | [课程服务](../apps/api/src/services/courses.ts)                                     | 续课、作答、帮助、测评与延迟复测 |
+| [计划服务](../apps/api/src/services/dashboard.ts)                                   | 课程、复测与记忆任务的当天编排   |
 | [课程课堂](../apps/web/src/pages/CoursePlayerPage.tsx)                              | 分步课件、作答、提示、追问和结果 |
 | [课程入口](../apps/web/src/pages/CoursesPage.tsx)                                   | 课程真实进度与六科建设状态       |
+| [今日学习](../apps/web/src/pages/DashboardPage.tsx)                                 | 统一任务入口、真实进度与继续学习 |
 | [架构说明](architecture.md)                                                         | 模块边界与数据流                 |
 
-个人网站的 Academy 页面可能仍描述早期版本，当前能力以仓库为准。六科目录和课程入口已经建立；动量课程已有连续课堂、教学分支、独立测评和延迟复测，跨科计划尚未实现。
+个人网站的 Academy 页面可能仍描述早期版本，当前能力以仓库为准。六科目录和课程入口已经建立；动量课程已有连续课堂、教学分支、独立测评和延迟复测；今日计划已组合课程、复测与记忆训练。阶段和周计划尚未实现。

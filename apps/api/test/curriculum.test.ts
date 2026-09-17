@@ -28,6 +28,8 @@ describe('curriculum catalog', () => {
       title: '继续动量定理',
       reason: '完成基础检查后继续课程',
       status: 'planned',
+      completedSteps: 0,
+      totalSteps: 8,
     });
     const memoryTask = planTaskSchema.parse({
       id: 'memory-1',
@@ -36,6 +38,7 @@ describe('curriculum catalog', () => {
       title: '英语词汇复习',
       due: 8,
       newCount: 4,
+      completed: 0,
       status: 'planned',
     });
 

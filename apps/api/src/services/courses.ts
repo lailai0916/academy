@@ -92,6 +92,8 @@ function progressFromRuns(
       assessmentCorrect: null,
       assessmentTotal: null,
       retestDueAt: null,
+      lessonCompletedAt: null,
+      retestCompletedAt: null,
     };
   }
   if (lesson.status === 'active') {
@@ -104,6 +106,8 @@ function progressFromRuns(
       assessmentCorrect: lesson.assessmentCorrect,
       assessmentTotal: lesson.assessmentTotal,
       retestDueAt: null,
+      lessonCompletedAt: null,
+      retestCompletedAt: null,
     };
   }
   if (!retest) {
@@ -117,6 +121,8 @@ function progressFromRuns(
       assessmentCorrect: lesson.assessmentCorrect,
       assessmentTotal: lesson.assessmentTotal,
       retestDueAt: due?.toISOString() ?? null,
+      lessonCompletedAt: lesson.completedAt?.toISOString() ?? null,
+      retestCompletedAt: null,
     };
   }
   if (retest.status === 'active') {
@@ -129,6 +135,8 @@ function progressFromRuns(
       assessmentCorrect: retest.assessmentCorrect,
       assessmentTotal: retest.assessmentTotal,
       retestDueAt: lesson.retestDueAt?.toISOString() ?? null,
+      lessonCompletedAt: lesson.completedAt?.toISOString() ?? null,
+      retestCompletedAt: null,
     };
   }
   return {
@@ -140,6 +148,8 @@ function progressFromRuns(
     assessmentCorrect: retest.assessmentCorrect,
     assessmentTotal: retest.assessmentTotal,
     retestDueAt: lesson.retestDueAt?.toISOString() ?? null,
+    lessonCompletedAt: lesson.completedAt?.toISOString() ?? null,
+    retestCompletedAt: retest.completedAt?.toISOString() ?? null,
   };
 }
 
@@ -197,6 +207,8 @@ export async function getCourseList(userId: string): Promise<CourseListItem[]> {
             assessmentCorrect: null,
             assessmentTotal: null,
             retestDueAt: null,
+            lessonCompletedAt: null,
+            retestCompletedAt: null,
           },
         };
       }

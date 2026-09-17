@@ -23,6 +23,8 @@ export const planTaskSchema = z.discriminatedUnion('kind', [
     title: z.string(),
     reason: z.string(),
     status: planTaskStatusSchema,
+    completedSteps: z.number().int().nonnegative(),
+    totalSteps: z.number().int().nonnegative(),
   }),
   z.object({
     id: z.string(),
@@ -32,6 +34,9 @@ export const planTaskSchema = z.discriminatedUnion('kind', [
     title: z.string(),
     reason: z.string(),
     status: planTaskStatusSchema,
+    dueAt: z.string().nullable(),
+    completedSteps: z.number().int().nonnegative(),
+    totalSteps: z.number().int().nonnegative(),
   }),
   z.object({
     id: z.string(),
@@ -40,6 +45,7 @@ export const planTaskSchema = z.discriminatedUnion('kind', [
     title: z.string(),
     due: z.number().int().nonnegative(),
     newCount: z.number().int().nonnegative(),
+    completed: z.number().int().nonnegative(),
     status: planTaskStatusSchema,
   }),
 ]);
@@ -144,9 +150,11 @@ export const curriculumCatalog: CurriculumCatalog = {
   ],
   currentCapabilities: [
     '动量定理连续课程、独立测评与七天延迟复测',
+    '课程、复测与记忆训练的统一今日计划',
     '英语词汇与古诗词记忆训练',
     '间隔复习、错题巩固与延迟正确率',
     '教材内容审核、版本记录与 AI 讲解',
   ],
-  nextMilestone: '用动量定理课程完成首轮真实学习，根据作答、追问和复测记录继续修改。',
+  nextMilestone:
+    '用动量定理课程和今日计划完成首轮真实学习，根据作答、追问、任务负荷和复测记录继续修改。',
 };

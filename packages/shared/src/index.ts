@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { PlanTask } from './curriculum.js';
 
 export * from './curriculum.js';
 export * from './course.js';
@@ -292,6 +293,7 @@ export type DailyPlan = {
   completed: number;
   total: number;
   reason: string;
+  tasks: PlanTask[];
 };
 
 export type ActiveLearningSession = {

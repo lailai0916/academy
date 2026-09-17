@@ -53,6 +53,8 @@ export type CourseProgress = {
   assessmentCorrect: number | null;
   assessmentTotal: number | null;
   retestDueAt: string | null;
+  lessonCompletedAt: string | null;
+  retestCompletedAt: string | null;
 };
 
 export type CourseListItem = CourseCatalogItem & {

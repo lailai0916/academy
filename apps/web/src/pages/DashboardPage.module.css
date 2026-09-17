@@ -1,12 +1,28 @@
-.coursePanel {
+.loadingState {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto auto;
-  align-items: center;
-  gap: 18px;
-  padding: 22px;
+  min-height: 52vh;
+  place-content: center;
+  justify-items: center;
+  gap: 10px;
+  color: var(--lk-font-color-secondary);
+  text-align: center;
 }
 
-.courseIcon {
+.loadingState strong {
+  color: var(--lk-font-color-base);
+  font-size: 17px;
+}
+
+.loadingState p {
+  max-width: 42ch;
+  font-size: 13px;
+}
+
+.loadingState :global([data-lk='button']) {
+  margin-top: 8px;
+}
+
+.loadingIcon {
   display: grid;
   width: 48px;
   height: 48px;
@@ -16,37 +32,9 @@
   color: var(--lk-color-primary-label);
 }
 
-.courseIcon svg {
-  width: 23px;
-}
-
-.courseCopy {
-  display: grid;
-  gap: 4px;
-}
-
-.courseCopy > span,
-.courseStatus {
-  color: var(--lk-color-primary-label);
-  font-size: 11px;
-  font-weight: 650;
-}
-
-.courseCopy h3 {
-  font-size: 17px;
-}
-
-.courseCopy p {
-  color: var(--lk-font-color-secondary);
-  font-size: 12px;
-  line-height: 1.55;
-}
-
-.courseStatus {
-  padding: 4px 8px;
-  border-radius: 999px;
-  background: var(--lk-color-primary-soft);
-  white-space: nowrap;
+.loadingIcon svg {
+  width: 22px;
+  height: 22px;
 }
 
 .workspaceGrid {
@@ -155,7 +143,7 @@
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 14px;
-  min-height: 82px;
+  min-height: 98px;
   padding: 15px;
   border: 1px solid var(--lk-color-emphasis-300);
   border-radius: var(--lk-radius-md);
@@ -168,6 +156,19 @@
     transform var(--lk-transition);
 }
 
+.planItems button[data-status='active'] {
+  border-color: color-mix(in srgb, var(--lk-color-primary) 52%, var(--lk-color-emphasis-300));
+  background: color-mix(in srgb, var(--lk-color-primary-soft) 54%, var(--lk-background-raised));
+}
+
+.planItems button[data-status='completed'] {
+  background: var(--lk-card-background-color);
+}
+
+.planItems button:disabled {
+  cursor: wait;
+}
+
 .planItems button:hover {
   border-color: var(--lk-color-emphasis-400);
   background: var(--lk-color-emphasis-100);
@@ -177,22 +178,105 @@
   transform: scale(0.985);
 }
 
-.planItems button > span:nth-child(2) {
+.planTaskCopy {
   display: grid;
+  min-width: 0;
   gap: 3px;
 }
 
-.planItems strong {
+.planTaskCopy > strong {
   font-size: 14px;
 }
 
-.planItems small {
+.planTaskCopy > small {
+  overflow: hidden;
   color: var(--lk-font-color-secondary);
   font-size: 12px;
+  line-height: 1.45;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.planItems button > svg {
+.planTaskIcon {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  flex: none;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--lk-color-primary-soft);
+  color: var(--lk-color-primary-label);
+}
+
+.planTaskIcon[data-kind='assessment'] {
+  background: var(--lk-color-warning-soft);
+  color: var(--lk-color-warning);
+}
+
+.planTaskIcon svg {
+  width: 19px;
+  height: 19px;
+}
+
+.planTaskEyebrow {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
   color: var(--lk-font-color-tertiary);
+  font-size: 10px;
+  font-weight: 650;
+}
+
+.planTaskEyebrow > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.planTaskStatus {
+  display: inline-flex;
+  min-height: 20px;
+  flex: none;
+  align-items: center;
+  padding: 0 6px;
+  border-radius: 6px;
+  background: var(--lk-color-emphasis-100);
+  color: var(--lk-font-color-secondary);
+}
+
+.planTaskStatus[data-status='active'] {
+  background: var(--lk-color-primary-soft);
+  color: var(--lk-color-primary-label);
+}
+
+.planTaskStatus[data-status='completed'] {
+  background: var(--lk-color-success-soft);
+  color: var(--lk-color-success);
+}
+
+.planTaskAction {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--lk-font-color-tertiary);
+}
+
+.planItems button[data-status='active'] .planTaskAction {
+  background: var(--lk-color-primary);
+  color: #fff;
+}
+
+.planItems button[data-status='completed'] .planTaskAction {
+  background: var(--lk-color-success-soft);
+  color: var(--lk-color-success);
+}
+
+.planTaskAction svg {
+  width: 16px;
+  height: 16px;
 }
 
 .focus {
@@ -319,16 +403,6 @@
 }
 
 @media (max-width: 720px) {
-  .coursePanel {
-    grid-template-columns: auto minmax(0, 1fr);
-  }
-
-  .courseStatus,
-  .coursePanel > button {
-    grid-column: 2;
-    justify-self: start;
-  }
-
   .plan {
     grid-template-columns: 1fr;
     gap: 22px;
@@ -351,6 +425,20 @@
 
   .progressCopy {
     max-width: 240px;
+  }
+
+  .planItems button {
+    min-height: 94px;
+    gap: 11px;
+    padding: 13px;
+  }
+
+  .planTaskCopy > small {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    white-space: normal;
   }
 
   .focus {
