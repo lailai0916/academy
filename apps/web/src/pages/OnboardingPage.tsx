@@ -2,7 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { Button, Panel, SelectField, TextField } from '@lailai0916/ui';
 import type { ContentKind, Grade, Profile } from '@lailai/academy-shared';
 import { useAuth } from '../auth/AuthProvider';
-import { Icon } from '../components/Icon';
+import { Icon, type IconName } from '../components/Icon';
 import { PublicHeader } from '../components/PublicHeader';
 import { ApiRequestError, api, errorMessage } from '../lib/api';
 import styles from './OnboardingPage.module.css';
@@ -18,7 +18,7 @@ const destinations: {
   value: 'courses' | ContentKind;
   label: string;
   detail: string;
-  icon: string;
+  icon: IconName;
 }[] = [
   {
     value: 'courses',

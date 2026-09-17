@@ -3,14 +3,14 @@ import { Avatar, Brand, IconButton, ThemeControl } from '@lailai0916/ui';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router';
 import { useAuth } from '../auth/AuthProvider';
 import { GlobalSearch } from './GlobalSearch';
-import { Icon } from './Icon';
+import { Icon, type IconName } from './Icon';
 import { NotificationsMenu } from './NotificationsMenu';
 import styles from './AppShell.module.css';
 
 type NavigationItem = {
   to: string;
   label: string;
-  icon: string;
+  icon: IconName;
   end?: boolean;
 };
 

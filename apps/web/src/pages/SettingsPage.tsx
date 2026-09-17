@@ -2,12 +2,12 @@ import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { Button, Panel, SelectField, TextAreaField, TextField } from '@lailai0916/ui';
 import type { AuthSession, Grade, Profile } from '@lailai/academy-shared';
 import { useAuth } from '../auth/AuthProvider';
-import { Icon } from '../components/Icon';
+import { Icon, type IconName } from '../components/Icon';
 import { api, errorMessage } from '../lib/api';
 import page from './Page.module.css';
 import styles from './FeaturePages.module.css';
 
-const sessionIcons: Record<AuthSession['deviceType'], string> = {
+const sessionIcons: Record<AuthSession['deviceType'], IconName> = {
   desktop: 'lucide:monitor',
   mobile: 'lucide:smartphone',
   tablet: 'lucide:tablet',

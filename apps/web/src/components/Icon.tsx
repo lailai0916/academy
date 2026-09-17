@@ -5,15 +5,23 @@ import {
   BadgeCheck,
   Bell,
   BookOpen,
+  BookOpenCheck,
+  BookText,
   Brain,
+  CalendarClock,
   CalendarDays,
+  CalendarRange,
   ChartNoAxesColumn,
   ChartNoAxesCombined,
+  Check,
   CheckCircle2,
   ChevronDown,
   ChevronRight,
+  CircleHelp,
   CircleStop,
   CircleX,
+  CircuitBoard,
+  ClipboardCheck,
   Feather,
   FlaskConical,
   Globe2,
@@ -27,10 +35,14 @@ import {
   Lock,
   LogOut,
   Menu,
+  MessagesSquare,
+  Monitor,
   NotebookTabs,
   Pause,
   Play,
+  Plus,
   RotateCcw,
+  Route,
   Save,
   ScanSearch,
   Search,
@@ -38,6 +50,8 @@ import {
   ShieldCheck,
   Sigma,
   Sparkles,
+  Smartphone,
+  Tablet,
   Target,
   UserRound,
   Users,
@@ -47,22 +61,30 @@ import {
   type LucideProps,
 } from 'lucide-react';
 
-const icons: Record<string, LucideIcon> = {
+const icons = {
   'lucide:arrow-left': ArrowLeft,
   'lucide:arrow-right': ArrowRight,
   'lucide:atom': Atom,
   'lucide:badge-check': BadgeCheck,
   'lucide:bell': Bell,
   'lucide:book-open': BookOpen,
+  'lucide:book-open-check': BookOpenCheck,
+  'lucide:book-text': BookText,
   'lucide:brain': Brain,
+  'lucide:calendar-clock': CalendarClock,
   'lucide:calendar-days': CalendarDays,
+  'lucide:calendar-range': CalendarRange,
   'lucide:chart-no-axes-column': ChartNoAxesColumn,
   'lucide:chart-no-axes-combined': ChartNoAxesCombined,
+  'lucide:check': Check,
   'lucide:check-circle-2': CheckCircle2,
   'lucide:chevron-down': ChevronDown,
   'lucide:chevron-right': ChevronRight,
+  'lucide:circle-help': CircleHelp,
   'lucide:circle-stop': CircleStop,
   'lucide:circle-x': CircleX,
+  'lucide:circuit-board': CircuitBoard,
+  'lucide:clipboard-check': ClipboardCheck,
   'lucide:feather': Feather,
   'lucide:flask-conical': FlaskConical,
   'lucide:globe-2': Globe2,
@@ -76,10 +98,14 @@ const icons: Record<string, LucideIcon> = {
   'lucide:lock': Lock,
   'lucide:log-out': LogOut,
   'lucide:menu': Menu,
+  'lucide:messages-square': MessagesSquare,
+  'lucide:monitor': Monitor,
   'lucide:notebook-tabs': NotebookTabs,
   'lucide:pause': Pause,
   'lucide:play': Play,
+  'lucide:plus': Plus,
   'lucide:rotate-ccw': RotateCcw,
+  'lucide:route': Route,
   'lucide:save': Save,
   'lucide:scan-search': ScanSearch,
   'lucide:search': Search,
@@ -87,16 +113,20 @@ const icons: Record<string, LucideIcon> = {
   'lucide:shield-check': ShieldCheck,
   'lucide:sigma': Sigma,
   'lucide:sparkles': Sparkles,
+  'lucide:smartphone': Smartphone,
+  'lucide:tablet': Tablet,
   'lucide:target': Target,
   'lucide:user-round': UserRound,
   'lucide:users': Users,
   'lucide:upload': Upload,
   'lucide:x': X,
-};
+} satisfies Record<string, LucideIcon>;
 
-type IconProps = Omit<LucideProps, 'ref'> & { icon: string };
+export type IconName = keyof typeof icons;
+
+type IconProps = Omit<LucideProps, 'ref'> & { icon: IconName };
 
 export function Icon({ icon, ...props }: IconProps) {
-  const Component = icons[icon];
-  return Component ? <Component aria-hidden="true" {...props} /> : null;
+  const Component = icons[icon] ?? CircleHelp;
+  return <Component aria-hidden="true" {...props} />;
 }
