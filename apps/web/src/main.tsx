@@ -15,7 +15,7 @@ if (!root) {
 
 createRoot(root).render(
   <StrictMode>
-    <ThemeProvider themeColors={{ light: '#f6f6f8', dark: '#111214' }}>
+    <ThemeProvider themeColors={{ light: '#ffffff', dark: '#1b1b1d' }}>
       <BrowserRouter>
         <AuthProvider>
           <App />

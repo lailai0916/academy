@@ -5,7 +5,7 @@
 
 .content {
   display: grid;
-  min-height: calc(100vh - var(--lk-header-height));
+  min-height: calc(100vh - var(--academy-public-header-height));
   place-items: center;
   padding: 48px 20px;
 }
@@ -65,7 +65,7 @@
 
 @media (max-width: 520px) {
   .content {
-    min-height: calc(100vh - var(--lk-header-height));
+    min-height: calc(100vh - var(--academy-public-header-height));
     align-items: start;
     padding: 28px 12px;
   }

@@ -2,7 +2,7 @@
   position: sticky;
   top: 0;
   z-index: 40;
-  height: var(--lk-header-height);
+  height: var(--academy-public-header-height);
   border-bottom: 1px solid var(--lk-color-emphasis-300);
   background: var(--lk-card-background-color);
 }
@@ -13,7 +13,7 @@
   height: 100%;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  gap: 28px;
+  gap: 24px;
   margin-inline: auto;
 }
 
@@ -24,6 +24,10 @@
   min-height: 44px;
   align-items: center;
   border-radius: var(--lk-radius-control);
+}
+
+.brand:hover {
+  text-decoration: none;
 }
 
 .navigation {
@@ -59,12 +63,13 @@
   min-height: var(--lk-control-height-compact);
   align-items: center;
   justify-content: center;
-  padding: 0 11px;
-  border-radius: 7px;
+  padding: 0 12px;
+  border-radius: var(--lk-radius-control);
   white-space: nowrap;
 }
 
 .primaryAction {
+  border: 1px solid transparent;
   background: var(--lk-color-primary);
   color: #ffffff;
   font-size: 13px;

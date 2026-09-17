@@ -304,7 +304,7 @@
 .systemPrimary,
 .systemCard {
   border: 1px solid var(--lk-color-emphasis-300);
-  border-radius: 14px;
+  border-radius: var(--lk-radius-md);
   background: var(--lk-card-background-color);
 }
 
@@ -498,7 +498,7 @@
   gap: 20px;
   padding: 26px;
   border: 1px solid var(--lk-color-emphasis-300);
-  border-radius: 14px;
+  border-radius: var(--lk-radius-md);
   background: var(--lk-card-background-color);
 }
 
@@ -637,7 +637,7 @@
   .productPreview {
     gap: 16px;
     padding: 18px;
-    border-radius: 14px;
+    border-radius: var(--lk-radius-lg);
   }
 
   .principles {
