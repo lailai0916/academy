@@ -54,7 +54,13 @@
 
 .settingsStack {
   display: grid;
-  gap: 14px;
+  gap: 18px;
+}
+
+.settingsPage {
+  width: 100%;
+  max-width: var(--academy-reading-width);
+  margin-inline: auto;
 }
 
 .securitySection {
@@ -68,6 +74,31 @@
   grid-template-columns: minmax(260px, 0.8fr) minmax(0, 1.2fr);
   align-items: start;
   gap: 28px;
+}
+
+.settingsProfileGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(260px, 0.75fr);
+  align-items: start;
+  gap: 18px;
+}
+
+.settingsPrimary,
+.settingsGoals {
+  display: grid;
+  gap: 16px;
+}
+
+.settingsGoals {
+  padding: 18px;
+  border: 1px solid var(--lk-color-emphasis-300);
+  border-radius: var(--lk-radius-md);
+  background: var(--lk-background-raised);
+}
+
+.settingsGoals h3 {
+  font-size: 14px;
+  font-weight: 660;
 }
 
 .passwordForm {
@@ -522,6 +553,14 @@
   font-weight: 600;
 }
 
+.table tbody tr {
+  transition: background-color var(--lk-transition);
+}
+
+.table tbody tr:hover {
+  background: var(--lk-color-emphasis-100);
+}
+
 .jsonArea {
   min-height: 260px;
   font-family: var(--lk-font-mono);
@@ -561,9 +600,19 @@
     min-height: 44px;
   }
 
-  .securityGrid {
+  .reactionRow button,
+  .goalHistory summary {
+    min-height: 44px;
+  }
+
+  .securityGrid,
+  .settingsProfileGrid {
     grid-template-columns: 1fr;
     gap: 24px;
+  }
+
+  .settingsGoals {
+    padding: 16px;
   }
 
   .passwordForm {

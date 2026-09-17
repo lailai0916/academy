@@ -88,9 +88,9 @@ export function CoursesPage() {
   return (
     <div className={page.page}>
       <header className={page.pageHeader}>
-        <div className={styles.headingCopy}>
+        <div className={page.pageHeadingGroup}>
           <h1 className={page.pageHeading}>学科课程</h1>
-          <p>课程教学与记忆训练分开记录，再由长期计划统一安排。</p>
+          <p className={page.pageDescription}>课程教学与记忆训练分开记录，再由长期计划统一安排。</p>
         </div>
       </header>
 

@@ -17,7 +17,7 @@
 
 .sectionLink {
   display: inline-flex;
-  min-height: 38px;
+  min-height: 40px;
   flex: none;
   align-items: center;
   padding: 0 14px;
@@ -586,6 +586,10 @@
   }
 
   .sectionLink {
+    min-height: 44px;
+  }
+
+  .backLink {
     min-height: 44px;
   }
 

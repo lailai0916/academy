@@ -248,7 +248,10 @@ export function SocialPage() {
   return (
     <div className={page.page}>
       <header className={page.pageHeader}>
-        <h1 className={page.pageHeading}>同学</h1>
+        <div className={page.pageHeadingGroup}>
+          <h1 className={page.pageHeading}>同学</h1>
+          <p className={page.pageDescription}>分享学习进展，参与小组与阶段挑战。</p>
+        </div>
       </header>
 
       <div className={styles.tabList} role="tablist" aria-label="同学圈栏目">

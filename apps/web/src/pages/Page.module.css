@@ -1,7 +1,7 @@
 .page {
   display: grid;
   min-width: 0;
-  gap: 30px;
+  gap: 32px;
 }
 
 .page > *,
@@ -11,9 +11,15 @@
 
 .pageHeader {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
   gap: 24px;
+}
+
+.pageHeadingGroup {
+  display: grid;
+  min-width: 0;
+  gap: 7px;
 }
 
 .pageHeading {
@@ -22,10 +28,17 @@
   letter-spacing: -0.04em;
 }
 
+.pageDescription {
+  max-width: 64ch;
+  color: var(--lk-font-color-secondary);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
 .section {
   display: grid;
   min-width: 0;
-  gap: 13px;
+  gap: 14px;
 }
 
 .sectionHeader {
@@ -252,12 +265,35 @@
 
 @media (max-width: 640px) {
   .page {
-    gap: 26px;
+    gap: 24px;
   }
 
   .pageHeader {
     align-items: flex-start;
     flex-direction: column;
+    gap: 16px;
+  }
+
+  .pageHeader > :global([data-lk='button']) {
+    width: 100%;
+  }
+
+  .pageHeading {
+    font-size: 1.75rem;
+  }
+
+  .pageDescription {
+    font-size: 13px;
+  }
+
+  .sectionHeader {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .sectionHeader p {
+    text-align: left;
   }
 
   .grid2,
@@ -273,5 +309,9 @@
   .metric {
     min-height: 108px;
     padding: 14px;
+  }
+
+  .panelBody {
+    padding: 18px;
   }
 }

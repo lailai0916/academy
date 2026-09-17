@@ -50,7 +50,10 @@ export function MistakesPage() {
   return (
     <div className={page.page}>
       <header className={page.pageHeader}>
-        <h1 className={page.pageHeading}>错题本</h1>
+        <div className={page.pageHeadingGroup}>
+          <h1 className={page.pageHeading}>错题本</h1>
+          <p className={page.pageDescription}>按遗忘次数和掌握度集中处理薄弱内容。</p>
+        </div>
         <Button
           variant="primary"
           size="lg"

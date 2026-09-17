@@ -159,9 +159,12 @@ export function SettingsPage() {
   if (!profile && !error) return <div className={page.empty}>正在载入设置……</div>;
 
   return (
-    <div className={page.page}>
+    <div className={`${page.page} ${styles.settingsPage}`}>
       <header className={page.pageHeader}>
-        <h1 className={page.pageHeading}>设置</h1>
+        <div className={page.pageHeadingGroup}>
+          <h1 className={page.pageHeading}>设置</h1>
+          <p className={page.pageDescription}>管理学习目标、个人资料和登录安全。</p>
+        </div>
       </header>
       {!profile && error && <p className={page.error}>{error}</p>}
       {profile && (
@@ -171,6 +174,7 @@ export function SettingsPage() {
               <div className={page.panelTitle}>
                 <div className={page.panelTitleCopy}>
                   <h2>个人资料与学习目标</h2>
+                  <p>这些信息用于个人主页和每日学习安排。</p>
                 </div>
               </div>
               {error && <p className={page.error}>{error}</p>}
@@ -179,56 +183,61 @@ export function SettingsPage() {
                   {message}
                 </p>
               )}
-              <div className={page.formRow}>
-                <TextField
-                  label="显示名称"
-                  value={profile.displayName}
-                  maxLength={24}
-                  onChange={(event) => update('displayName', event.target.value)}
-                  required
-                />
-                <SelectField
-                  label="当前年级"
-                  value={profile.grade}
-                  onChange={(event) => update('grade', event.target.value as Grade)}
-                >
-                  <option value="高一">高一</option>
-                  <option value="高二">高二</option>
-                  <option value="高三">高三</option>
-                </SelectField>
+              <div className={styles.settingsProfileGrid}>
+                <div className={styles.settingsPrimary}>
+                  <div className={page.formRow}>
+                    <TextField
+                      label="显示名称"
+                      value={profile.displayName}
+                      maxLength={24}
+                      onChange={(event) => update('displayName', event.target.value)}
+                      required
+                    />
+                    <SelectField
+                      label="当前年级"
+                      value={profile.grade}
+                      onChange={(event) => update('grade', event.target.value as Grade)}
+                    >
+                      <option value="高一">高一</option>
+                      <option value="高二">高二</option>
+                      <option value="高三">高三</option>
+                    </SelectField>
+                  </div>
+                  <TextAreaField
+                    label="个人简介"
+                    value={profile.bio}
+                    maxLength={160}
+                    onChange={(event) => update('bio', event.target.value)}
+                  />
+                </div>
+                <div className={styles.settingsGoals}>
+                  <h3>学习目标</h3>
+                  <TextField
+                    label="高考总分目标"
+                    type="number"
+                    min={0}
+                    max={750}
+                    value={profile.targetScore}
+                    onChange={(event) => update('targetScore', Number(event.target.value))}
+                  />
+                  <TextField
+                    label="每日学习项目数"
+                    type="number"
+                    min={5}
+                    max={100}
+                    value={profile.dailyGoal}
+                    onChange={(event) => update('dailyGoal', Number(event.target.value))}
+                  />
+                  <SelectField
+                    label="个人主页可见性"
+                    value={profile.isPublic ? 'public' : 'private'}
+                    onChange={(event) => update('isPublic', event.target.value === 'public')}
+                  >
+                    <option value="public">平台用户可见</option>
+                    <option value="private">仅自己可见</option>
+                  </SelectField>
+                </div>
               </div>
-              <TextAreaField
-                label="个人简介"
-                value={profile.bio}
-                maxLength={160}
-                onChange={(event) => update('bio', event.target.value)}
-              />
-              <div className={page.formRow}>
-                <TextField
-                  label="高考总分目标"
-                  type="number"
-                  min={0}
-                  max={750}
-                  value={profile.targetScore}
-                  onChange={(event) => update('targetScore', Number(event.target.value))}
-                />
-                <TextField
-                  label="每日学习项目数"
-                  type="number"
-                  min={5}
-                  max={100}
-                  value={profile.dailyGoal}
-                  onChange={(event) => update('dailyGoal', Number(event.target.value))}
-                />
-              </div>
-              <SelectField
-                label="个人主页可见性"
-                value={profile.isPublic ? 'public' : 'private'}
-                onChange={(event) => update('isPublic', event.target.value === 'public')}
-              >
-                <option value="public">平台用户可见</option>
-                <option value="private">仅自己可见</option>
-              </SelectField>
               <div className={page.actions}>
                 <Button variant="primary" type="submit" disabled={saving}>
                   {saving ? '正在保存' : '保存设置'}
@@ -242,6 +251,7 @@ export function SettingsPage() {
               <div className={page.panelTitle}>
                 <div className={page.panelTitleCopy}>
                   <h2>账号安全</h2>
+                  <p>修改密码，检查并管理当前登录设备。</p>
                 </div>
                 {sessions.some((session) => !session.current) && (
                   <Button

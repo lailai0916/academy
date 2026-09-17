@@ -287,7 +287,10 @@ export function AdminPage() {
   return (
     <div className={page.page}>
       <header className={page.pageHeader}>
-        <h1 className={page.pageHeading}>管理</h1>
+        <div className={page.pageHeadingGroup}>
+          <h1 className={page.pageHeading}>管理</h1>
+          <p className={page.pageDescription}>维护教材内容、邀请码、AI 服务和平台用户。</p>
+        </div>
       </header>
 
       <nav className={styles.sectionNav} aria-label="管理分区">

@@ -98,7 +98,10 @@ export function DashboardPage() {
   return (
     <div className={page.page}>
       <header className={page.pageHeader}>
-        <h1 className={page.pageHeading}>今日学习</h1>
+        <div className={page.pageHeadingGroup}>
+          <h1 className={page.pageHeading}>今日学习</h1>
+          <p className={page.pageDescription}>先完成当前课程，再处理到期的记忆任务。</p>
+        </div>
         <Button
           variant="primary"
           size="lg"

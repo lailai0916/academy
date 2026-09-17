@@ -25,7 +25,10 @@ export function ProfilePage() {
   return (
     <div className={page.page}>
       <header className={page.pageHeader}>
-        <h1 className={page.pageHeading}>个人主页</h1>
+        <div className={page.pageHeadingGroup}>
+          <h1 className={page.pageHeading}>个人主页</h1>
+          <p className={page.pageDescription}>汇总个人资料和学习结果。</p>
+        </div>
       </header>
 
       <Panel feature>

@@ -35,7 +35,10 @@ export function ProgressPage() {
   return (
     <div className={page.page}>
       <header className={page.pageHeader}>
-        <h1 className={page.pageHeading}>学习分析</h1>
+        <div className={page.pageHeadingGroup}>
+          <h1 className={page.pageHeading}>学习分析</h1>
+          <p className={page.pageDescription}>关注独立作答、延迟正确率和长期保持情况。</p>
+        </div>
       </header>
 
       <div className={page.grid4}>

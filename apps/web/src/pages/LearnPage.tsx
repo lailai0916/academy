@@ -82,7 +82,10 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
     return (
       <div className={page.page}>
         <header className={page.pageHeader}>
-          <h1 className={page.pageHeading}>{subject.title}</h1>
+          <div className={page.pageHeadingGroup}>
+            <h1 className={page.pageHeading}>{subject.title}</h1>
+            <p className={page.pageDescription}>{subject.description}</p>
+          </div>
           <Button
             variant="primary"
             size="lg"
@@ -276,9 +279,9 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
   return (
     <div className={page.page}>
       <header className={page.pageHeader}>
-        <div className={styles.headingCopy}>
+        <div className={page.pageHeadingGroup}>
           <h1 className={page.pageHeading}>记忆训练</h1>
-          <p>英语词汇与古诗词的背诵、复习和错题巩固。</p>
+          <p className={page.pageDescription}>英语词汇与古诗词的背诵、复习和错题巩固。</p>
         </div>
       </header>
 

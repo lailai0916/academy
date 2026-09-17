@@ -15,7 +15,9 @@
     minmax(120px, 1fr) auto;
   align-items: center;
   border-bottom: 1px solid var(--lk-color-emphasis-300);
-  background: var(--lk-card-background-color);
+  background: var(--academy-chrome);
+  backdrop-filter: saturate(150%) blur(18px);
+  -webkit-backdrop-filter: saturate(150%) blur(18px);
 }
 
 .brandArea {
@@ -127,6 +129,8 @@
 }
 
 .logoutButton {
+  min-width: 40px;
+  min-height: 40px;
   color: var(--lk-font-color-secondary);
 }
 
@@ -280,9 +284,9 @@
 
 .main {
   min-width: 0;
-  width: min(100% - 64px, 1240px);
+  width: min(calc(100% - 64px), var(--academy-content-width));
   margin-inline: auto;
-  padding: 34px 0 64px;
+  padding: 36px 0 72px;
   animation: page-enter var(--lk-transition-surface) both;
 }
 
@@ -343,6 +347,11 @@
     display: none;
   }
 
+  .logoutButton {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
   .sidebar {
     top: calc(var(--lk-header-height) + 8px);
     bottom: 8px;
@@ -378,8 +387,8 @@
   }
 
   .main {
-    width: min(100% - 28px, 760px);
-    padding: 26px 0 48px;
+    width: min(calc(100% - 28px), 760px);
+    padding: 26px 0 52px;
   }
 }
 
@@ -394,9 +403,14 @@
   .brandArea :global([data-lk='brand']) > span {
     display: none;
   }
+
+  .main {
+    padding-top: 22px;
+  }
 }
 
 @media (prefers-reduced-transparency: reduce) {
+  .topbar,
   .sidebar,
   .mobileBackdrop {
     backdrop-filter: none;

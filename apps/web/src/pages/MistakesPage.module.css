@@ -10,7 +10,7 @@
 
 .tabs button {
   display: flex;
-  min-height: 36px;
+  min-height: 40px;
   align-items: center;
   gap: 7px;
   padding: 0 11px;
@@ -135,6 +135,7 @@
 
   .tabs button {
     flex: 1;
+    min-height: 44px;
     justify-content: center;
   }
 
