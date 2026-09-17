@@ -282,6 +282,33 @@ export type Profile = SessionUser & {
   mastery: number;
   delayedAccuracy: number;
   reviewCount: number;
+  longTermCards: number;
+  completedCourses: number;
+  streakDays: number;
+};
+
+export type ProfileRelationship =
+  'self' | 'none' | 'pending-incoming' | 'pending-outgoing' | 'friends';
+
+export type ProfileGroup = {
+  id: string;
+  name: string;
+  description: string;
+  memberCount: number;
+  ownerUsername: string;
+};
+
+export type ProfileView = {
+  profile: Profile;
+  relationship: ProfileRelationship;
+  stats: {
+    friends: number;
+    posts: number;
+    groups: number;
+  };
+  posts: SocialPost[];
+  recentActivity: ActivityItem[];
+  groups: ProfileGroup[];
 };
 
 export type DailyPlan = {

@@ -37,6 +37,7 @@
 | [课程课堂](../apps/web/src/pages/CoursePlayerPage.tsx)                              | 分步课件、作答、提示、追问和结果 |
 | [课程入口](../apps/web/src/pages/CoursesPage.tsx)                                   | 课程真实进度与六科建设状态       |
 | [今日学习](../apps/web/src/pages/DashboardPage.tsx)                                 | 统一任务入口、真实进度与继续学习 |
+| [个人主页](../apps/web/src/pages/ProfilePage.tsx)                                   | 好友、动态、小组与汇总学习结果   |
 | [架构说明](architecture.md)                                                         | 模块边界与数据流                 |
 
 个人网站的 Academy 页面可能仍描述早期版本，当前能力以仓库为准。六科目录和课程入口已经建立；动量课程已有连续课堂、教学分支、独立测评和延迟复测；今日计划已组合课程、复测与记忆训练。阶段和周计划尚未实现。

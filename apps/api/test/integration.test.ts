@@ -1110,6 +1110,56 @@ integrationDescribe('Academy API integration', () => {
     });
     expect(accept.statusCode).toBe(204);
 
+    const publicProfile = await app.inject({
+      method: 'GET',
+      url: `/api/profile/${userUsername}`,
+      headers: { cookie: adminCookie },
+    });
+    expect(publicProfile.statusCode).toBe(200);
+    expect(publicProfile.json()).toMatchObject({
+      profile: {
+        username: userUsername,
+        completedCourses: 1,
+        reviewCount: expect.any(Number),
+        longTermCards: expect.any(Number),
+        streakDays: expect.any(Number),
+      },
+      relationship: 'friends',
+      stats: {
+        friends: 1,
+        posts: 1,
+        groups: 1,
+      },
+    });
+    expect(publicProfile.json().posts[0].body).toBe('完成了第一轮延迟复习。');
+    expect(publicProfile.json().groups[0].id).toBe(groupId);
+    expect(publicProfile.json().recentActivity.length).toBeGreaterThan(0);
+
+    const profileReaction = await app.inject({
+      method: 'POST',
+      url: `/api/social/posts/${publicProfile.json().posts[0].id}/reactions`,
+      headers: mutationHeaders(adminCookie),
+      payload: { kind: 'support' },
+    });
+    expect(profileReaction.statusCode).toBe(200);
+    const reactedProfile = await app.inject({
+      method: 'GET',
+      url: `/api/profile/${userUsername}`,
+      headers: { cookie: adminCookie },
+    });
+    expect(reactedProfile.json().posts[0]).toMatchObject({
+      reactions: { support: 1 },
+      reacted: ['support'],
+    });
+
+    const ownProfile = await app.inject({
+      method: 'GET',
+      url: '/api/profile/me',
+      headers: { cookie: userCookie },
+    });
+    expect(ownProfile.statusCode).toBe(200);
+    expect(ownProfile.json().relationship).toBe('self');
+
     const search = await app.inject({
       method: 'GET',
       url: '/api/search?q=admin',
