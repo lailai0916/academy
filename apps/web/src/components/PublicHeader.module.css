@@ -44,6 +44,14 @@
   transition: color var(--lk-transition);
 }
 
+.navigation a {
+  display: inline-flex;
+  min-height: var(--lk-control-height-compact);
+  align-items: center;
+  padding-inline: 4px;
+  border-radius: 6px;
+}
+
 .navigation a:hover,
 .textAction:hover {
   color: var(--lk-font-color-base);

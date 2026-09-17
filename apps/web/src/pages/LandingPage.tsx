@@ -1,4 +1,5 @@
 import { Link } from 'react-router';
+import { Avatar, Panel } from '@lailai0916/ui';
 import { Icon } from '../components/Icon';
 import { PublicHeader } from '../components/PublicHeader';
 import styles from './LandingPage.module.css';
@@ -18,7 +19,7 @@ const steps = [
 
 export function LandingPage() {
   return (
-    <div className={styles.page}>
+    <div id="top" className={styles.page}>
       <PublicHeader />
 
       <main id="main-content">
@@ -39,7 +40,12 @@ export function LandingPage() {
             </div>
           </div>
 
-          <div className={styles.productPreview} aria-label="Academy 学习界面预览">
+          <Panel
+            feature
+            className={styles.productPreview}
+            role="group"
+            aria-label="Academy 学习界面预览"
+          >
             <div className={styles.previewHeader}>
               <div>
                 <span>今日学习</span>
@@ -47,7 +53,14 @@ export function LandingPage() {
               </div>
               <span className={styles.previewStatus}>4 / 16</span>
             </div>
-            <div className={styles.previewProgress}>
+            <div
+              className={styles.previewProgress}
+              role="progressbar"
+              aria-label="今日学习进度"
+              aria-valuemin={0}
+              aria-valuemax={16}
+              aria-valuenow={4}
+            >
               <span style={{ width: '25%' }} />
             </div>
             <div className={styles.previewSubjects}>
@@ -72,7 +85,7 @@ export function LandingPage() {
                 <Icon icon="lucide:chevron-right" />
               </article>
             </div>
-            <div className={styles.previewMetrics}>
+            <div className={styles.previewMetrics} role="group" aria-label="学习指标">
               <div>
                 <span>掌握度</span>
                 <strong>78%</strong>
@@ -86,7 +99,7 @@ export function LandingPage() {
                 <strong>42</strong>
               </div>
             </div>
-          </div>
+          </Panel>
         </section>
 
         <section className={styles.principles} aria-label="平台范围">
@@ -116,7 +129,7 @@ export function LandingPage() {
                   <h3>先复习到期内容</h3>
                 </div>
               </div>
-              <div className={styles.schedule}>
+              <div className={styles.schedule} aria-hidden="true">
                 <span />
                 <span />
                 <span />
@@ -175,9 +188,9 @@ export function LandingPage() {
               <Icon icon="lucide:arrow-right" />
             </Link>
           </div>
-          <div className={styles.activityPreview}>
+          <Panel className={styles.activityPreview}>
             <div className={styles.activityHeader}>
-              <span className={styles.avatar}>L</span>
+              <Avatar name="lailai" alt="lailai" size={40} />
               <div>
                 <strong>学习动态</strong>
                 <span>英语 · 词汇复习</span>
@@ -189,7 +202,7 @@ export function LandingPage() {
               <span>有启发 5</span>
               <span>一起学 3</span>
             </div>
-          </div>
+          </Panel>
         </section>
       </main>
 
@@ -201,6 +214,7 @@ export function LandingPage() {
         <nav aria-label="页脚导航">
           <Link to="/login">登录</Link>
           <Link to="/register">邀请码注册</Link>
+          <a href="#top">返回顶部</a>
         </nav>
       </footer>
     </div>

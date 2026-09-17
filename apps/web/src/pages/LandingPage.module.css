@@ -110,9 +110,6 @@
   display: grid;
   gap: 20px;
   padding: 26px;
-  border: 1px solid var(--lk-color-emphasis-300);
-  border-radius: var(--lk-radius-lg);
-  background: var(--lk-card-background-color);
 }
 
 .previewHeader {
@@ -476,6 +473,7 @@
 .communityCopy > a {
   display: inline-flex;
   width: fit-content;
+  min-height: 32px;
   align-items: center;
   gap: 7px;
   margin-top: 8px;
@@ -497,9 +495,6 @@
   display: grid;
   gap: 20px;
   padding: 26px;
-  border: 1px solid var(--lk-color-emphasis-300);
-  border-radius: var(--lk-radius-md);
-  background: var(--lk-card-background-color);
 }
 
 .activityHeader {
@@ -511,17 +506,6 @@
 .activityHeader > div {
   display: grid;
   gap: 2px;
-}
-
-.avatar {
-  display: grid;
-  width: 40px;
-  height: 40px;
-  place-items: center;
-  border-radius: 50%;
-  background: var(--lk-color-primary-soft);
-  color: var(--lk-color-primary-label);
-  font-weight: 700;
 }
 
 .activityPreview > p {
@@ -566,6 +550,12 @@
 .footer a {
   color: var(--lk-font-color-secondary);
   font-size: 12px;
+}
+
+.footer nav a {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
 }
 
 .footer > div span:first-child {
@@ -623,7 +613,7 @@
   }
 
   .communityCopy > a,
-  .footer a {
+  .footer nav a {
     display: inline-flex;
     min-width: 44px;
     min-height: 44px;
