@@ -1,12 +1,12 @@
 .trigger {
   display: flex;
-  width: min(320px, 31vw);
-  height: 36px;
+  width: min(360px, 32vw);
+  height: 40px;
   align-items: center;
   gap: 8px;
-  padding: 0 10px;
-  border: 1px solid var(--lk-color-emphasis-300);
-  border-radius: 11px;
+  padding: 0 12px;
+  border: 1px solid var(--academy-separator);
+  border-radius: 13px;
   background: var(--lk-background-raised);
   color: var(--lk-font-color-tertiary);
   font-size: 13px;
@@ -42,8 +42,8 @@
 
 .trigger kbd {
   padding: 1px 5px;
-  border: 1px solid var(--lk-color-emphasis-300);
-  border-radius: 5px;
+  border: 1px solid var(--academy-separator);
+  border-radius: 6px;
   background: var(--lk-card-background-color);
   color: var(--lk-font-color-tertiary);
   font: inherit;
@@ -57,16 +57,16 @@
   display: grid;
   place-items: start center;
   padding: min(15vh, 128px) 16px 24px;
-  background: rgb(0 0 0 / 34%);
-  backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px);
+  background: rgb(0 0 0 / 28%);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .dialog {
-  width: min(100%, 600px);
+  width: min(100%, 640px);
   overflow: hidden;
-  border: 1px solid var(--lk-color-emphasis-300);
-  border-radius: 20px;
+  border: 1px solid var(--academy-separator);
+  border-radius: var(--lk-radius-overlay);
   background: var(--lk-card-background-color);
   box-shadow: var(--lk-shadow-overlay);
   animation: search-enter var(--lk-transition-surface) both;
@@ -77,9 +77,9 @@
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 10px;
-  min-height: 56px;
+  min-height: 62px;
   padding: 0 12px 0 16px;
-  border-bottom: 1px solid var(--lk-color-emphasis-300);
+  border-bottom: 1px solid var(--academy-separator);
 }
 
 .searchBox > svg {
@@ -124,13 +124,13 @@
 .group + .group {
   margin-top: 8px;
   padding-top: 8px;
-  border-top: 1px solid var(--lk-color-emphasis-300);
+  border-top: 1px solid var(--academy-separator);
 }
 
 .group > p {
   padding: 4px 8px 6px;
   color: var(--lk-font-color-tertiary);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 650;
 }
 
@@ -139,9 +139,9 @@
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
   gap: 10px;
-  min-height: 52px;
+  min-height: 58px;
   padding: 7px 9px;
-  border-radius: 11px;
+  border-radius: 12px;
   transition:
     background-color var(--lk-transition),
     transform var(--lk-transition);
@@ -185,7 +185,7 @@
 }
 
 .group strong {
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .group small,

@@ -1,13 +1,13 @@
 .page {
   display: grid;
   min-width: 0;
-  gap: 20px;
+  gap: 24px;
 }
 
 .profileHeader {
   overflow: hidden;
-  border: 1px solid var(--lk-color-emphasis-300);
-  border-radius: calc(var(--lk-radius-lg) + 2px);
+  border: 1px solid var(--academy-separator);
+  border-radius: 24px;
   background: var(--lk-card-background-color);
   box-shadow: var(--academy-shadow-panel);
 }
@@ -15,12 +15,12 @@
 .cover {
   position: relative;
   display: flex;
-  height: 178px;
+  height: 196px;
   align-items: flex-end;
   justify-content: space-between;
   gap: 16px;
   overflow: hidden;
-  padding: 22px 28px;
+  padding: 24px 30px;
   background: color-mix(in srgb, var(--lk-color-primary-soft) 78%, var(--lk-background-raised));
   color: var(--lk-color-primary-label);
 }
@@ -58,7 +58,7 @@
 
 .cover > small {
   z-index: 1;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 720;
   letter-spacing: 0.16em;
   opacity: 0.62;
@@ -68,16 +68,16 @@
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: start;
-  gap: 18px;
-  margin-top: -50px;
-  padding: 0 28px 22px;
+  gap: 20px;
+  margin-top: -54px;
+  padding: 0 30px 24px;
 }
 
 .avatarFrame {
   z-index: 1;
   display: grid;
   padding: 5px;
-  border: 1px solid var(--lk-color-emphasis-300);
+  border: 1px solid var(--academy-separator);
   border-radius: 30px;
   background: var(--lk-card-background-color);
   box-shadow: var(--academy-shadow-panel);
@@ -89,7 +89,7 @@
 
 .identityCopy,
 .profileActions {
-  padding-top: 61px;
+  padding-top: 66px;
 }
 
 .identityCopy {
@@ -107,7 +107,7 @@
 }
 
 .nameRow h1 {
-  font-size: clamp(1.65rem, 3vw, 2.15rem);
+  font-size: clamp(1.8rem, 3vw, 2.35rem);
   font-weight: 720;
   line-height: 1.05;
   letter-spacing: -0.045em;
@@ -115,14 +115,14 @@
 
 .verified {
   display: inline-flex;
-  min-height: 24px;
+  min-height: 26px;
   align-items: center;
   gap: 4px;
   padding: 0 7px;
   border-radius: 999px;
   background: var(--lk-color-primary-soft);
   color: var(--lk-color-primary-label);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 680;
 }
 
@@ -133,13 +133,13 @@
 
 .handle {
   color: var(--lk-font-color-tertiary);
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .bio {
   max-width: 680px;
   margin-top: 5px;
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.65;
   white-space: pre-wrap;
 }
@@ -151,7 +151,7 @@
   gap: 8px 16px;
   margin-top: 3px;
   color: var(--lk-font-color-secondary);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .metaRow > span {
@@ -177,14 +177,14 @@
   display: flex;
   align-items: stretch;
   gap: 4px;
-  padding: 0 28px 18px 150px;
+  padding: 0 30px 20px 154px;
 }
 
 .socialStats > button,
 .socialStats > div {
   display: grid;
   min-width: 92px;
-  min-height: 50px;
+  min-height: 54px;
   align-content: center;
   gap: 2px;
   padding: 5px 13px;
@@ -205,33 +205,33 @@
 }
 
 .socialStats strong {
-  font-size: 16px;
+  font-size: 17px;
   font-variant-numeric: tabular-nums;
 }
 
 .socialStats span {
   color: var(--lk-font-color-secondary);
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .tabs {
   display: flex;
   gap: 4px;
-  min-height: 51px;
-  padding: 0 24px;
-  border-top: 1px solid var(--lk-color-emphasis-300);
+  min-height: 55px;
+  padding: 0 26px;
+  border-top: 1px solid var(--academy-separator);
 }
 
 .tabs button {
   position: relative;
   min-width: 78px;
-  min-height: 50px;
+  min-height: 54px;
   padding: 0 16px;
   border: 0;
   background: transparent;
   color: var(--lk-font-color-secondary);
   cursor: pointer;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 620;
   transition:
     color var(--lk-transition),
@@ -266,7 +266,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1.55fr) minmax(280px, 0.72fr);
   align-items: start;
-  gap: 18px;
+  gap: 20px;
 }
 
 .primaryColumn,
@@ -305,7 +305,7 @@
 .sideSection header > div > span,
 .activityPanel header > div > span {
   color: var(--lk-color-primary-label);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 680;
   letter-spacing: 0.07em;
 }
@@ -313,7 +313,7 @@
 .sectionHeader h2,
 .sideSection h2,
 .activityPanel h2 {
-  font-size: 17px;
+  font-size: 19px;
   font-weight: 690;
   letter-spacing: -0.02em;
 }
@@ -328,7 +328,7 @@
   background: transparent;
   color: var(--lk-font-color-secondary);
   cursor: pointer;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .sectionHeader > button:hover {
@@ -343,18 +343,18 @@
 .metricGrid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
+  gap: 12px;
 }
 
 .metricCard {
   display: grid;
   min-width: 0;
-  min-height: 142px;
+  min-height: 154px;
   align-content: space-between;
   gap: 16px;
-  padding: 17px;
-  border: 1px solid var(--lk-color-emphasis-300);
-  border-radius: var(--lk-radius-md);
+  padding: 19px;
+  border: 1px solid var(--academy-separator);
+  border-radius: var(--lk-radius-lg);
   background: var(--lk-card-background-color);
   box-shadow: var(--academy-shadow-panel);
 }
@@ -382,7 +382,7 @@
 .metricCard small,
 .metricCard span {
   color: var(--lk-font-color-secondary);
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .metricCard strong {
@@ -395,7 +395,7 @@
 .post {
   display: grid;
   gap: 16px;
-  padding: 20px;
+  padding: 22px;
 }
 
 .postHeader {
@@ -413,26 +413,26 @@
 
 .postAuthor strong {
   overflow: hidden;
-  font-size: 13px;
+  font-size: 14px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .postAuthor span {
   color: var(--lk-font-color-tertiary);
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .visibilityLabel {
   display: inline-flex;
-  min-height: 26px;
+  min-height: 28px;
   align-items: center;
   gap: 5px;
   padding: 0 8px;
   border-radius: 999px;
   background: var(--lk-color-emphasis-100);
   color: var(--lk-font-color-secondary);
-  font-size: 9px;
+  font-size: 11px;
 }
 
 .visibilityLabel svg {
@@ -441,7 +441,7 @@
 }
 
 .postBody {
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.72;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
@@ -453,7 +453,7 @@
   align-items: center;
   gap: 7px;
   padding-top: 13px;
-  border-top: 1px solid var(--lk-color-emphasis-300);
+  border-top: 1px solid var(--academy-separator);
 }
 
 .reactionRow button {
@@ -467,7 +467,7 @@
   background: transparent;
   color: var(--lk-font-color-secondary);
   cursor: pointer;
-  font-size: 10px;
+  font-size: 12px;
   transition:
     background-color var(--lk-transition),
     border-color var(--lk-transition),
@@ -501,7 +501,7 @@
 }
 
 .reactionRow strong {
-  font-size: 10px;
+  font-size: 11px;
   font-variant-numeric: tabular-nums;
 }
 
@@ -555,7 +555,7 @@
 
 .publishAction > span {
   color: var(--lk-font-color-tertiary);
-  font-size: 10px;
+  font-size: 11px;
   font-variant-numeric: tabular-nums;
 }
 
@@ -598,7 +598,7 @@
   bottom: 0;
   left: 18px;
   width: 1px;
-  background: var(--lk-color-emphasis-300);
+  background: var(--academy-separator);
   content: '';
 }
 
@@ -608,7 +608,7 @@
   width: 38px;
   height: 38px;
   place-items: center;
-  border: 1px solid var(--lk-color-emphasis-300);
+  border: 1px solid var(--academy-separator);
   border-radius: 11px;
   background: var(--lk-background-raised);
   color: var(--lk-color-primary-label);
@@ -633,7 +633,7 @@
 
 .timeline time {
   color: var(--lk-font-color-tertiary);
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .sidebar {
@@ -684,7 +684,7 @@
 .goalItem span,
 .goalItem p {
   color: var(--lk-font-color-secondary);
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1.5;
 }
 
@@ -720,7 +720,7 @@
   align-items: center;
   gap: 10px;
   min-height: 56px;
-  border-bottom: 1px solid var(--lk-color-emphasis-300);
+  border-bottom: 1px solid var(--academy-separator);
 }
 
 .groupList li:last-child {
@@ -759,7 +759,7 @@
 .groupList small,
 .sideEmpty {
   color: var(--lk-font-color-tertiary);
-  font-size: 9px;
+  font-size: 11px;
 }
 
 .aboutList {
@@ -773,7 +773,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 14px;
-  border-bottom: 1px solid var(--lk-color-emphasis-300);
+  border-bottom: 1px solid var(--academy-separator);
 }
 
 .aboutList > div:last-child {
@@ -782,7 +782,7 @@
 
 .aboutList dt {
   color: var(--lk-font-color-secondary);
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .aboutList dd {
@@ -978,7 +978,7 @@
   }
 
   .socialStats span {
-    font-size: 9px;
+    font-size: 10px;
   }
 }
 

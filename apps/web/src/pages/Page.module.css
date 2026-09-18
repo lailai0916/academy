@@ -1,7 +1,7 @@
 .page {
   display: grid;
   min-width: 0;
-  gap: 32px;
+  gap: 40px;
 }
 
 .page > *,
@@ -13,45 +13,48 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 24px;
+  gap: 32px;
+  min-height: 72px;
 }
 
 .pageHeadingGroup {
   display: grid;
   min-width: 0;
-  gap: 7px;
+  gap: 9px;
 }
 
 .pageHeading {
-  font-size: clamp(1.8rem, 3vw, 2.2rem);
-  font-weight: 680;
-  letter-spacing: -0.04em;
+  font-size: clamp(2.1rem, 3.4vw, 2.65rem);
+  font-weight: 700;
+  line-height: 1.06;
+  letter-spacing: -0.052em;
 }
 
 .pageDescription {
   max-width: 64ch;
   color: var(--lk-font-color-secondary);
-  font-size: 14px;
-  line-height: 1.65;
+  font-size: 15px;
+  line-height: 1.6;
 }
 
 .section {
   display: grid;
   min-width: 0;
-  gap: 14px;
+  gap: 16px;
 }
 
 .sectionHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 20px;
+  min-height: 28px;
 }
 
 .sectionHeader h2 {
-  font-size: 16px;
-  font-weight: 670;
-  letter-spacing: -0.015em;
+  font-size: 19px;
+  font-weight: 680;
+  letter-spacing: -0.025em;
 }
 
 .sectionHeader p,
@@ -69,7 +72,7 @@
 .grid3,
 .grid4 {
   display: grid;
-  gap: 14px;
+  gap: 16px;
 }
 
 .grid2 {
@@ -86,8 +89,8 @@
 
 .panelBody {
   display: grid;
-  gap: 18px;
-  padding: 22px;
+  gap: 20px;
+  padding: 24px;
 }
 
 .panelTitle {
@@ -104,8 +107,8 @@
 
 .panelTitle h2,
 .panelTitle h3 {
-  font-size: 17px;
-  letter-spacing: -0.015em;
+  font-size: 18px;
+  letter-spacing: -0.025em;
 }
 
 .panelTitle p {
@@ -115,11 +118,11 @@
 
 .iconChip {
   display: grid;
-  width: 38px;
-  height: 38px;
+  width: 42px;
+  height: 42px;
   flex: none;
   place-items: center;
-  border-radius: 11px;
+  border-radius: 12px;
   background: var(--lk-color-primary-soft);
   color: var(--lk-color-primary-label);
   font-size: 18px;
@@ -127,24 +130,24 @@
 
 .metric {
   display: grid;
-  gap: 5px;
-  min-height: 112px;
+  gap: 7px;
+  min-height: 132px;
   align-content: space-between;
-  padding: 19px;
-  border: 1px solid var(--lk-color-emphasis-300);
-  border-radius: var(--lk-radius-md);
+  padding: 22px;
+  border: 1px solid var(--academy-separator);
+  border-radius: var(--lk-radius-lg);
   background: var(--lk-card-background-color);
   box-shadow: var(--academy-shadow-panel);
 }
 
 .metric span {
   color: var(--lk-font-color-secondary);
-  font-size: 12px;
-  font-weight: 580;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .metric strong {
-  font-size: clamp(1.65rem, 2.6vw, 2.1rem);
+  font-size: clamp(1.85rem, 2.8vw, 2.35rem);
   line-height: 1;
   letter-spacing: -0.04em;
   font-variant-numeric: tabular-nums;
@@ -177,7 +180,7 @@
 .notice,
 .error,
 .success {
-  padding: 12px 14px;
+  padding: 13px 15px;
   border: 1px solid transparent;
   border-radius: var(--lk-radius-control);
   font-size: 13px;
@@ -243,11 +246,11 @@
 
 .empty {
   display: grid;
-  min-height: 160px;
-  padding: 28px;
+  min-height: 180px;
+  padding: 32px;
   place-items: center;
-  border: 1px solid var(--lk-color-emphasis-300);
-  border-radius: var(--lk-radius-md);
+  border: 1px solid var(--academy-separator);
+  border-radius: var(--lk-radius-lg);
   background: var(--lk-card-background-color);
   color: var(--lk-font-color-secondary);
   text-align: center;
@@ -265,7 +268,7 @@
 
 @media (max-width: 640px) {
   .page {
-    gap: 24px;
+    gap: 30px;
   }
 
   .pageHeader {
@@ -279,11 +282,11 @@
   }
 
   .pageHeading {
-    font-size: 1.75rem;
+    font-size: 2rem;
   }
 
   .pageDescription {
-    font-size: 13px;
+    font-size: 14px;
   }
 
   .sectionHeader {
@@ -307,11 +310,11 @@
   }
 
   .metric {
-    min-height: 108px;
-    padding: 14px;
+    min-height: 116px;
+    padding: 16px;
   }
 
   .panelBody {
-    padding: 18px;
+    padding: 20px;
   }
 }

@@ -1,17 +1,17 @@
 .chart {
   display: grid;
-  gap: 16px;
-  padding: 24px;
+  gap: 18px;
+  padding: 28px;
 }
 
 .plot {
   display: grid;
-  height: 220px;
+  height: 238px;
   grid-template-columns: repeat(30, minmax(4px, 1fr));
   align-items: end;
   gap: clamp(3px, 0.6vw, 8px);
   padding-top: 12px;
-  border-bottom: 1px solid var(--lk-color-emphasis-400);
+  border-bottom: 1px solid var(--academy-separator);
 }
 
 .day {
@@ -24,7 +24,7 @@
 .bar {
   width: 100%;
   min-height: 2px;
-  border-radius: 4px 4px 2px 2px;
+  border-radius: 5px 5px 2px 2px;
   background: var(--lk-color-primary);
   opacity: 0.86;
 }
@@ -34,7 +34,7 @@
   top: calc(100% + 5px);
   left: 0;
   color: var(--lk-font-color-tertiary);
-  font-size: 9px;
+  font-size: 10px;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
@@ -45,23 +45,23 @@
   gap: 12px;
   margin-top: 12px;
   color: var(--lk-font-color-secondary);
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .forecastList {
   display: grid;
   margin: 0;
-  padding: 8px 20px;
+  padding: 10px 24px;
   list-style: none;
 }
 
 .forecastList li {
   display: grid;
-  min-height: 54px;
-  grid-template-columns: 72px minmax(100px, 1fr) minmax(130px, auto) 28px;
+  min-height: 62px;
+  grid-template-columns: 78px minmax(100px, 1fr) minmax(150px, auto) 32px;
   align-items: center;
   gap: 16px;
-  border-bottom: 1px solid var(--lk-color-emphasis-300);
+  border-bottom: 1px solid var(--academy-separator);
 }
 
 .forecastList li:last-child {
@@ -73,19 +73,19 @@
   align-items: baseline;
   justify-content: space-between;
   gap: 6px;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .forecastDate time,
 .forecastKinds {
   color: var(--lk-font-color-secondary);
-  font-size: 11px;
+  font-size: 12px;
   font-variant-numeric: tabular-nums;
 }
 
 .forecastTrack {
   display: block;
-  height: 7px;
+  height: 8px;
   overflow: hidden;
   border-radius: 999px;
   background: var(--lk-color-emphasis-100);
@@ -109,31 +109,31 @@
 
 .forecastCount {
   text-align: right;
-  font-size: 13px;
+  font-size: 14px;
   font-variant-numeric: tabular-nums;
 }
 
 .columns {
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-  gap: 18px;
+  gap: 20px;
   align-items: start;
 }
 
 .weakList,
 .sessionList {
   display: grid;
-  padding: 4px 18px;
+  padding: 6px 20px;
 }
 
 .weakList article {
   display: grid;
-  min-height: 104px;
+  min-height: 112px;
   grid-template-columns: minmax(0, 1fr) 180px auto;
   align-items: center;
   gap: 16px;
   padding: 14px 0;
-  border-bottom: 1px solid var(--lk-color-emphasis-300);
+  border-bottom: 1px solid var(--academy-separator);
 }
 
 .weakList article:last-child,
@@ -152,12 +152,12 @@
 .sessionList small,
 .sessionList time {
   color: var(--lk-font-color-secondary);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .weakList strong {
   overflow: hidden;
-  font-size: 13px;
+  font-size: 14px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -168,13 +168,13 @@
 
 .sessionList button {
   display: grid;
-  min-height: 72px;
+  min-height: 80px;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 11px;
   padding: 10px 0;
   border: 0;
-  border-bottom: 1px solid var(--lk-color-emphasis-300);
+  border-bottom: 1px solid var(--academy-separator);
   background: transparent;
   text-align: left;
   transition:
@@ -196,10 +196,10 @@
 
 .sessionIcon {
   display: grid;
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   place-items: center;
-  border-radius: 10px;
+  border-radius: 12px;
   background: var(--lk-color-primary-soft);
   color: var(--lk-color-primary-label);
 }
@@ -223,12 +223,12 @@
 }
 
 .sessionList strong {
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .sessionList time {
   color: var(--lk-font-color-tertiary);
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .sessionMeta {
@@ -238,11 +238,12 @@
 }
 
 .sessionStatus {
-  padding: 2px 6px;
-  border-radius: 5px;
+  min-height: 22px;
+  padding: 2px 7px;
+  border-radius: 7px;
   background: var(--lk-color-emphasis-100);
   color: var(--lk-font-color-secondary);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 620;
 }
 

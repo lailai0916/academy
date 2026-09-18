@@ -2,16 +2,16 @@
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 18px;
-  padding: 22px;
+  gap: 20px;
+  padding: 24px;
 }
 
 .milestoneIcon {
   display: grid;
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   place-items: center;
-  border-radius: 14px;
+  border-radius: 15px;
   background: var(--lk-color-primary-soft);
   color: var(--lk-color-primary-label);
 }
@@ -29,12 +29,13 @@
 .pilotIntro > span,
 .pilotDetails > div > span {
   color: var(--lk-color-primary-label);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 650;
 }
 
 .milestone h2 {
-  font-size: 17px;
+  font-size: 19px;
+  letter-spacing: -0.02em;
   line-height: 1.45;
 }
 
@@ -44,22 +45,22 @@
 .pilotIntro small,
 .subjectFooter > span {
   color: var(--lk-font-color-secondary);
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.6;
 }
 
 .subjectGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
+  gap: 16px;
 }
 
 .subjectCard {
   display: grid;
-  min-height: 220px;
+  min-height: 242px;
   align-content: space-between;
-  gap: 22px;
-  padding: 20px;
+  gap: 24px;
+  padding: 22px;
 }
 
 .subjectHeader {
@@ -76,17 +77,18 @@
 
 .subjectCopy h3,
 .pilotIntro h3 {
-  font-size: 18px;
-  letter-spacing: -0.02em;
+  font-size: 20px;
+  letter-spacing: -0.03em;
 }
 
 .status {
   width: fit-content;
-  padding: 4px 8px;
+  min-height: 24px;
+  padding: 3px 9px;
   border-radius: 999px;
   background: var(--lk-color-emphasis-100);
   color: var(--lk-font-color-secondary);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 650;
   white-space: nowrap;
 }
@@ -112,14 +114,14 @@
 .subjectFooter button {
   display: inline-flex;
   width: fit-content;
-  min-height: 40px;
+  min-height: 42px;
   align-items: center;
   gap: 6px;
   padding: 6px 0;
   border: 0;
   background: transparent;
   color: var(--lk-color-primary-label);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   text-align: left;
 }
@@ -140,27 +142,27 @@
 .courseAction > span,
 .courseProgress small {
   color: var(--lk-font-color-tertiary);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .pilotCard {
   display: grid;
   grid-template-columns: minmax(240px, 0.72fr) minmax(0, 1.28fr);
-  gap: 30px;
-  padding: 26px;
+  gap: 34px;
+  padding: 30px;
 }
 
 .pilotIntro {
   display: grid;
   align-content: start;
   gap: 9px;
-  padding-right: 28px;
-  border-right: 1px solid var(--lk-color-emphasis-300);
+  padding-right: 32px;
+  border-right: 1px solid var(--academy-separator);
 }
 
 .pilotDetails {
   display: grid;
-  gap: 24px;
+  gap: 26px;
 }
 
 .pilotDetails > div {
@@ -170,7 +172,7 @@
 
 .courseProgress {
   padding-bottom: 20px;
-  border-bottom: 1px solid var(--lk-color-emphasis-300);
+  border-bottom: 1px solid var(--academy-separator);
 }
 
 .pilotDetails ul {
@@ -178,7 +180,7 @@
   gap: 6px;
   padding-left: 18px;
   color: var(--lk-font-color-secondary);
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.5;
 }
 
@@ -191,23 +193,23 @@
 
 .flow li {
   display: grid;
-  min-height: 70px;
+  min-height: 78px;
   align-content: space-between;
   gap: 8px;
   padding: 11px;
-  border: 1px solid var(--lk-color-emphasis-300);
-  border-radius: 10px;
+  border: 1px solid var(--academy-separator);
+  border-radius: 12px;
   background: var(--lk-background-raised);
 }
 
 .flow small {
   color: var(--lk-font-color-tertiary);
-  font-size: 10px;
+  font-size: 11px;
   font-variant-numeric: tabular-nums;
 }
 
 .flow strong {
-  font-size: 12px;
+  font-size: 13px;
 }
 
 @media (max-width: 900px) {

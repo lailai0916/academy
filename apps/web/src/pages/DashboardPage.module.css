@@ -39,8 +39,8 @@
 
 .workspaceGrid {
   display: grid;
-  grid-template-columns: minmax(0, 1.7fr) minmax(260px, 0.7fr);
-  gap: 18px;
+  grid-template-columns: minmax(0, 1.76fr) minmax(272px, 0.64fr);
+  gap: 20px;
   align-items: stretch;
 }
 
@@ -53,25 +53,25 @@
 .plan {
   display: grid;
   grid-template-columns: minmax(190px, 0.58fr) minmax(0, 1.42fr);
-  gap: 26px;
-  padding: 22px;
+  gap: 30px;
+  padding: 26px;
 }
 
 .planProgress {
   display: grid;
   justify-items: center;
   align-content: center;
-  gap: 14px;
-  padding-right: 26px;
-  border-right: 1px solid var(--lk-color-emphasis-300);
+  gap: 16px;
+  padding-right: 30px;
+  border-right: 1px solid var(--academy-separator);
   text-align: center;
 }
 
 .progressRing {
   position: relative;
   display: grid;
-  width: 128px;
-  height: 128px;
+  width: 136px;
+  height: 136px;
   place-items: center;
 }
 
@@ -86,7 +86,7 @@
 
 .progressRing circle {
   fill: none;
-  stroke-width: 7;
+  stroke-width: 6;
 }
 
 .ringTrack {
@@ -107,7 +107,7 @@
 }
 
 .progressRing strong {
-  font-size: 25px;
+  font-size: 28px;
   line-height: 1;
   letter-spacing: -0.045em;
   font-variant-numeric: tabular-nums;
@@ -116,7 +116,7 @@
 .progressRing small,
 .progressCopy span {
   color: var(--lk-font-color-secondary);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .progressCopy {
@@ -126,7 +126,7 @@
 }
 
 .progressCopy strong {
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .progressCopy span {
@@ -135,18 +135,18 @@
 
 .planItems {
   display: grid;
-  gap: 10px;
+  gap: 12px;
 }
 
 .planItems button {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 14px;
-  min-height: 98px;
-  padding: 15px;
-  border: 1px solid var(--lk-color-emphasis-300);
-  border-radius: var(--lk-radius-md);
+  gap: 15px;
+  min-height: 104px;
+  padding: 17px;
+  border: 1px solid var(--academy-separator);
+  border-radius: 15px;
   background: var(--lk-background-raised);
   color: var(--lk-font-color-base);
   text-align: left;
@@ -158,7 +158,7 @@
 
 .planItems button[data-status='active'] {
   border-color: color-mix(in srgb, var(--lk-color-primary) 52%, var(--lk-color-emphasis-300));
-  background: color-mix(in srgb, var(--lk-color-primary-soft) 54%, var(--lk-background-raised));
+  background: color-mix(in srgb, var(--lk-color-primary-soft) 68%, var(--lk-background-raised));
 }
 
 .planItems button[data-status='completed'] {
@@ -185,13 +185,14 @@
 }
 
 .planTaskCopy > strong {
-  font-size: 14px;
+  font-size: 15px;
+  letter-spacing: -0.01em;
 }
 
 .planTaskCopy > small {
   overflow: hidden;
   color: var(--lk-font-color-secondary);
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.45;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -199,11 +200,11 @@
 
 .planTaskIcon {
   display: grid;
-  width: 42px;
-  height: 42px;
+  width: 46px;
+  height: 46px;
   flex: none;
   place-items: center;
-  border-radius: 12px;
+  border-radius: 13px;
   background: var(--lk-color-primary-soft);
   color: var(--lk-color-primary-label);
 }
@@ -224,7 +225,7 @@
   align-items: center;
   gap: 8px;
   color: var(--lk-font-color-tertiary);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 650;
 }
 
@@ -236,7 +237,7 @@
 
 .planTaskStatus {
   display: inline-flex;
-  min-height: 20px;
+  min-height: 22px;
   flex: none;
   align-items: center;
   padding: 0 6px;
@@ -257,8 +258,8 @@
 
 .planTaskAction {
   display: grid;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   place-items: center;
   border-radius: 50%;
   color: var(--lk-font-color-tertiary);
@@ -281,16 +282,16 @@
 
 .focus {
   display: grid;
-  padding: 8px 18px 14px;
+  padding: 10px 20px 16px;
 }
 
 .focus article {
   display: grid;
-  min-height: 68px;
+  min-height: 76px;
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
   gap: 11px;
-  border-bottom: 1px solid var(--lk-color-emphasis-300);
+  border-bottom: 1px solid var(--academy-separator);
 }
 
 .focus article > span {
@@ -314,13 +315,13 @@
 }
 
 .focus article strong {
-  font-size: 19px;
+  font-size: 22px;
   font-variant-numeric: tabular-nums;
 }
 
 .focus article small {
   color: var(--lk-font-color-secondary);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .focusActions {
@@ -333,7 +334,7 @@
 .lowerGrid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 18px;
+  gap: 20px;
   align-items: start;
 }
 
@@ -344,7 +345,7 @@
   align-items: end;
   gap: 7px;
   padding: 22px 22px 14px;
-  border-bottom: 1px solid var(--lk-color-emphasis-300);
+  border-bottom: 1px solid var(--academy-separator);
 }
 
 .miniChart > div {
@@ -368,7 +369,7 @@
   gap: 8px;
   padding: 12px 22px;
   color: var(--lk-font-color-secondary);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .activityList {

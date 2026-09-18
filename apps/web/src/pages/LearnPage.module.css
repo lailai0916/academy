@@ -1,11 +1,11 @@
 .subjectGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
+  gap: 20px;
 }
 
 .subject {
-  min-height: 320px;
+  min-height: 342px;
 }
 
 .subjectBody {
@@ -13,16 +13,16 @@
   height: 100%;
   flex-direction: column;
   align-items: flex-start;
-  gap: 20px;
-  padding: 26px;
+  gap: 22px;
+  padding: 28px;
 }
 
 .subjectIcon {
   display: grid;
-  width: 50px;
-  height: 50px;
+  width: 54px;
+  height: 54px;
   place-items: center;
-  border-radius: 13px;
+  border-radius: 15px;
   background: var(--lk-color-primary-soft);
   color: var(--lk-color-primary-label);
   font-size: 23px;
@@ -30,7 +30,7 @@
 
 .subjectCopy {
   display: grid;
-  gap: 8px;
+  gap: 10px;
 }
 
 .subjectHeading {
@@ -41,20 +41,21 @@
 }
 
 .subjectHeading h2 {
-  font-size: 23px;
-  font-weight: 680;
-  letter-spacing: -0.035em;
+  font-size: 25px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
 }
 
 .subjectHeading span {
   color: var(--lk-font-color-tertiary);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 650;
 }
 
 .subjectCopy > p {
   color: var(--lk-font-color-secondary);
-  font-size: 14px;
+  font-size: 15px;
+  line-height: 1.65;
 }
 
 .subjectStats {
@@ -66,11 +67,11 @@
 .subjectStats span,
 .pending {
   padding: 5px 10px;
-  border: 1px solid var(--lk-color-emphasis-300);
-  border-radius: 8px;
+  border: 1px solid var(--academy-separator);
+  border-radius: 9px;
   background: var(--lk-color-emphasis-100);
   color: var(--lk-font-color-secondary);
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .subjectStats strong {
@@ -85,8 +86,8 @@
 .method {
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 15px;
-  padding: 19px;
+  gap: 16px;
+  padding: 22px;
 }
 
 .method > svg {
@@ -102,17 +103,17 @@
 }
 
 .method strong {
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .method p {
   color: var(--lk-font-color-secondary);
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .unitList {
   display: grid;
-  padding: 4px 22px;
+  padding: 5px 24px;
 }
 
 .unitRow {
@@ -120,9 +121,9 @@
   grid-template-columns: minmax(0, 1fr) minmax(240px, 360px);
   align-items: center;
   gap: 28px;
-  min-height: 104px;
+  min-height: 112px;
   padding: 18px 0;
-  border-bottom: 1px solid var(--lk-color-emphasis-300);
+  border-bottom: 1px solid var(--academy-separator);
 }
 
 .unitRow:last-child {
@@ -138,12 +139,12 @@
 .unitCopy > span,
 .unitCopy small {
   color: var(--lk-font-color-secondary);
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .unitCopy strong {
   overflow: hidden;
-  font-size: 14px;
+  font-size: 15px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -165,25 +166,25 @@
 .mastery {
   flex: none;
   color: var(--lk-font-color-secondary);
-  font-size: 13px;
+  font-size: 14px;
   font-variant-numeric: tabular-nums;
 }
 
 .quickLinks {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  gap: 16px;
 }
 
 .quickLinks button {
   display: grid;
-  min-height: 76px;
+  min-height: 84px;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 12px;
-  padding: 12px 15px;
-  border: 1px solid var(--lk-color-emphasis-300);
-  border-radius: var(--lk-radius-md);
+  padding: 14px 17px;
+  border: 1px solid var(--academy-separator);
+  border-radius: var(--lk-radius-lg);
   background: var(--lk-card-background-color);
   color: var(--lk-font-color-secondary);
   text-align: left;
@@ -220,12 +221,12 @@
 
 .quickLinks strong {
   color: var(--lk-font-color-base);
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .quickLinks small {
   color: var(--lk-font-color-secondary);
-  font-size: 12px;
+  font-size: 13px;
 }
 
 @media (max-width: 720px) {

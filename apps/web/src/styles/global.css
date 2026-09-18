@@ -2,52 +2,71 @@
 :root,
 :root[data-theme] {
   color-scheme: light;
-  --lk-background-color: #ffffff;
+  --lk-color-primary: #0071e3;
+  --lk-color-primary-dark: #0066cc;
+  --lk-color-primary-light: #2997ff;
+  --lk-background-color: #f5f5f7;
   --lk-card-background-color: #ffffff;
-  --lk-background-raised: #ffffff;
-  --lk-color-emphasis-100: #f5f6f7;
-  --lk-font-color-secondary: #525860;
-  --lk-font-color-tertiary: #606770;
-  --lk-color-emphasis-300: #dadde1;
-  --lk-color-emphasis-400: #ccd0d5;
-  --lk-radius-control: 10px;
-  --lk-radius-md: 12px;
-  --lk-radius-lg: 16px;
-  --lk-radius-overlay: 20px;
-  --lk-header-height: 60px;
+  --lk-background-raised: #fafafc;
+  --lk-color-emphasis-100: #f2f2f7;
+  --lk-color-emphasis-200: #e8e8ed;
+  --lk-color-emphasis-300: #d2d2d7;
+  --lk-color-emphasis-400: #c7c7cc;
+  --lk-color-emphasis-500: #aeaeb2;
+  --lk-color-emphasis-600: #8e8e93;
+  --lk-color-emphasis-700: #6e6e73;
+  --lk-color-emphasis-800: #3a3a3c;
+  --lk-color-emphasis-900: #1d1d1f;
+  --lk-font-color-base: #1d1d1f;
+  --lk-font-color-secondary: #54545a;
+  --lk-font-color-tertiary: #74747b;
+  --lk-radius-control: 12px;
+  --lk-radius-md: 16px;
+  --lk-radius-lg: 20px;
+  --lk-radius-overlay: 22px;
+  --lk-header-height: 64px;
   --academy-public-header-height: 56px;
-  --lk-shadow-control: 0 1px 2px rgb(0 0 0 / 7%);
-  --lk-shadow-overlay: 0 18px 50px rgb(0 0 0 / 14%), 0 2px 10px rgb(0 0 0 / 6%);
-  --academy-sidebar-width: 224px;
-  --academy-shell-gap: 12px;
-  --academy-content-width: 1240px;
-  --academy-reading-width: 960px;
-  --academy-shadow-panel: 0 1px 2px rgb(15 23 42 / 3%);
-  --academy-chrome: color-mix(in srgb, var(--lk-card-background-color) 86%, transparent);
+  --academy-topbar-height: var(--lk-header-height);
+  --lk-shadow-control: 0 1px 2px rgb(0 0 0 / 7%), 0 1px 1px rgb(255 255 255 / 80%) inset;
+  --lk-shadow-overlay: 0 24px 64px rgb(0 0 0 / 16%), 0 4px 18px rgb(0 0 0 / 7%);
+  --academy-sidebar-width: 232px;
+  --academy-shell-gap: 16px;
+  --academy-content-width: 1320px;
+  --academy-reading-width: 980px;
+  --academy-shadow-panel: 0 1px 2px rgb(0 0 0 / 4%), 0 12px 36px rgb(0 0 0 / 3%);
+  --academy-shadow-chrome: 0 14px 40px rgb(0 0 0 / 6%);
+  --academy-chrome: color-mix(in srgb, var(--lk-card-background-color) 78%, transparent);
+  --academy-separator: color-mix(in srgb, var(--lk-color-emphasis-300) 82%, transparent);
+  --academy-active-surface: color-mix(
+    in srgb,
+    var(--lk-color-primary-soft) 72%,
+    var(--lk-card-background-color)
+  );
 }
 
 :root[data-theme='dark'] {
   color-scheme: dark;
-  --lk-background-color: #17181a;
-  --lk-card-background-color: #202225;
-  --lk-background-raised: #25272a;
-  --lk-color-emphasis-100: #2b2d31;
-  --lk-color-emphasis-200: #36393e;
-  --lk-color-emphasis-300: #454950;
-  --lk-color-emphasis-400: #5d626b;
-  --lk-color-emphasis-500: #777d87;
-  --lk-color-emphasis-600: #9ba1aa;
-  --lk-color-emphasis-700: #b8bdc5;
-  --lk-color-emphasis-800: #dadddf;
-  --lk-color-emphasis-900: #f3f4f5;
-  --lk-font-color-base: #f0f1f3;
-  --lk-font-color-secondary: #b8bdc5;
-  --lk-font-color-tertiary: #8f959f;
-  --lk-color-primary-soft: #102e4b;
-  --lk-color-primary-label: #66b8f0;
+  --lk-background-color: #101012;
+  --lk-card-background-color: #1c1c1e;
+  --lk-background-raised: #242426;
+  --lk-color-emphasis-100: #2c2c2e;
+  --lk-color-emphasis-200: #343438;
+  --lk-color-emphasis-300: #48484a;
+  --lk-color-emphasis-400: #58585d;
+  --lk-color-emphasis-500: #6f6f76;
+  --lk-color-emphasis-600: #8e8e93;
+  --lk-color-emphasis-700: #aeaeb2;
+  --lk-color-emphasis-800: #d1d1d6;
+  --lk-color-emphasis-900: #f5f5f7;
+  --lk-font-color-base: #f5f5f7;
+  --lk-font-color-secondary: #b8b8be;
+  --lk-font-color-tertiary: #8e8e93;
+  --lk-color-primary-soft: #0b345b;
+  --lk-color-primary-label: #64b5ff;
   --lk-shadow-control: 0 1px 2px rgb(0 0 0 / 22%);
   --lk-shadow-overlay: 0 20px 56px rgb(0 0 0 / 48%), 0 2px 12px rgb(0 0 0 / 26%);
-  --academy-shadow-panel: 0 1px 1px rgb(0 0 0 / 18%);
+  --academy-shadow-panel: 0 1px 1px rgb(0 0 0 / 28%), 0 16px 44px rgb(0 0 0 / 12%);
+  --academy-shadow-chrome: 0 18px 48px rgb(0 0 0 / 24%);
 }
 
 *,
@@ -63,6 +82,7 @@ html {
   background: var(--lk-background-color);
   color: var(--lk-font-color-base);
   font-family: var(--lk-font-family);
+  font-optical-sizing: auto;
   font-synthesis: none;
   scrollbar-color: var(--lk-color-emphasis-400) transparent;
   -webkit-text-size-adjust: 100%;
@@ -75,7 +95,8 @@ body {
   background: var(--lk-background-color);
   color: var(--lk-font-color-base);
   font-size: 15px;
-  line-height: 1.6;
+  line-height: 1.55;
+  letter-spacing: -0.006em;
   font-variant-numeric: proportional-nums;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -111,6 +132,7 @@ h2,
 h3 {
   margin: 0;
   line-height: 1.2;
+  text-wrap: balance;
 }
 
 button {
@@ -132,7 +154,13 @@ p {
 
 /* Shared primitives are tuned to the Academy geometry without forking @lailai0916/ui. */
 [data-lk='panel'] {
+  border-color: var(--academy-separator);
+  border-radius: var(--lk-radius-lg);
   box-shadow: var(--academy-shadow-panel);
+}
+
+[data-lk='button'] {
+  letter-spacing: -0.005em;
 }
 
 [data-lk='brand-logo'] {
@@ -141,6 +169,9 @@ p {
 }
 
 [data-lk='field-control'] {
+  min-height: 44px;
+  border-color: var(--academy-separator);
+  border-radius: var(--lk-radius-control);
   background: var(--lk-background-raised);
 }
 
@@ -159,7 +190,19 @@ p {
 
 :focus-visible {
   outline: 2px solid var(--lk-color-primary);
-  outline-offset: 2px;
+  outline-offset: 3px;
+}
+
+@media (prefers-contrast: more) {
+  :root,
+  :root[data-theme] {
+    --academy-separator: var(--lk-color-emphasis-500);
+  }
+
+  [data-lk='panel'],
+  [data-lk='field-control'] {
+    border-width: 2px;
+  }
 }
 
 .skip-link {

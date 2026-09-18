@@ -2,6 +2,7 @@
   min-height: 100vh;
   padding: var(--lk-header-height) 0 0
     calc(var(--academy-sidebar-width) + var(--academy-shell-gap) * 2);
+  background: var(--lk-background-color);
 }
 
 .topbar {
@@ -14,24 +15,31 @@
     calc(var(--academy-sidebar-width) + var(--academy-shell-gap) * 2)
     minmax(120px, 1fr) auto;
   align-items: center;
-  border-bottom: 1px solid var(--lk-color-emphasis-300);
+  border-bottom: 1px solid var(--academy-separator);
   background: var(--academy-chrome);
-  backdrop-filter: saturate(150%) blur(18px);
-  -webkit-backdrop-filter: saturate(150%) blur(18px);
+  box-shadow: 0 1px 0 rgb(255 255 255 / 36%) inset;
+  backdrop-filter: saturate(180%) blur(24px);
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
 }
 
 .brandArea {
   display: flex;
   min-width: 0;
   align-items: center;
-  gap: 4px;
-  padding: 0 18px;
+  gap: 6px;
+  padding: 0 20px;
 }
 
 .brandArea > a {
   display: inline-flex;
   min-width: 0;
   border-radius: var(--lk-radius-control);
+}
+
+.brandArea :global([data-lk='brand']) {
+  font-size: 15px;
+  font-weight: 680;
+  letter-spacing: -0.025em;
 }
 
 .menuButton {
@@ -68,14 +76,15 @@
   display: flex;
   min-width: 0;
   align-items: center;
-  padding: 0 16px;
+  padding: 0 20px;
 }
 
 .location strong {
   overflow: hidden;
-  color: var(--lk-font-color-secondary);
-  font-size: 13px;
-  font-weight: 600;
+  color: var(--lk-font-color-base);
+  font-size: 14px;
+  font-weight: 640;
+  letter-spacing: -0.015em;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -83,25 +92,25 @@
 .topbarTools {
   display: flex;
   align-items: center;
-  gap: 5px;
-  padding-right: 12px;
+  gap: 6px;
+  padding-right: 16px;
 }
 
 .divider {
   width: 1px;
   height: 18px;
   margin: 0 3px;
-  background: var(--lk-color-emphasis-300);
+  background: var(--academy-separator);
 }
 
 .accountButton {
   display: flex;
   max-width: 160px;
-  height: 40px;
+  min-height: 42px;
   align-items: center;
   gap: 8px;
   padding: 0 7px;
-  border-radius: 12px;
+  border-radius: 13px;
   font-size: 13px;
   font-weight: 600;
   transition:
@@ -110,7 +119,7 @@
 }
 
 .accountButton:hover {
-  background: var(--lk-color-emphasis-100);
+  background: color-mix(in srgb, var(--lk-color-emphasis-100) 82%, transparent);
 }
 
 .accountButton:active {
@@ -155,33 +164,36 @@
   width: var(--academy-sidebar-width);
   overflow: hidden;
   flex-direction: column;
-  border: 1px solid var(--lk-color-emphasis-300);
-  border-radius: 18px;
+  border: 1px solid var(--academy-separator);
+  border-radius: 22px;
   background: var(--academy-chrome);
-  backdrop-filter: saturate(150%) blur(18px);
-  -webkit-backdrop-filter: saturate(150%) blur(18px);
+  box-shadow:
+    var(--academy-shadow-chrome),
+    0 1px 0 rgb(255 255 255 / 52%) inset;
+  backdrop-filter: saturate(180%) blur(24px);
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
 }
 
 .userCard {
   display: grid;
-  min-height: 62px;
+  min-height: 68px;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 10px;
-  margin: 8px 8px 4px;
-  padding: 9px 10px;
-  border-radius: 12px;
+  margin: 9px 9px 5px;
+  padding: 10px;
+  border-radius: 14px;
   transition:
     background-color var(--lk-transition),
     transform var(--lk-transition);
 }
 
 .userCard:hover {
-  background: var(--lk-color-emphasis-100);
+  background: color-mix(in srgb, var(--lk-color-emphasis-100) 84%, transparent);
 }
 
 .userCardActive {
-  background: var(--lk-color-emphasis-100);
+  background: color-mix(in srgb, var(--lk-color-emphasis-100) 92%, transparent);
 }
 
 .userCard:active {
@@ -202,21 +214,21 @@
 }
 
 .userCard strong {
-  font-size: 13px;
-  font-weight: 650;
+  font-size: 14px;
+  font-weight: 660;
 }
 
 .userCard small {
   color: var(--lk-font-color-tertiary);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .role {
-  padding: 3px 6px;
-  border-radius: 6px;
+  padding: 3px 7px;
+  border-radius: 7px;
   background: var(--lk-color-emphasis-100);
   color: var(--lk-font-color-secondary);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 650;
 }
 
@@ -224,32 +236,32 @@
   flex: 1;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: 7px 8px 12px;
+  padding: 8px 9px 16px;
   scrollbar-width: thin;
 }
 
 .navGroup + .navGroup {
-  margin-top: 17px;
+  margin-top: 20px;
 }
 
 .navGroup > p {
-  padding: 0 10px 6px;
+  padding: 0 11px 7px;
   color: var(--lk-font-color-tertiary);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  font-size: 12px;
+  font-weight: 620;
+  letter-spacing: 0;
 }
 
 .navItem {
   display: flex;
-  min-height: 40px;
+  min-height: 44px;
   align-items: center;
   gap: 11px;
-  padding: 0 11px;
-  border-radius: 11px;
+  padding: 0 12px;
+  border-radius: 12px;
   color: var(--lk-font-color-secondary);
-  font-size: 13px;
-  font-weight: 590;
+  font-size: 14px;
+  font-weight: 580;
   transition:
     background-color var(--lk-transition),
     color var(--lk-transition),
@@ -261,7 +273,7 @@
 }
 
 .navItem:hover {
-  background: var(--lk-color-emphasis-100);
+  background: color-mix(in srgb, var(--lk-color-emphasis-100) 84%, transparent);
   color: var(--lk-font-color-base);
 }
 
@@ -270,7 +282,7 @@
 }
 
 .navItem.active {
-  background: var(--lk-color-primary-soft);
+  background: var(--academy-active-surface);
   color: var(--lk-color-primary-label);
   font-weight: 650;
 }
@@ -279,14 +291,14 @@
   width: 18px;
   height: 18px;
   flex: none;
-  stroke-width: 1.85;
+  stroke-width: 1.9;
 }
 
 .main {
   min-width: 0;
-  width: min(calc(100% - 64px), var(--academy-content-width));
+  width: min(calc(100% - 72px), var(--academy-content-width));
   margin-inline: auto;
-  padding: 36px 0 72px;
+  padding: 48px 0 88px;
   animation: page-enter var(--lk-transition-surface) both;
 }
 
@@ -302,7 +314,13 @@
 @keyframes page-enter {
   from {
     opacity: 0;
-    transform: translateY(3px);
+    transform: translateY(5px);
+  }
+}
+
+@media (max-width: 1280px) {
+  .main {
+    width: min(calc(100% - 48px), var(--academy-content-width));
   }
 }
 
@@ -388,7 +406,7 @@
 
   .main {
     width: min(calc(100% - 28px), 760px);
-    padding: 26px 0 52px;
+    padding: 32px 0 64px;
   }
 }
 
@@ -405,7 +423,8 @@
   }
 
   .main {
-    padding-top: 22px;
+    width: min(calc(100% - 24px), 760px);
+    padding-top: 26px;
   }
 }
 
@@ -415,5 +434,12 @@
   .mobileBackdrop {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
+  }
+}
+
+@media (prefers-contrast: more) {
+  .topbar,
+  .sidebar {
+    box-shadow: none;
   }
 }
