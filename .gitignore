@@ -7,6 +7,9 @@ node_modules/
 dist/
 build/
 out/
+tmp/
+__pycache__/
+*.py[cod]
 *.tsbuildinfo
 apps/api/drizzle.config.js
 apps/api/drizzle.config.js.map

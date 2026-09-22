@@ -1,8 +1,9 @@
-# Academy 项目简介 PDF
+# Academy PDF
 
-[打开 PDF](academy-project-brief.pdf)。
+- [项目简介](academy-project-brief.pdf)
+- [宇树科技「天才少年」计划项目申请书](unitree-genius-application.pdf)
 
-文案来自[项目简介](../../docs/project-brief.md)。Logo 和配色沿用现有[品牌规范](../../brand-spec.md)，正文连续排版，按内容自动分页。
+文案分别来自[项目简介](../../docs/project-brief.md)和[宇树科技申请书](../../docs/unitree-genius-application.md)。Logo 和配色沿用现有[品牌规范](../../brand-spec.md)。
 
 ## 重新生成
 
@@ -10,8 +11,11 @@
 
 ```bash
 uv run --with reportlab==4.4.9 python scripts/build-project-brief.py
+uv run --with reportlab==4.4.9 --with pillow python scripts/build-unitree-application.py
 ```
+
+申请书封面默认读取 `tmp/pdfs/unitree/academy-home.png`。先按 2.85:1 的可视区域截取当前官网，或通过 `--screenshot` 指定替代图片。
 
 其他系统通过 `--font-regular` 和 `--font-bold` 指定可嵌入的字体。支持 `.ttf`、`.ttc`，字体集合使用第一个字体。
 
-生成器读取标题、日期、二级标题和正文，支持加粗与网页链接。生成失败时保留原 PDF。修改后重新渲染各页，检查中文、分页和链接。
+修改后重新渲染各页，检查中文、分页、二维码和链接。
