@@ -1,21 +1,15 @@
 import argparse
 import re
+import subprocess
 from html import escape
 from pathlib import Path
-
-from reportlab.lib.colors import black
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.styles import ParagraphStyle
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer
 
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
 def inline(source):
-    text = escape(source.strip(), quote=False)
+    text = escape(source.strip(), quote=True)
     text = text.replace(
         r"$\operatorname{sat}(6)=30$",
         "<i>sat</i>(6) = 30",
@@ -33,14 +27,14 @@ def inline(source):
         r'<a href="\2">\1</a>',
         text,
     )
-    text = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", text)
-    text = re.sub(r"`(.+?)`", r'<font name="Courier">\1</font>', text)
+    text = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", text)
+    text = re.sub(r"`(.+?)`", r"<code>\1</code>", text)
     return text
 
 
-def parse_blocks(source):
+def markdown_body(source):
     lines = source.splitlines()
-    blocks = []
+    body = []
     index = 0
     while index < len(lines):
         line = lines[index].rstrip()
@@ -49,7 +43,8 @@ def parse_blocks(source):
             continue
         if line.startswith("#"):
             level = len(line) - len(line.lstrip("#"))
-            blocks.append(("heading", level, line[level:].strip()))
+            level = 1 if level == 1 else 2
+            body.append(f"<h{level}>{inline(line.lstrip('#').strip())}</h{level}>")
             index += 1
             continue
         if re.match(r"^[-*] ", line):
@@ -57,9 +52,9 @@ def parse_blocks(source):
             while index < len(lines) and re.match(
                 r"^[-*] ", lines[index].strip()
             ):
-                items.append(lines[index].strip()[2:])
+                items.append(f"<li>{inline(lines[index].strip()[2:])}</li>")
                 index += 1
-            blocks.append(("list", items))
+            body.append("<ul>" + "".join(items) + "</ul>")
             continue
         paragraph = [line]
         index += 1
@@ -74,85 +69,67 @@ def parse_blocks(source):
                 break
             paragraph.append(candidate)
             index += 1
-        blocks.append(("paragraph", " ".join(paragraph)))
-    return blocks
+        body.append(f"<p>{inline(' '.join(paragraph))}</p>")
+    return "\n".join(body)
 
 
-def create_styles():
-    body = ParagraphStyle(
-        "Body",
-        fontName="Academy",
-        fontSize=10.5,
-        leading=17,
-        textColor=black,
-        wordWrap="CJK",
-        spaceAfter=8,
-        allowWidows=0,
-        allowOrphans=0,
-    )
-    return {
-        "body": body,
-        "h1": ParagraphStyle(
-            "Heading 1",
-            parent=body,
-            fontName="AcademyBold",
-            fontSize=18,
-            leading=24,
-            spaceBefore=8,
-            spaceAfter=8,
-            keepWithNext=True,
-        ),
-        "h2": ParagraphStyle(
-            "Heading 2",
-            parent=body,
-            fontName="AcademyBold",
-            fontSize=12.5,
-            leading=18,
-            spaceBefore=7,
-            spaceAfter=4,
-            keepWithNext=True,
-        ),
-        "bullet": ParagraphStyle(
-            "Bullet",
-            parent=body,
-            leftIndent=15,
-            firstLineIndent=-10,
-            spaceAfter=3,
-        ),
-    }
+def html_document(source):
+    body = markdown_body(source)
+    return f"""<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="author" content="陈家治">
+<title>Academy 项目申请书</title>
+<style>
+@page {{ size: A4; margin: 18mm 20mm; }}
+html {{ font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; font-size: 10.5pt; line-height: 1.65; color: #000; }}
+body {{ margin: 0; }}
+h1 {{ font-size: 1.7em; line-height: 1.3; margin: 0 0 .55em; }}
+h2 {{ font-size: 1.2em; line-height: 1.4; margin: .9em 0 .3em; }}
+p {{ margin: 0 0 .65em; }}
+ul {{ margin: .2em 0 .7em; padding-left: 1.5em; }}
+li {{ margin: .15em 0; }}
+a {{ color: inherit; text-decoration: none; }}
+code {{ font-family: ui-monospace, monospace; font-size: .95em; }}
+</style>
+</head>
+<body>
+{body}
+</body>
+</html>
+"""
 
 
-def build(source, output, styles):
-    story = []
-    for block in parse_blocks(source.read_text(encoding="utf-8")):
-        if block[0] == "heading":
-            style = styles["h1" if block[1] == 1 else "h2"]
-            story.append(Paragraph(inline(block[2]), style))
-        elif block[0] == "paragraph":
-            story.append(Paragraph(inline(block[1]), styles["body"]))
-        elif block[0] == "list":
-            for item in block[1]:
-                story.append(
-                    Paragraph(f"•&nbsp;&nbsp;{inline(item)}", styles["bullet"])
-                )
-            story.append(Spacer(1, 2))
-
+def build(source, output, chrome):
     output.parent.mkdir(parents=True, exist_ok=True)
-    temporary = output.with_suffix(".building.pdf")
-    document = SimpleDocTemplate(
-        str(temporary),
-        pagesize=A4,
-        rightMargin=54,
-        leftMargin=54,
-        topMargin=54,
-        bottomMargin=54,
-        title="Academy 项目申请书",
-        author="陈家治",
-        subject="宇树科技「天才少年」计划项目申请",
-        creator="lailai's Academy",
+    temporary_html = output.with_suffix(".building.html")
+    temporary_pdf = output.with_suffix(".building.pdf")
+    temporary_html.write_text(
+        html_document(source.read_text(encoding="utf-8")),
+        encoding="utf-8",
     )
-    document.build(story)
-    temporary.replace(output)
+    temporary_pdf.unlink(missing_ok=True)
+    try:
+        result = subprocess.run(
+            [
+                str(chrome),
+                "--headless",
+                "--disable-gpu",
+                "--no-pdf-header-footer",
+                f"--print-to-pdf={temporary_pdf}",
+                temporary_html.resolve().as_uri(),
+            ],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if result.returncode or not temporary_pdf.is_file():
+            raise RuntimeError(result.stderr.strip() or "Chrome did not create a PDF.")
+        temporary_pdf.replace(output)
+    finally:
+        temporary_html.unlink(missing_ok=True)
+        temporary_pdf.unlink(missing_ok=True)
 
 
 def main():
@@ -168,29 +145,16 @@ def main():
         default=ROOT / "output/pdf/unitree-genius-application.pdf",
     )
     parser.add_argument(
-        "--font-regular",
+        "--chrome",
         type=Path,
-        default=Path("/System/Library/Fonts/STHeiti Light.ttc"),
-    )
-    parser.add_argument(
-        "--font-bold",
-        type=Path,
-        default=Path("/System/Library/Fonts/STHeiti Medium.ttc"),
+        default=Path(
+            "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+        ),
     )
     args = parser.parse_args()
-    for name, path in (
-        ("Academy", args.font_regular),
-        ("AcademyBold", args.font_bold),
-    ):
-        if not path.is_file():
-            parser.error(f"Chinese font not found: {path}")
-        pdfmetrics.registerFont(TTFont(name, str(path), subfontIndex=0))
-    pdfmetrics.registerFontFamily(
-        "Academy",
-        normal="Academy",
-        bold="AcademyBold",
-    )
-    build(args.source, args.output, create_styles())
+    if not args.chrome.is_file():
+        parser.error(f"Chrome not found: {args.chrome}")
+    build(args.source, args.output, args.chrome)
     print(f"Built {args.output}")
 
 

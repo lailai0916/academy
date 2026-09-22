@@ -7,13 +7,13 @@
 
 ## 重新生成
 
-需要 Python 3.10+、ReportLab 和支持中文的 TrueType 字体。默认使用 macOS 自带黑体，字体嵌入 PDF。在仓库根目录执行：
+需要 Python 3.10+ 和 Google Chrome。申请书使用系统网页字体，中文为苹方简体，英文与数字为 SF Pro。在仓库根目录执行：
 
 ```bash
 uv run --with reportlab==4.4.9 python scripts/build-project-brief.py
-uv run --with reportlab==4.4.9 python scripts/build-unitree-application.py
+python3 scripts/build-unitree-application.py
 ```
 
-其他系统通过 `--font-regular` 和 `--font-bold` 指定可嵌入的字体。支持 `.ttf`、`.ttc`，字体集合使用第一个字体。
+其他系统通过 `--chrome` 指定 Chrome 可执行文件。
 
 修改后重新渲染各页，检查中文、分页和链接。
