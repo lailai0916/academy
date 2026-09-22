@@ -22,8 +22,6 @@ Academy 已有可以运行的网站和开源仓库。早期版本用于英语词
 
 目前真正可用的部分仍然有限。记忆训练已经稳定运行，动量课程处于试用阶段，其他学科课程和长期计划还没有完成。网站会直接标明这些状态。
 
-<!-- page -->
-
 # 接下来怎么做
 
 ## 先把现有课程用起来
@@ -56,15 +54,13 @@ Academy 已有可以运行的网站和开源仓库。早期版本用于英语词
 
 我真正关心的是独立作答和长期保持，不是学习时长或完成页面数量。
 
-## 经费用途（共 10,000 元）
+## 经费用途
 
-| 用途                             |     金额 |
-| :------------------------------- | -------: |
-| 模型调用和不同配置的实际比较     | 4,000 元 |
-| 数学、物理、化学课程的教师核对   | 4,000 元 |
-| 服务器、备份和必要的数据处理工具 | 2,000 元 |
+共申请 10,000 元：
 
-<!-- page -->
+- 模型调用和不同配置的实际比较：4,000 元；
+- 数学、物理、化学课程的教师核对：4,000 元；
+- 服务器、备份和必要的数据处理工具：2,000 元。
 
 # 关于我
 
@@ -72,27 +68,16 @@ Academy 已有可以运行的网站和开源仓库。早期版本用于英语词
 
 ## 学习与竞赛
 
-我在初中后期和高中早期长期训练信息学竞赛，获得 NOIP 2025 一等奖、CSP-S 2025 一等奖，并进入 USACO Platinum。数学方面，AIME II 2026 得分 11/15，AMC 12 2025 全球前 5%。
-
-这段经历让我积累了算法和工程能力，也让我亲身遇到退役后补文化课的问题。Academy 不是从市场调查中想出的产品，而是我给自己做的学习工具。
+我在初中后期和高中早期长期训练信息学竞赛，获得 NOIP 2025 一等奖、CSP-S 2025 一等奖，并进入 USACO Platinum。数学方面，AIME II 2026 得分 11/15，AMC 12 2025 全球前 5%。这段经历让我积累了算法和工程能力，也让我亲身遇到退役后补文化课的问题。
 
 ## 科研
 
-2026 年，我独立研究饱和 Sperner 系统，得到 $\operatorname{sat}(6)=30$ 与 $\operatorname{sat}(7)=55$。完整证明使用 Lean 4 形式化。论文、源代码、SAT 证书和重放脚本已经公开，并存档至 Zenodo。
-
-这项工作从问题拆解、有限计算一直做到形式化验证和公开复现。我希望用同样的方式推进 Academy。先把问题定义清楚，再用可以检查的结果判断下一步。
+2026 年，我独立研究饱和 Sperner 系统，得到 $\operatorname{sat}(6)=30$ 与 $\operatorname{sat}(7)=55$。完整证明使用 Lean 4 形式化。论文、源代码、SAT 证书和重放脚本已经公开，并存档至 Zenodo。这项工作从问题拆解、有限计算一直做到形式化验证和公开复现。
 
 ## 其他项目
 
-我参加了 GFSSM 2026 空间聚落项目。所在团队在资格轮获得 Best Proposal，决赛总成绩第三名。我主要参与方案整合、可视化、文档和协作流程。
-
-我还使用 Desmos 函数与几何构造制作了动态时钟 iClock，入选 2024 Desmos Math Art Expo。
+我参加了 GFSSM 2026 空间聚落项目。所在团队在资格轮获得 Best Proposal，决赛总成绩第三名。我主要参与方案整合、可视化、文档和协作流程。我还使用 Desmos 函数与几何构造制作了动态时钟 iClock，入选 2024 Desmos Math Art Expo。
 
 ## 相关链接
 
-- Academy：<https://academy.lailai.one>
-- 代码仓库：<https://github.com/lailai0916/academy>
-- 个人网站：<https://lailai.one>
-- 公开简历：<https://resume.lailai.one/zh/>
-- Sperner 研究：<https://github.com/lailai0916/saturated-sperner-6-7>
-- Zenodo：<https://doi.org/10.5281/zenodo.21770438>
+[Academy](https://academy.lailai.one) · [代码仓库](https://github.com/lailai0916/academy) · [个人网站](https://lailai.one) · [公开简历](https://resume.lailai.one/zh/) · [Sperner 研究](https://github.com/lailai0916/saturated-sperner-6-7) · [Zenodo](https://doi.org/10.5281/zenodo.21770438)

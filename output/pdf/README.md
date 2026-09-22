@@ -3,7 +3,7 @@
 - [项目简介](academy-project-brief.pdf)
 - [宇树科技「天才少年」计划项目申请书](unitree-genius-application.pdf)
 
-文案分别来自[项目简介](../../docs/project-brief.md)和[宇树科技申请书](../../docs/unitree-genius-application.md)。项目简介沿用现有[品牌规范](../../brand-spec.md)；申请书使用简洁的文档排版。
+文案分别来自[项目简介](../../docs/project-brief.md)和[宇树科技申请书](../../docs/unitree-genius-application.md)。项目简介沿用现有[品牌规范](../../brand-spec.md)；申请书只按 Markdown 的标题、段落和列表生成 A4 文档。
 
 ## 重新生成
 
