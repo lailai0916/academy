@@ -66,10 +66,6 @@ Academy 已有可以运行的网站和开源仓库。早期版本用于英语词
 
 2026 年，我独立研究饱和 Sperner 系统，得到 $\operatorname{sat}(6)=30$ 与 $\operatorname{sat}(7)=55$。完整证明使用 Lean 4 形式化。论文、源代码、SAT 证书和重放脚本已经公开，并存档至 Zenodo。这项工作从问题拆解、有限计算一直做到形式化验证和公开复现。
 
-## 其他项目
-
-我参加了 GFSSM 2026 空间聚落项目。所在团队在资格轮获得 Best Proposal，决赛总成绩第三名。我主要参与方案整合、可视化、文档和协作流程。我还使用 Desmos 函数与几何构造制作了动态时钟 iClock，入选 2024 Desmos Math Art Expo。
-
 ## 相关链接
 
-[Academy](https://academy.lailai.one) · [代码仓库](https://github.com/lailai0916/academy) · [个人网站](https://lailai.one) · [公开简历](https://resume.lailai.one/zh/) · [Sperner 研究](https://github.com/lailai0916/saturated-sperner-6-7) · [Zenodo](https://doi.org/10.5281/zenodo.21770438)
+[个人网站](https://lailai.one) · [公开简历](https://resume.lailai.one/zh/) · [Academy](https://academy.lailai.one)
