@@ -1,5 +1,5 @@
+import { Alert, Button, Panel, Radio, SelectField, TextField } from '@lailai0916/ui';
 import { useState, type FormEvent } from 'react';
-import { Button, Panel, SelectField, TextField } from '@lailai0916/ui';
 import type { ContentKind, Grade, Profile } from '@lailai/academy-shared';
 import { useAuth } from '../auth/AuthProvider';
 import { Icon, type IconName } from '../components/Icon';
@@ -79,7 +79,7 @@ export function OnboardingPage() {
           <h1>学习档案</h1>
         </header>
 
-        <Panel feature className={styles.panel}>
+        <Panel feature>
           <form className={styles.form} onSubmit={submit}>
             <section className={styles.section} aria-labelledby="identity-heading">
               <h2 id="identity-heading">基本信息</h2>
@@ -117,18 +117,21 @@ export function OnboardingPage() {
               <legend>每日学习负荷</legend>
               <div className={styles.choiceGrid}>
                 {workloads.map((workload) => (
-                  <label key={workload.value} className={styles.choice}>
-                    <input
-                      type="radio"
-                      name="daily-goal"
-                      value={workload.value}
-                      checked={dailyGoal === workload.value}
-                      onChange={() => setDailyGoal(workload.value)}
-                    />
-                    <span>
-                      <strong>{workload.label}</strong>
-                    </span>
-                  </label>
+                  <Radio
+                    key={workload.value}
+                    className={styles.choice}
+                    name="daily-goal"
+                    value={workload.value}
+                    checked={dailyGoal === workload.value}
+                    onChange={() => setDailyGoal(workload.value)}
+                    label={
+                      <>
+                        <span>
+                          <strong>{workload.label}</strong>
+                        </span>
+                      </>
+                    }
+                  />
                 ))}
               </div>
             </fieldset>
@@ -137,30 +140,33 @@ export function OnboardingPage() {
               <legend>保存后前往</legend>
               <div className={styles.destinationGrid}>
                 {destinations.map((item) => (
-                  <label key={item.value} className={styles.destination}>
-                    <input
-                      type="radio"
-                      name="destination"
-                      value={item.value}
-                      checked={destination === item.value}
-                      onChange={() => setDestination(item.value)}
-                    />
-                    <span className={styles.destinationIcon} aria-hidden="true">
-                      <Icon icon={item.icon} />
-                    </span>
-                    <span>
-                      <strong>{item.label}</strong>
-                      <small>{item.detail}</small>
-                    </span>
-                  </label>
+                  <Radio
+                    key={item.value}
+                    className={styles.destination}
+                    name="destination"
+                    value={item.value}
+                    checked={destination === item.value}
+                    onChange={() => setDestination(item.value)}
+                    label={
+                      <>
+                        <span className={styles.destinationIcon} aria-hidden="true">
+                          <Icon icon={item.icon} />
+                        </span>
+                        <span>
+                          <strong>{item.label}</strong>
+                          <small>{item.detail}</small>
+                        </span>
+                      </>
+                    }
+                  />
                 ))}
               </div>
             </fieldset>
 
             {error && (
-              <p className={styles.error} role="alert">
+              <Alert variant="danger" role="alert">
                 {error}
-              </p>
+              </Alert>
             )}
 
             <footer className={styles.footer}>

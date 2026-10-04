@@ -1,119 +1,31 @@
 .trigger {
-  display: flex;
   width: min(360px, 32vw);
-  height: 40px;
-  align-items: center;
-  gap: 8px;
-  padding: 0 12px;
-  border: 1px solid var(--academy-separator);
-  border-radius: 13px;
-  background: var(--lk-background-raised);
-  color: var(--lk-font-color-tertiary);
-  font-size: 13px;
-  transition:
-    border-color var(--lk-transition),
-    background-color var(--lk-transition),
-    transform var(--lk-transition);
 }
-
-.trigger:hover {
-  border-color: var(--lk-color-emphasis-400);
-  background: var(--lk-card-background-color);
-}
-
-.trigger:active {
-  transform: scale(0.985);
-}
-
-.trigger svg {
-  width: 16px;
-  height: 16px;
-  flex: none;
-}
-
-.trigger span {
-  min-width: 0;
-  flex: 1;
+.triggerText {
   overflow: hidden;
-  text-align: left;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
 .trigger kbd {
-  padding: 1px 5px;
-  border: 1px solid var(--academy-separator);
-  border-radius: 6px;
-  background: var(--lk-card-background-color);
+  margin-left: 8px;
   color: var(--lk-font-color-tertiary);
   font: inherit;
   font-size: 11px;
 }
-
-.backdrop {
-  position: fixed;
-  z-index: 100;
-  inset: 0;
-  display: grid;
-  place-items: start center;
-  padding: min(15vh, 128px) 16px 24px;
-  background: rgb(0 0 0 / 28%);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-
-.dialog {
-  width: min(100%, 640px);
-  overflow: hidden;
-  border: 1px solid var(--academy-separator);
-  border-radius: var(--lk-radius-overlay);
-  background: var(--lk-card-background-color);
-  box-shadow: var(--lk-shadow-overlay);
-  animation: search-enter var(--lk-transition-surface) both;
-}
-
 .searchBox {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 10px;
-  min-height: 62px;
-  padding: 0 12px 0 16px;
+  padding-bottom: 12px;
   border-bottom: 1px solid var(--academy-separator);
 }
-
-.searchBox > svg {
-  width: 19px;
-  height: 19px;
-  color: var(--lk-font-color-tertiary);
-}
-
 .searchBox input {
   min-width: 0;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: var(--lk-font-color-base);
-  font-size: 16px;
 }
-
-.searchBox button {
-  display: grid;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  place-items: center;
-  border: 0;
-  border-radius: var(--lk-radius-control);
-  background: transparent;
+.searchBox > svg {
   color: var(--lk-font-color-tertiary);
 }
-
-.searchBox button:hover {
-  background: var(--lk-color-emphasis-100);
-  color: var(--lk-font-color-base);
-}
-
 .results {
   max-height: min(520px, calc(100vh - 220px));
   overflow-y: auto;
@@ -199,40 +111,15 @@
   text-align: center;
 }
 
-@keyframes search-enter {
-  from {
-    opacity: 0;
-    transform: translateY(-6px) scale(0.99);
-  }
-}
-
 @media (max-width: 720px) {
   .trigger {
     width: 44px;
-    height: 44px;
-    padding: 0;
-    justify-content: center;
-    border-color: transparent;
-    background: transparent;
   }
-
-  .trigger span,
+  .triggerText,
   .trigger kbd {
     display: none;
   }
-
-  .backdrop {
-    padding-top: 68px;
-  }
-
   .results {
-    max-height: calc(100vh - 150px);
-  }
-}
-
-@media (prefers-reduced-transparency: reduce) {
-  .backdrop {
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
+    max-height: calc(100dvh - 180px);
   }
 }

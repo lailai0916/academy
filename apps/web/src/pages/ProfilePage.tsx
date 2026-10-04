@@ -1,5 +1,16 @@
+import {
+  Card,
+  DataCard,
+  Alert,
+  Avatar,
+  Button,
+  EmptyState,
+  Panel,
+  SelectField,
+  Tabs,
+  TextAreaField,
+} from '@lailai0916/ui';
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
-import { Avatar, Button, EmptyState, Panel, SelectField, TextAreaField } from '@lailai0916/ui';
 import { useNavigate, useParams } from 'react-router';
 import type { ProfileRelationship, ProfileView, SocialPost } from '@lailai/academy-shared';
 import { Icon } from '../components/Icon';
@@ -82,7 +93,7 @@ function PostCard({
           {(Object.keys(reactionDetails) as Array<keyof typeof reactionDetails>).map((kind) => {
             const detail = reactionDetails[kind];
             return (
-              <button
+              <Button
                 key={kind}
                 type="button"
                 aria-pressed={post.reacted.includes(kind)}
@@ -93,7 +104,7 @@ function PostCard({
                 <Icon icon={detail.icon} />
                 <span>{detail.label}</span>
                 {post.reactions[kind] > 0 && <strong>{post.reactions[kind]}</strong>}
-              </button>
+              </Button>
             );
           })}
         </footer>
@@ -263,117 +274,116 @@ export function ProfilePage() {
 
   return (
     <div className={styles.page}>
-      <section className={styles.profileHeader} aria-labelledby="profile-name">
-        <div className={styles.cover} aria-hidden="true">
-          <span>ACADEMY</span>
-          <small>LEARN · VERIFY · RETAIN</small>
-        </div>
-        <div className={styles.identityArea}>
-          <div className={styles.avatarFrame}>
-            <Avatar name={profile.displayName} alt={`${profile.displayName}的头像`} size={104} />
+      <section aria-labelledby="profile-name">
+        <Card padding={0} className={styles.profileHeader}>
+          <div className={styles.cover} aria-hidden="true">
+            <span>ACADEMY</span>
+            <small>LEARN · VERIFY · RETAIN</small>
           </div>
-          <div className={styles.identityCopy}>
-            <div className={styles.nameRow}>
-              <h1 id="profile-name">{profile.displayName}</h1>
-              {profile.role === 'admin' && (
-                <span className={styles.verified} title="Academy 管理员">
-                  <Icon icon="lucide:badge-check" />
-                  <span>管理员</span>
+          <div className={styles.identityArea}>
+            <div className={styles.avatarFrame}>
+              <Avatar name={profile.displayName} alt={`${profile.displayName}的头像`} size={104} />
+            </div>
+            <div className={styles.identityCopy}>
+              <div className={styles.nameRow}>
+                <h1 id="profile-name">{profile.displayName}</h1>
+                {profile.role === 'admin' && (
+                  <span className={styles.verified} title="Academy 管理员">
+                    <Icon icon="lucide:badge-check" />
+                    <span>管理员</span>
+                  </span>
+                )}
+              </div>
+              <span className={styles.handle}>@{profile.username}</span>
+              <p className={styles.bio}>{profile.bio || '这个人还没有填写个人简介。'}</p>
+              <div className={styles.metaRow}>
+                <span>
+                  <Icon icon="lucide:graduation-cap" />
+                  {profile.grade}
                 </span>
+                <span>
+                  <Icon icon="lucide:calendar-days" />
+                  {new Date(profile.createdAt).toLocaleDateString('zh-CN', {
+                    year: 'numeric',
+                    month: 'long',
+                  })}{' '}
+                  加入
+                </span>
+                <span>
+                  <Icon icon={profile.isPublic ? 'lucide:globe-2' : 'lucide:lock'} />
+                  {profile.isPublic ? '公开主页' : '仅好友可见'}
+                </span>
+              </div>
+            </div>
+            <div className={styles.profileActions}>
+              {isSelf ? (
+                <Button variant="secondary" onClick={() => navigate('/settings')}>
+                  <Icon icon="lucide:settings-2" />
+                  编辑资料
+                </Button>
+              ) : (
+                <Button
+                  variant={data.relationship === 'pending-incoming' ? 'primary' : 'secondary'}
+                  disabled={Boolean(busy) || relationshipDisabled}
+                  onClick={changeRelationship}
+                >
+                  <Icon
+                    icon={
+                      data.relationship === 'none'
+                        ? 'lucide:user-plus'
+                        : data.relationship === 'pending-incoming'
+                          ? 'lucide:user-check'
+                          : 'lucide:check'
+                    }
+                  />
+                  {busy === 'relationship'
+                    ? '正在处理'
+                    : relationshipLabels[data.relationship as Exclude<ProfileRelationship, 'self'>]}
+                </Button>
               )}
-            </div>
-            <span className={styles.handle}>@{profile.username}</span>
-            <p className={styles.bio}>{profile.bio || '这个人还没有填写个人简介。'}</p>
-            <div className={styles.metaRow}>
-              <span>
-                <Icon icon="lucide:graduation-cap" />
-                {profile.grade}
-              </span>
-              <span>
-                <Icon icon="lucide:calendar-days" />
-                {new Date(profile.createdAt).toLocaleDateString('zh-CN', {
-                  year: 'numeric',
-                  month: 'long',
-                })}{' '}
-                加入
-              </span>
-              <span>
-                <Icon icon={profile.isPublic ? 'lucide:globe-2' : 'lucide:lock'} />
-                {profile.isPublic ? '公开主页' : '仅好友可见'}
-              </span>
+              <Button variant="ghost" onClick={() => navigate('/social')}>
+                <Icon icon="lucide:users" />
+                社区
+              </Button>
             </div>
           </div>
-          <div className={styles.profileActions}>
-            {isSelf ? (
-              <Button variant="secondary" onClick={() => navigate('/settings')}>
-                <Icon icon="lucide:settings-2" />
-                编辑资料
-              </Button>
-            ) : (
-              <Button
-                variant={data.relationship === 'pending-incoming' ? 'primary' : 'secondary'}
-                disabled={Boolean(busy) || relationshipDisabled}
-                onClick={changeRelationship}
-              >
-                <Icon
-                  icon={
-                    data.relationship === 'none'
-                      ? 'lucide:user-plus'
-                      : data.relationship === 'pending-incoming'
-                        ? 'lucide:user-check'
-                        : 'lucide:check'
-                  }
-                />
-                {busy === 'relationship'
-                  ? '正在处理'
-                  : relationshipLabels[data.relationship as Exclude<ProfileRelationship, 'self'>]}
-              </Button>
-            )}
-            <Button variant="ghost" onClick={() => navigate('/social')}>
-              <Icon icon="lucide:users" />
-              社区
+          <div className={styles.socialStats} aria-label="社区数据">
+            <Button type="button" onClick={() => navigate('/social')}>
+              <strong>{data.stats.friends}</strong>
+              <span>好友</span>
             </Button>
+            <Button type="button" onClick={() => setTab('posts')}>
+              <strong>{data.stats.posts}</strong>
+              <span>动态</span>
+            </Button>
+            <Button type="button" onClick={() => navigate('/social')}>
+              <strong>{data.stats.groups}</strong>
+              <span>学习小组</span>
+            </Button>
+            <div>
+              <strong>{profile.streakDays}</strong>
+              <span>连续学习天数</span>
+            </div>
           </div>
-        </div>
-        <div className={styles.socialStats} aria-label="社区数据">
-          <button type="button" onClick={() => navigate('/social')}>
-            <strong>{data.stats.friends}</strong>
-            <span>好友</span>
-          </button>
-          <button type="button" onClick={() => setTab('posts')}>
-            <strong>{data.stats.posts}</strong>
-            <span>动态</span>
-          </button>
-          <button type="button" onClick={() => navigate('/social')}>
-            <strong>{data.stats.groups}</strong>
-            <span>学习小组</span>
-          </button>
-          <div>
-            <strong>{profile.streakDays}</strong>
-            <span>连续学习天数</span>
-          </div>
-        </div>
-        <nav className={styles.tabs} role="tablist" aria-label="个人主页内容">
-          {tabs.map((item) => (
-            <button
-              key={item.id}
-              id={`profile-tab-${item.id}`}
-              type="button"
-              role="tab"
-              aria-selected={tab === item.id}
-              aria-controls={`profile-panel-${item.id}`}
-              onClick={() => setTab(item.id)}
-            >
-              {item.label}
-            </button>
-          ))}
-        </nav>
+          <Tabs
+            size="sm"
+            ariaLabel="个人主页内容"
+            value={tab}
+            onChange={setTab}
+            items={tabs.map((item) => ({
+              value: item.id,
+              label: item.label,
+              id: `profile-tab-${item.id}`,
+              panelId: `profile-panel-${item.id}`,
+            }))}
+          />
+        </Card>
       </section>
 
       {(error || message) && (
-        <p className={error ? page.error : page.success} role={error ? 'alert' : 'status'}>
+        <Alert variant={error ? 'danger' : 'success'} role={error ? 'alert' : 'status'}>
           {error || message}
-        </p>
+        </Alert>
       )}
 
       <div className={styles.contentGrid}>
@@ -391,22 +401,19 @@ export function ProfilePage() {
                     <span>学习画像</span>
                     <h2>用长期结果记录进步</h2>
                   </div>
-                  <button type="button" onClick={() => setTab('activity')}>
+                  <Button type="button" onClick={() => setTab('activity')}>
                     查看学习记录 <Icon icon="lucide:arrow-right" />
-                  </button>
+                  </Button>
                 </div>
                 <div className={styles.metricGrid}>
                   {metricCards.map((metric) => (
-                    <article key={metric.label} className={styles.metricCard}>
-                      <span className={styles.metricIcon}>
-                        <Icon icon={metric.icon} />
-                      </span>
-                      <div>
-                        <small>{metric.label}</small>
-                        <strong>{metric.value}</strong>
-                        <span>{metric.detail}</span>
-                      </div>
-                    </article>
+                    <DataCard
+                      key={metric.label}
+                      label={metric.label}
+                      value={metric.value}
+                      description={metric.detail}
+                      icon={metric.icon}
+                    />
                   ))}
                 </div>
               </section>
@@ -418,9 +425,9 @@ export function ProfilePage() {
                     <h2>学习动态</h2>
                   </div>
                   {data.posts.length > 2 && (
-                    <button type="button" onClick={() => setTab('posts')}>
+                    <Button type="button" onClick={() => setTab('posts')}>
                       查看全部 <Icon icon="lucide:arrow-right" />
-                    </button>
+                    </Button>
                   )}
                 </div>
                 {renderPosts(data.posts.slice(0, 2))}

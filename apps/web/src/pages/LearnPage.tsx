@@ -1,5 +1,5 @@
+import { Alert, Button, DataCard, EmptyState, Panel, PanelBody, Progress } from '@lailai0916/ui';
 import { useEffect, useState } from 'react';
-import { Button, EmptyState, Panel, Progress } from '@lailai0916/ui';
 import { useNavigate } from 'react-router';
 import type { ContentKind, Dashboard, LearningOverview } from '@lailai/academy-shared';
 import { ActiveSessionCard } from '../components/ActiveSessionCard';
@@ -97,7 +97,7 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
           </Button>
         </header>
 
-        {error && <p className={page.error}>{error}</p>}
+        {error && <Alert variant="danger">{error}</Alert>}
 
         {activeSession && (
           <ActiveSessionCard
@@ -107,26 +107,30 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
         )}
 
         <div className={page.grid4}>
-          <article className={page.metric}>
-            <span>综合掌握度</span>
-            <strong>{summary ? `${summary.mastery}%` : '—'}</strong>
-            <small>{summary?.total ?? '—'} 项教材内容</small>
-          </article>
-          <article className={page.metric}>
-            <span>当前到期</span>
-            <strong>{summary?.due ?? '—'}</strong>
-            <small>优先恢复即将遗忘的内容</small>
-          </article>
-          <article className={page.metric}>
-            <span>长期掌握</span>
-            <strong>{summary?.mastered ?? '—'}</strong>
-            <small>稳定期至少 21 天</small>
-          </article>
-          <article className={page.metric}>
-            <span>错题记录</span>
-            <strong>{summary?.mistakes ?? '—'}</strong>
-            <small>按掌握度优先巩固</small>
-          </article>
+          <DataCard
+            label={'综合掌握度'}
+            value={summary ? `${summary.mastery}%` : '—'}
+            description={<>{summary?.total ?? '—'} 项教材内容</>}
+            icon="lucide:target"
+          />
+          <DataCard
+            label={'当前到期'}
+            value={summary?.due ?? '—'}
+            description={'优先恢复即将遗忘的内容'}
+            icon="lucide:calendar-clock"
+          />
+          <DataCard
+            label={'长期掌握'}
+            value={summary?.mastered ?? '—'}
+            description={'稳定期至少 21 天'}
+            icon="lucide:target"
+          />
+          <DataCard
+            label={'错题记录'}
+            value={summary?.mistakes ?? '—'}
+            description={'按掌握度优先巩固'}
+            icon="lucide:notebook-tabs"
+          />
         </div>
 
         <section className={page.section}>
@@ -135,7 +139,7 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
           </div>
           <div className={page.grid3}>
             <Panel>
-              <div className={page.panelBody}>
+              <PanelBody className={page.panelBody}>
                 <span className={page.iconChip}>
                   <Icon icon="lucide:list-checks" />
                 </span>
@@ -150,10 +154,10 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
                 >
                   开始
                 </Button>
-              </div>
+              </PanelBody>
             </Panel>
             <Panel>
-              <div className={page.panelBody}>
+              <PanelBody className={page.panelBody}>
                 <span className={page.iconChip}>
                   <Icon icon="lucide:rotate-ccw" />
                 </span>
@@ -168,10 +172,10 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
                 >
                   开始
                 </Button>
-              </div>
+              </PanelBody>
             </Panel>
             <Panel>
-              <div className={page.panelBody}>
+              <PanelBody className={page.panelBody}>
                 <span className={page.iconChip}>
                   <Icon icon="lucide:scan-search" />
                 </span>
@@ -186,7 +190,7 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
                 >
                   开始
                 </Button>
-              </div>
+              </PanelBody>
             </Panel>
           </div>
         </section>
@@ -285,7 +289,7 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
         </div>
       </header>
 
-      {error && <p className={page.error}>{error}</p>}
+      {error && <Alert variant="danger">{error}</Alert>}
 
       {activeSession && (
         <ActiveSessionCard
@@ -345,22 +349,22 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
       </div>
 
       <div className={styles.quickLinks}>
-        <button type="button" onClick={() => navigate('/learn/mistakes')}>
+        <Button type="button" onClick={() => navigate('/learn/mistakes')}>
           <Icon icon="lucide:notebook-tabs" />
           <span>
             <strong>错题本</strong>
             <small>集中巩固历史错误</small>
           </span>
           <Icon icon="lucide:chevron-right" />
-        </button>
-        <button type="button" onClick={() => navigate('/progress')}>
+        </Button>
+        <Button type="button" onClick={() => navigate('/progress')}>
           <Icon icon="lucide:chart-no-axes-combined" />
           <span>
             <strong>学习分析</strong>
             <small>查看准确率和薄弱单元</small>
           </span>
           <Icon icon="lucide:chevron-right" />
-        </button>
+        </Button>
       </div>
     </div>
   );

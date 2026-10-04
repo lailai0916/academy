@@ -1,72 +1,16 @@
-/* Academy extends the shared UI tokens with app-shell values while keeping both sites aligned. */
-:root,
-:root[data-theme] {
-  color-scheme: light;
-  --lk-color-primary: #0071e3;
-  --lk-color-primary-dark: #0066cc;
-  --lk-color-primary-light: #2997ff;
-  --lk-background-color: #f5f5f7;
-  --lk-card-background-color: #ffffff;
-  --lk-background-raised: #fafafc;
-  --lk-color-emphasis-100: #f2f2f7;
-  --lk-color-emphasis-200: #e8e8ed;
-  --lk-color-emphasis-300: #d2d2d7;
-  --lk-color-emphasis-400: #c7c7cc;
-  --lk-color-emphasis-500: #aeaeb2;
-  --lk-color-emphasis-600: #8e8e93;
-  --lk-color-emphasis-700: #6e6e73;
-  --lk-color-emphasis-800: #3a3a3c;
-  --lk-color-emphasis-900: #1d1d1f;
-  --lk-font-color-base: #1d1d1f;
-  --lk-font-color-secondary: #54545a;
-  --lk-font-color-tertiary: #74747b;
-  --lk-radius-control: 12px;
-  --lk-radius-md: 16px;
-  --lk-radius-lg: 20px;
-  --lk-radius-overlay: 22px;
-  --lk-header-height: 64px;
-  --academy-public-header-height: 56px;
+/* App-shell dimensions refer to shared tokens; component defaults belong to laikit UI. */
+:root {
+  --academy-public-header-height: var(--lk-header-height);
   --academy-topbar-height: var(--lk-header-height);
-  --lk-shadow-control: 0 1px 2px rgb(0 0 0 / 7%), 0 1px 1px rgb(255 255 255 / 80%) inset;
-  --lk-shadow-overlay: 0 24px 64px rgb(0 0 0 / 16%), 0 4px 18px rgb(0 0 0 / 7%);
   --academy-sidebar-width: 232px;
   --academy-shell-gap: 16px;
   --academy-content-width: 1320px;
   --academy-reading-width: 980px;
-  --academy-shadow-panel: 0 1px 2px rgb(0 0 0 / 4%), 0 12px 36px rgb(0 0 0 / 3%);
-  --academy-shadow-chrome: 0 14px 40px rgb(0 0 0 / 6%);
-  --academy-chrome: color-mix(in srgb, var(--lk-card-background-color) 78%, transparent);
-  --academy-separator: color-mix(in srgb, var(--lk-color-emphasis-300) 82%, transparent);
-  --academy-active-surface: color-mix(
-    in srgb,
-    var(--lk-color-primary-soft) 72%,
-    var(--lk-card-background-color)
-  );
-}
-
-:root[data-theme='dark'] {
-  color-scheme: dark;
-  --lk-background-color: #101012;
-  --lk-card-background-color: #1c1c1e;
-  --lk-background-raised: #242426;
-  --lk-color-emphasis-100: #2c2c2e;
-  --lk-color-emphasis-200: #343438;
-  --lk-color-emphasis-300: #48484a;
-  --lk-color-emphasis-400: #58585d;
-  --lk-color-emphasis-500: #6f6f76;
-  --lk-color-emphasis-600: #8e8e93;
-  --lk-color-emphasis-700: #aeaeb2;
-  --lk-color-emphasis-800: #d1d1d6;
-  --lk-color-emphasis-900: #f5f5f7;
-  --lk-font-color-base: #f5f5f7;
-  --lk-font-color-secondary: #b8b8be;
-  --lk-font-color-tertiary: #8e8e93;
-  --lk-color-primary-soft: #0b345b;
-  --lk-color-primary-label: #64b5ff;
-  --lk-shadow-control: 0 1px 2px rgb(0 0 0 / 22%);
-  --lk-shadow-overlay: 0 20px 56px rgb(0 0 0 / 48%), 0 2px 12px rgb(0 0 0 / 26%);
-  --academy-shadow-panel: 0 1px 1px rgb(0 0 0 / 28%), 0 16px 44px rgb(0 0 0 / 12%);
-  --academy-shadow-chrome: 0 18px 48px rgb(0 0 0 / 24%);
+  --academy-shadow-panel: var(--lk-shadow-sm);
+  --academy-shadow-chrome: var(--lk-shadow-raised);
+  --academy-chrome: var(--lk-card-background-color);
+  --academy-separator: var(--lk-color-emphasis-300);
+  --academy-active-surface: var(--lk-color-primary-soft);
 }
 
 *,
@@ -94,9 +38,8 @@ body {
   margin: 0;
   background: var(--lk-background-color);
   color: var(--lk-font-color-base);
-  font-size: 15px;
-  line-height: 1.55;
-  letter-spacing: -0.006em;
+  font-size: var(--lk-font-size);
+  line-height: var(--lk-line-height);
   font-variant-numeric: proportional-nums;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -152,30 +95,7 @@ p {
   background: color-mix(in srgb, var(--lk-color-primary) 24%, transparent);
 }
 
-/* Shared primitives are tuned to the Academy geometry without forking @lailai0916/ui. */
-[data-lk='panel'] {
-  border-color: var(--academy-separator);
-  border-radius: var(--lk-radius-lg);
-  box-shadow: var(--academy-shadow-panel);
-}
-
-[data-lk='button'] {
-  letter-spacing: -0.005em;
-}
-
-[data-lk='brand-logo'] {
-  border: 0;
-  box-shadow: none;
-}
-
-[data-lk='field-control'] {
-  min-height: 44px;
-  border-color: var(--academy-separator);
-  border-radius: var(--lk-radius-control);
-  background: var(--lk-background-raised);
-}
-
-[data-lk='field-control']:focus-visible {
+:focus-visible {
   background: var(--lk-card-background-color);
 }
 
@@ -242,21 +162,6 @@ p {
   place-content: center;
   justify-items: center;
   gap: 24px;
-}
-
-.loading-screen__indicator {
-  width: 22px;
-  height: 22px;
-  border: 2px solid var(--lk-color-emphasis-300);
-  border-top-color: var(--lk-color-primary);
-  border-radius: 50%;
-  animation: global-spin 700ms linear infinite;
-}
-
-@keyframes global-spin {
-  to {
-    transform: rotate(360deg);
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

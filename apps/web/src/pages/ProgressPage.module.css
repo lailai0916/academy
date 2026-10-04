@@ -83,23 +83,6 @@
   font-variant-numeric: tabular-nums;
 }
 
-.forecastTrack {
-  display: block;
-  height: 8px;
-  overflow: hidden;
-  border-radius: 999px;
-  background: var(--lk-color-emphasis-100);
-}
-
-.forecastTrack > span {
-  display: block;
-  min-width: 0;
-  height: 100%;
-  border-radius: inherit;
-  background: var(--lk-color-primary);
-  transition: width var(--lk-transition-surface);
-}
-
 .forecastKinds {
   display: flex;
   justify-content: flex-end;
@@ -136,11 +119,6 @@
   border-bottom: 1px solid var(--academy-separator);
 }
 
-.weakList article:last-child,
-.sessionList button:last-child {
-  border-bottom: 0;
-}
-
 .weakList article > div:first-child {
   display: grid;
   min-width: 0;
@@ -168,30 +146,10 @@
 
 .sessionList button {
   display: grid;
-  min-height: 80px;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 11px;
-  padding: 10px 0;
-  border: 0;
-  border-bottom: 1px solid var(--academy-separator);
-  background: transparent;
   text-align: left;
-  transition:
-    background-color var(--lk-transition),
-    transform var(--lk-transition);
-}
-
-.sessionList button:hover {
-  background: color-mix(in srgb, var(--lk-color-emphasis-100) 72%, transparent);
-}
-
-.sessionList button:hover strong {
-  color: var(--lk-color-primary-label);
-}
-
-.sessionList button:active {
-  transform: scale(0.99);
 }
 
 .sessionIcon {

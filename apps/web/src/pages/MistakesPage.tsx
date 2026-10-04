@@ -1,5 +1,5 @@
+import { Alert, Button, DataCard, EmptyState, Panel, Progress, Tabs } from '@lailai0916/ui';
 import { useEffect, useState } from 'react';
-import { Button, EmptyState, Panel, Progress } from '@lailai0916/ui';
 import { useNavigate } from 'react-router';
 import type { ContentKind, LearningOverview } from '@lailai/academy-shared';
 import { Icon } from '../components/Icon';
@@ -65,44 +65,44 @@ export function MistakesPage() {
         </Button>
       </header>
 
-      {error && <p className={page.error}>{error}</p>}
+      {error && <Alert variant="danger">{error}</Alert>}
 
       <div className={page.grid3}>
-        <article className={page.metric}>
-          <span>错题内容</span>
-          <strong>{data ? totalMistakes : '—'}</strong>
-          <small>按内容去重</small>
-        </article>
-        <article className={page.metric}>
-          <span>当前科目掌握度</span>
-          <strong>{overview ? `${overview.summary.mastery}%` : '—'}</strong>
-          <small>{labels[kind].name}</small>
-        </article>
-        <article className={page.metric}>
-          <span>当前到期</span>
-          <strong>{overview?.summary.due ?? '—'}</strong>
-          <small>优先进入巩固任务</small>
-        </article>
+        <DataCard
+          label={'错题内容'}
+          value={data ? totalMistakes : '—'}
+          description={'按内容去重'}
+          icon="lucide:notebook-tabs"
+        />
+        <DataCard
+          label={'当前科目掌握度'}
+          value={overview ? `${overview.summary.mastery}%` : '—'}
+          description={labels[kind].name}
+          icon="lucide:target"
+        />
+        <DataCard
+          label={'当前到期'}
+          value={overview?.summary.due ?? '—'}
+          description={'优先进入巩固任务'}
+          icon="lucide:calendar-clock"
+        />
       </div>
 
-      <div className={styles.tabs} role="tablist" aria-label="错题科目">
-        {(Object.keys(labels) as ContentKind[]).map((value) => (
-          <button
-            key={value}
-            type="button"
-            role="tab"
-            aria-selected={kind === value}
-            className={kind === value ? styles.active : ''}
-            onClick={() => setKind(value)}
-          >
-            <Icon icon={labels[value].icon} />
-            {labels[value].name}
-            <span>{data?.[value].summary.mistakes ?? 0}</span>
-          </button>
-        ))}
-      </div>
+      <Tabs
+        size="sm"
+        ariaLabel="错题科目"
+        value={kind}
+        onChange={setKind}
+        items={(Object.keys(labels) as ContentKind[]).map((value) => ({
+          value,
+          label: `${labels[value].name} (${data?.[value].summary.mistakes ?? 0})`,
+          icon: labels[value].icon,
+          id: `mistakes-tab-${value}`,
+          panelId: `mistakes-panel-${value}`,
+        }))}
+      />
 
-      <Panel>
+      <Panel role="tabpanel" id={`mistakes-panel-${kind}`} aria-labelledby={`mistakes-tab-${kind}`}>
         {overview && overview.mistakes.length > 0 ? (
           <div className={styles.list}>
             {overview.mistakes.map((mistake) => (

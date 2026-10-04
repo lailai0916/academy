@@ -1,3 +1,4 @@
+import { Dialog, Alert, Button, IconButton, Input, Panel, Progress } from '@lailai0916/ui';
 import {
   useCallback,
   useEffect,
@@ -6,7 +7,6 @@ import {
   type FormEvent,
   type KeyboardEvent,
 } from 'react';
-import { Button, IconButton, Panel, Progress } from '@lailai0916/ui';
 import { useNavigate, useParams } from 'react-router';
 import type {
   LearningAnswerResult,
@@ -33,7 +33,7 @@ type AiResponse = {
 export function SessionPage() {
   const { sessionId = '' } = useParams();
   const navigate = useNavigate();
-  const exitDialogRef = useRef<HTMLDialogElement>(null);
+  const [exitOpen, setExitOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const startedAt = useRef(Date.now());
   const [prompt, setPrompt] = useState<LearningPrompt | null>(null);
@@ -197,15 +197,15 @@ export function SessionPage() {
 
   const openExitDialog = () => {
     setExitError('');
-    exitDialogRef.current?.showModal();
+    setExitOpen(true);
   };
 
   const closeExitDialog = () => {
-    exitDialogRef.current?.close();
+    setExitOpen(false);
   };
 
   const pauseSession = () => {
-    exitDialogRef.current?.close();
+    setExitOpen(false);
     navigate('/learn');
   };
 
@@ -215,7 +215,7 @@ export function SessionPage() {
     setExitError('');
     try {
       await api(`/learn/sessions/${sessionId}/abandon`, { method: 'POST' });
-      exitDialogRef.current?.close();
+      setExitOpen(false);
       navigate('/learn');
     } catch (nextError) {
       setExitError(errorMessage(nextError));
@@ -331,7 +331,7 @@ export function SessionPage() {
   if (error && !prompt) {
     return (
       <div className={styles.centerState}>
-        <p className={page.error}>{error}</p>
+        <Alert variant="danger">{error}</Alert>
         <Button variant="secondary" onClick={() => navigate('/learn')}>
           返回记忆训练
         </Button>
@@ -379,7 +379,7 @@ export function SessionPage() {
                 {prompt.options ? (
                   <div className={styles.options}>
                     {prompt.options.map((option, index) => (
-                      <button
+                      <Button
                         key={`${index}-${option}`}
                         type="button"
                         aria-keyshortcuts={`${index + 1}`}
@@ -388,13 +388,13 @@ export function SessionPage() {
                       >
                         <kbd>{index + 1}</kbd>
                         <span>{option}</span>
-                      </button>
+                      </Button>
                     ))}
                   </div>
                 ) : (
                   <form className={styles.answerForm} onSubmit={submitForm}>
                     <label htmlFor="learning-answer">你的答案</label>
-                    <input
+                    <Input
                       ref={inputRef}
                       id="learning-answer"
                       value={answer}
@@ -478,7 +478,7 @@ export function SessionPage() {
         </Panel>
 
         {aiResponse && (
-          <Panel className={styles.aiPanel}>
+          <Panel>
             <div className={styles.aiContent}>
               <div className={styles.aiTitle}>
                 <span className={page.iconChip}>
@@ -507,18 +507,15 @@ export function SessionPage() {
           </Panel>
         )}
 
-        {error && <p className={page.error}>{error}</p>}
+        {error && <Alert variant="danger">{error}</Alert>}
       </div>
 
-      <dialog
-        ref={exitDialogRef}
-        className={styles.exitDialog}
+      <Dialog
+        open={exitOpen}
+        onClose={closeExitDialog}
+        label="退出当前学习任务"
         aria-labelledby="exit-dialog-title"
         aria-describedby="exit-dialog-description"
-        onCancel={(event) => {
-          event.preventDefault();
-          closeExitDialog();
-        }}
       >
         <div className={styles.exitDialogBody}>
           <span className={styles.exitDialogIcon} aria-hidden="true">
@@ -531,9 +528,9 @@ export function SessionPage() {
             </p>
           </div>
           {exitError && (
-            <p className={`${page.error} ${styles.exitDialogError}`} role="alert">
+            <Alert variant="danger" className={styles.exitDialogError}>
               {exitError}
-            </p>
+            </Alert>
           )}
           <div className={styles.exitDialogActions}>
             <Button variant="ghost" onClick={closeExitDialog} disabled={ending}>
@@ -547,7 +544,7 @@ export function SessionPage() {
             </Button>
           </div>
         </div>
-      </dialog>
+      </Dialog>
     </div>
   );
 }

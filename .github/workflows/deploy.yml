@@ -85,3 +85,22 @@ jobs:
             -e "ssh -i ~/.ssh/deploy_key" \
             ./ "${SERVER_USER}@${SERVER_HOST}:/opt/academy/incoming/"
           ssh -i ~/.ssh/deploy_key "${SERVER_USER}@${SERVER_HOST}" sudo /usr/local/sbin/deploy-academy
+
+      - name: Verify deployed website and API
+        run: |
+          curl --fail --silent --show-error --retry 5 --retry-all-errors --retry-delay 3 --max-time 30 \
+            "https://academy.lailai.one/?deployment=$GITHUB_SHA" -o "$RUNNER_TEMP/deployed-index.html"
+          cmp apps/web/dist/index.html "$RUNNER_TEMP/deployed-index.html"
+          python3 - <<'PY' > "$RUNNER_TEMP/deployed-assets.txt"
+          import pathlib, re
+          html = pathlib.Path('apps/web/dist/index.html').read_text()
+          for asset in sorted(set(re.findall(r'(?:src|href)=[\"\'](/assets/[^\"\']+)', html))):
+              print(asset)
+          PY
+          while IFS= read -r asset; do
+            curl --fail --silent --show-error --retry 5 --retry-all-errors --retry-delay 3 --max-time 30 \
+              "https://academy.lailai.one$asset?deployment=$GITHUB_SHA" -o "$RUNNER_TEMP/deployed-asset"
+            cmp "apps/web/dist$asset" "$RUNNER_TEMP/deployed-asset"
+          done < "$RUNNER_TEMP/deployed-assets.txt"
+          curl --fail --silent --show-error --retry 5 --retry-all-errors --retry-delay 3 --max-time 30 \
+            https://academy.lailai.one/api/health

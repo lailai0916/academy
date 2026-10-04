@@ -1,5 +1,14 @@
+import {
+  Alert,
+  Button,
+  DataState,
+  Panel,
+  PasswordField,
+  SelectField,
+  TextAreaField,
+  TextField,
+} from '@lailai0916/ui';
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
-import { Button, Panel, SelectField, TextAreaField, TextField } from '@lailai0916/ui';
 import type { AuthSession, Grade, Profile } from '@lailai/academy-shared';
 import { useAuth } from '../auth/AuthProvider';
 import { Icon, type IconName } from '../components/Icon';
@@ -156,7 +165,7 @@ export function SettingsPage() {
     }
   };
 
-  if (!profile && !error) return <div className={page.empty}>正在载入设置……</div>;
+  if (!profile && !error) return <DataState message={'正在载入设置……'} />;
 
   return (
     <div className={`${page.page} ${styles.settingsPage}`}>
@@ -166,7 +175,7 @@ export function SettingsPage() {
           <p className={page.pageDescription}>管理学习目标、个人资料和登录安全。</p>
         </div>
       </header>
-      {!profile && error && <p className={page.error}>{error}</p>}
+      {!profile && error && <Alert variant="danger">{error}</Alert>}
       {profile && (
         <div className={styles.settingsStack}>
           <Panel feature>
@@ -177,11 +186,11 @@ export function SettingsPage() {
                   <p>这些信息用于个人主页和每日学习安排。</p>
                 </div>
               </div>
-              {error && <p className={page.error}>{error}</p>}
+              {error && <Alert variant="danger">{error}</Alert>}
               {message && (
-                <p className={page.success} role="status">
+                <Alert variant="success" role="status">
                   {message}
-                </p>
+                </Alert>
               )}
               <div className={styles.settingsProfileGrid}>
                 <div className={styles.settingsPrimary}>
@@ -265,27 +274,27 @@ export function SettingsPage() {
                   </Button>
                 )}
               </div>
-              {securityError && <p className={page.error}>{securityError}</p>}
+              {securityError && <Alert variant="danger">{securityError}</Alert>}
               {securityMessage && (
-                <p className={page.success} role="status">
+                <Alert variant="success" role="status">
                   {securityMessage}
-                </p>
+                </Alert>
               )}
               <div className={styles.securityGrid}>
                 <form className={styles.passwordForm} onSubmit={submitPassword}>
                   <h3>修改密码</h3>
-                  <TextField
+                  <PasswordField
                     label="当前密码"
-                    type="password"
+
                     value={currentPassword}
                     autoComplete="current-password"
                     maxLength={128}
                     onChange={(event) => setCurrentPassword(event.target.value)}
                     required
                   />
-                  <TextField
+                  <PasswordField
                     label="新密码"
-                    type="password"
+
                     value={newPassword}
                     autoComplete="new-password"
                     minLength={8}
@@ -294,9 +303,9 @@ export function SettingsPage() {
                     onChange={(event) => setNewPassword(event.target.value)}
                     required
                   />
-                  <TextField
+                  <PasswordField
                     label="确认新密码"
-                    type="password"
+
                     value={confirmPassword}
                     autoComplete="new-password"
                     minLength={8}

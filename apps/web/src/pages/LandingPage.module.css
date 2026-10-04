@@ -110,7 +110,6 @@
 .productPreview {
   display: grid;
   gap: 20px;
-  padding: 26px;
 }
 
 .previewHeader {
@@ -145,20 +144,6 @@
   color: var(--lk-font-color-secondary);
   font-variant-numeric: tabular-nums;
   font-weight: 650;
-}
-
-.previewProgress {
-  overflow: hidden;
-  height: 6px;
-  border-radius: 3px;
-  background: var(--lk-color-emphasis-100);
-}
-
-.previewProgress span {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: var(--lk-color-primary);
 }
 
 .previewSubjects {
@@ -523,7 +508,6 @@
 .activityPreview {
   display: grid;
   gap: 20px;
-  padding: 26px;
 }
 
 .activityHeader {
@@ -607,7 +591,7 @@
     max-width: 680px;
   }
 
-  .productPreview {
+  .productPreviewFrame {
     width: min(100%, 680px);
   }
 
@@ -625,7 +609,7 @@
     gap: 42px;
   }
 
-  .activityPreview {
+  .activityPreviewFrame {
     max-width: 680px;
   }
 }
@@ -656,8 +640,6 @@
 
   .productPreview {
     gap: 16px;
-    padding: 18px;
-    border-radius: var(--lk-radius-lg);
   }
 
   .principles {

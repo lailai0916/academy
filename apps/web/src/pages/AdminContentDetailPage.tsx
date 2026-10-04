@@ -1,5 +1,14 @@
+import {
+  Alert,
+  Button,
+  Panel,
+  SelectField,
+  TextAreaField,
+  TextField,
+  PanelBody,
+  Badge,
+} from '@lailai0916/ui';
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
-import { Button, Panel, SelectField, TextAreaField, TextField } from '@lailai0916/ui';
 import { Link, useLocation } from 'react-router';
 import type { AdminContentDetail, PoemPayload, WordPayload } from '@lailai/academy-shared';
 import { Icon } from '../components/Icon';
@@ -202,7 +211,12 @@ export function AdminContentDetailPage({
     }
   };
 
-  if (loading) return <Panel className={styles.detailLoading}>正在读取内容…</Panel>;
+  if (loading)
+    return (
+      <Panel className={styles.detailLoadingFrame}>
+        <PanelBody className={styles.detailLoading}>正在读取内容…</PanelBody>
+      </Panel>
+    );
   if (!content || !editor) {
     return (
       <Panel className={styles.detailLoading}>
@@ -228,11 +242,11 @@ export function AdminContentDetailPage({
         </div>
       </div>
 
-      {error && <p className={page.error}>{error}</p>}
+      {error && <Alert variant="danger">{error}</Alert>}
       {message && (
-        <p className={page.success} role="status">
+        <Alert variant="success" role="status">
           {message}
-        </p>
+        </Alert>
       )}
 
       <form className={styles.detailLayout} onSubmit={save}>
@@ -243,13 +257,13 @@ export function AdminContentDetailPage({
                 <h3>内容编辑</h3>
                 <p>保存会创建不可变修订记录，不覆盖历史版本。</p>
               </div>
-              <span className={styles.status} data-status={editor.status}>
+              <Badge data-status={editor.status}>
                 {editor.status === 'draft'
                   ? '草稿'
                   : editor.status === 'published'
                     ? '已发布'
                     : '已归档'}
-              </span>
+              </Badge>
             </div>
 
             <div className={page.formRow}>
@@ -354,7 +368,6 @@ export function AdminContentDetailPage({
                   />
                 </div>
                 <TextAreaField
-                  className={styles.tallArea}
                   label="正文"
                   value={editor.lines}
                   required

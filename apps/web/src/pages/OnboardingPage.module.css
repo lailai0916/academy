@@ -17,10 +17,6 @@
   letter-spacing: -0.04em;
 }
 
-.panel {
-  background: var(--lk-card-background-color);
-}
-
 .form {
   display: grid;
 }
@@ -67,45 +63,12 @@
   position: relative;
   display: grid;
   min-width: 0;
-  min-height: 52px;
   align-items: center;
   gap: 10px;
-  padding: 12px;
-  border: 1px solid var(--lk-color-emphasis-300);
-  border-radius: 11px;
-  background: var(--lk-background-raised);
-  transition:
-    border-color var(--lk-transition),
-    background-color var(--lk-transition),
-    transform var(--lk-transition);
 }
 
 .destination {
   grid-template-columns: auto minmax(0, 1fr);
-  min-height: 80px;
-}
-
-.choice:hover,
-.destination:hover {
-  border-color: var(--lk-color-emphasis-400);
-  background: var(--lk-color-emphasis-100);
-}
-
-.choice:active,
-.destination:active {
-  transform: scale(0.985);
-}
-
-.choice:has(input:checked),
-.destination:has(input:checked) {
-  border-color: color-mix(in srgb, var(--lk-color-primary) 48%, var(--lk-color-emphasis-300));
-  background: var(--lk-color-primary-soft);
-}
-
-.choice:has(input:focus-visible),
-.destination:has(input:focus-visible) {
-  outline: 2px solid var(--lk-color-primary);
-  outline-offset: 2px;
 }
 
 .choice input,
@@ -153,21 +116,6 @@
   height: 16px;
 }
 
-.destination:has(input:checked) .destinationIcon {
-  background: var(--lk-card-background-color);
-  color: var(--lk-color-primary-label);
-}
-
-.error {
-  margin: 20px 24px 0;
-  padding: 11px 13px;
-  border: 1px solid color-mix(in srgb, var(--lk-color-danger) 20%, transparent);
-  border-radius: var(--lk-radius-control);
-  background: var(--lk-color-danger-soft);
-  color: var(--lk-color-danger);
-  font-size: 13px;
-}
-
 .footer {
   display: flex;
   align-items: center;
@@ -189,11 +137,6 @@
 
   .choiceGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .choice,
-  .destination {
-    min-height: 60px;
   }
 
   .footer {

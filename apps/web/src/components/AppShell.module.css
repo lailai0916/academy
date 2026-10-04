@@ -36,35 +36,10 @@
   border-radius: var(--lk-radius-control);
 }
 
-.brandArea :global([data-lk='brand']) {
-  font-size: 15px;
-  font-weight: 680;
-  letter-spacing: -0.025em;
-}
-
 .menuButton {
   display: none;
   width: 44px;
-  height: 44px;
-  padding: 0;
   place-items: center;
-  border: 0;
-  border-radius: var(--lk-radius-control);
-  background: transparent;
-  color: var(--lk-font-color-secondary);
-  transition:
-    background-color var(--lk-transition),
-    color var(--lk-transition),
-    transform var(--lk-transition);
-}
-
-.menuButton:hover {
-  background: var(--lk-color-emphasis-100);
-  color: var(--lk-font-color-base);
-}
-
-.menuButton:active {
-  transform: scale(0.94);
 }
 
 .menuButton svg {
@@ -132,21 +107,8 @@
   white-space: nowrap;
 }
 
-.accountButton :global([data-lk='avatar']) {
-  background: var(--lk-color-emphasis-100);
-  color: var(--lk-font-color-secondary);
-}
-
 .logoutButton {
   min-width: 40px;
-  min-height: 40px;
-  color: var(--lk-font-color-secondary);
-}
-
-.logoutButton:hover:not(:disabled) {
-  border-color: transparent;
-  background: var(--lk-color-danger-soft);
-  color: var(--lk-color-danger);
 }
 
 .logoutButton svg {
@@ -160,18 +122,8 @@
   top: calc(var(--lk-header-height) + var(--academy-shell-gap));
   bottom: var(--academy-shell-gap);
   left: var(--academy-shell-gap);
-  display: flex;
   width: var(--academy-sidebar-width);
   overflow: hidden;
-  flex-direction: column;
-  border: 1px solid var(--academy-separator);
-  border-radius: 22px;
-  background: var(--academy-chrome);
-  box-shadow:
-    var(--academy-shadow-chrome),
-    0 1px 0 rgb(255 255 255 / 52%) inset;
-  backdrop-filter: saturate(180%) blur(24px);
-  -webkit-backdrop-filter: saturate(180%) blur(24px);
 }
 
 .userCard {
@@ -296,8 +248,7 @@
 
 .main {
   min-width: 0;
-  width: min(calc(100% - 72px), var(--academy-content-width));
-  margin-inline: auto;
+  width: 100%;
   padding: 48px 0 88px;
   animation: page-enter var(--lk-transition-surface) both;
 }
@@ -367,7 +318,6 @@
 
   .logoutButton {
     min-width: 44px;
-    min-height: 44px;
   }
 
   .sidebar {
@@ -418,10 +368,6 @@
     justify-content: center;
   }
 
-  .brandArea :global([data-lk='brand']) > span {
-    display: none;
-  }
-
   .main {
     width: min(calc(100% - 24px), 760px);
     padding-top: 26px;
@@ -442,4 +388,11 @@
   .sidebar {
     box-shadow: none;
   }
+}
+
+.sidebarPanel {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  overflow: hidden;
 }

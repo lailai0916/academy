@@ -90,7 +90,6 @@
 .panelBody {
   display: grid;
   gap: 20px;
-  padding: 24px;
 }
 
 .panelTitle {
@@ -301,6 +300,7 @@
 
   .grid2,
   .grid3,
+  .grid4,
   .formRow {
     grid-template-columns: 1fr;
   }
@@ -312,9 +312,5 @@
   .metric {
     min-height: 116px;
     padding: 16px;
-  }
-
-  .panelBody {
-    padding: 20px;
   }
 }

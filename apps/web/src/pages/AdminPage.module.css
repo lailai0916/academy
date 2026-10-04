@@ -235,7 +235,6 @@
 .fileButton input {
   position: absolute;
   width: 1px;
-  height: 1px;
   overflow: hidden;
   clip: rect(0 0 0 0);
   clip-path: inset(50%);
@@ -450,10 +449,6 @@
   font-size: 12px;
 }
 
-.tallArea {
-  min-height: 180px;
-}
-
 .stickyActions {
   display: flex;
   justify-content: flex-end;
@@ -553,13 +548,13 @@
 
 .detailLoading {
   display: grid;
-  min-height: 180px;
   place-content: center;
   gap: 10px;
-  padding: 24px;
-  color: var(--lk-font-color-secondary);
-  font-size: 13px;
   text-align: center;
+}
+
+.detailLoadingFrame {
+  min-height: 180px;
 }
 
 .detailLoading a {

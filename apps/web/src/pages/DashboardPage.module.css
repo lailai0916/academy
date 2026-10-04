@@ -67,53 +67,6 @@
   text-align: center;
 }
 
-.progressRing {
-  position: relative;
-  display: grid;
-  width: 136px;
-  height: 136px;
-  place-items: center;
-}
-
-.progressRing svg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  transform: rotate(-90deg);
-}
-
-.progressRing circle {
-  fill: none;
-  stroke-width: 6;
-}
-
-.ringTrack {
-  stroke: var(--lk-color-emphasis-100);
-}
-
-.ringValue {
-  stroke: var(--lk-color-primary);
-  stroke-linecap: round;
-  stroke-dasharray: 276.46;
-  transition: stroke-dashoffset var(--lk-transition-surface);
-}
-
-.progressRing > span {
-  display: grid;
-  gap: 2px;
-  place-items: center;
-}
-
-.progressRing strong {
-  font-size: 28px;
-  line-height: 1;
-  letter-spacing: -0.045em;
-  font-variant-numeric: tabular-nums;
-}
-
-.progressRing small,
 .progressCopy span {
   color: var(--lk-font-color-secondary);
   font-size: 12px;
@@ -143,39 +96,11 @@
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 15px;
-  min-height: 104px;
-  padding: 17px;
-  border: 1px solid var(--academy-separator);
-  border-radius: 15px;
-  background: var(--lk-background-raised);
-  color: var(--lk-font-color-base);
   text-align: left;
-  transition:
-    background-color var(--lk-transition),
-    border-color var(--lk-transition),
-    transform var(--lk-transition);
-}
-
-.planItems button[data-status='active'] {
-  border-color: color-mix(in srgb, var(--lk-color-primary) 52%, var(--lk-color-emphasis-300));
-  background: color-mix(in srgb, var(--lk-color-primary-soft) 68%, var(--lk-background-raised));
-}
-
-.planItems button[data-status='completed'] {
-  background: var(--lk-card-background-color);
 }
 
 .planItems button:disabled {
   cursor: wait;
-}
-
-.planItems button:hover {
-  border-color: var(--lk-color-emphasis-400);
-  background: var(--lk-color-emphasis-100);
-}
-
-.planItems button:active {
-  transform: scale(0.985);
 }
 
 .planTaskCopy {
@@ -263,16 +188,6 @@
   place-items: center;
   border-radius: 50%;
   color: var(--lk-font-color-tertiary);
-}
-
-.planItems button[data-status='active'] .planTaskAction {
-  background: var(--lk-color-primary);
-  color: #fff;
-}
-
-.planItems button[data-status='completed'] .planTaskAction {
-  background: var(--lk-color-success-soft);
-  color: var(--lk-color-success);
 }
 
 .planTaskAction svg {
@@ -419,19 +334,12 @@
     text-align: left;
   }
 
-  .progressRing {
-    width: 104px;
-    height: 104px;
-  }
-
   .progressCopy {
     max-width: 240px;
   }
 
   .planItems button {
-    min-height: 94px;
     gap: 11px;
-    padding: 13px;
   }
 
   .planTaskCopy > small {
@@ -459,4 +367,8 @@
   .chartMeta {
     padding-inline: 14px;
   }
+}
+
+.planProgress {
+  grid-template-columns: 1fr;
 }

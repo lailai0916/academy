@@ -1,46 +1,11 @@
 .toolbar,
 .composerActions,
 .reactionRow,
-.metaRow,
-.tabList {
+.metaRow {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 10px;
-}
-
-.tabList {
-  width: fit-content;
-  gap: 3px;
-  padding: 4px;
-  border: 1px solid var(--academy-separator);
-  border-radius: 14px;
-  background: var(--lk-color-emphasis-100);
-}
-
-.tab {
-  min-height: 40px;
-  padding: 0 15px;
-  border: 0;
-  border-radius: 10px;
-  background: transparent;
-  color: var(--lk-font-color-secondary);
-  cursor: pointer;
-  transition:
-    background-color var(--lk-transition),
-    color var(--lk-transition),
-    transform var(--lk-transition);
-}
-
-.tabActive {
-  background: var(--lk-card-background-color);
-  color: var(--lk-font-color-base);
-  font-weight: 650;
-  box-shadow: var(--lk-shadow-control);
-}
-
-.tab:active {
-  transform: scale(0.97);
 }
 
 .composer,
@@ -203,7 +168,6 @@
 }
 
 .composer textarea {
-  min-height: 124px;
   resize: vertical;
 }
 
@@ -264,33 +228,7 @@
 }
 
 .reactionRow button {
-  min-height: 42px;
-  padding: 0 12px;
-  border: 1px solid var(--academy-separator);
-  border-radius: 999px;
-  background: var(--lk-card-background-color);
-  color: var(--lk-font-color-secondary);
   cursor: pointer;
-  transition:
-    background-color var(--lk-transition),
-    border-color var(--lk-transition),
-    color var(--lk-transition),
-    transform var(--lk-transition);
-}
-
-.reactionRow button:hover {
-  border-color: var(--lk-color-emphasis-400);
-  background: var(--lk-color-emphasis-100);
-}
-
-.reactionRow button:active {
-  transform: scale(0.96);
-}
-
-.reactionRow button[aria-pressed='true'] {
-  border-color: var(--lk-color-primary);
-  background: var(--lk-color-primary-soft);
-  color: var(--lk-color-primary-label);
 }
 
 .cardGrid {
@@ -456,22 +394,6 @@
   text-align: right;
 }
 
-.goalProgress {
-  height: 6px;
-  overflow: hidden;
-  border-radius: 999px;
-  background: var(--lk-color-emphasis-100);
-}
-
-.goalProgress > span {
-  display: block;
-  width: 0;
-  height: 100%;
-  border-radius: inherit;
-  background: var(--lk-color-primary);
-  transition: width var(--lk-transition-surface);
-}
-
 .goalFooter .metaRow {
   min-width: 0;
 }
@@ -565,12 +487,6 @@
   background: var(--lk-color-emphasis-100);
 }
 
-.jsonArea {
-  min-height: 260px;
-  font-family: var(--lk-font-mono);
-  font-size: 13px;
-}
-
 .notFound {
   display: grid;
   min-height: 65vh;
@@ -593,20 +509,6 @@
 
   .profileHero {
     grid-template-columns: 1fr;
-  }
-
-  .tabList {
-    width: 100%;
-  }
-
-  .tab {
-    flex: 1;
-    min-height: 44px;
-  }
-
-  .reactionRow button,
-  .goalHistory summary {
-    min-height: 44px;
   }
 
   .securityGrid,
@@ -652,11 +554,5 @@
 
   .goalProgressCopy span {
     text-align: left;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .goalProgress > span {
-    transition: none;
   }
 }

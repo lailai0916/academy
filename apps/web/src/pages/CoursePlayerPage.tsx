@@ -1,5 +1,14 @@
+import {
+  Alert,
+  Button,
+  IconButton,
+  Input,
+  Panel,
+  Progress,
+  TextArea,
+  PanelBody,
+} from '@lailai0916/ui';
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react';
-import { Button, IconButton, Panel, Progress } from '@lailai0916/ui';
 import type {
   CourseAnswerResult,
   CourseAssistanceKind,
@@ -151,7 +160,7 @@ export function CoursePlayerPage() {
   if (error && !run) {
     return (
       <div className={styles.centerState}>
-        <p className={page.error}>{error}</p>
+        <Alert variant="danger">{error}</Alert>
         <Button variant="secondary" onClick={() => navigate('/courses')}>
           返回课程
         </Button>
@@ -173,44 +182,46 @@ export function CoursePlayerPage() {
           <span>已完成</span>
         </header>
         <main className={styles.summaryStage}>
-          <Panel feature className={styles.summary}>
-            <span className={styles.summaryIcon}>
-              <Icon icon="lucide:check-circle-2" />
-            </span>
-            <p>{isRetest ? '延迟复测' : run.course.grade + ' · 物理'}</p>
-            <h1>{isRetest ? '本轮复测完成' : '课程学习完成'}</h1>
-            <p className={styles.summaryLead}>
-              {isRetest
-                ? '结果已写入长期掌握记录，可以回到课程页查看当前状态。'
-                : '独立测评已经记录。系统会在七天后开放延迟复测，检验是否真正保留。'}
-            </p>
-            <div className={styles.summaryMetrics}>
-              <article>
-                <span>{isRetest ? '复测正确' : '独立测评'}</span>
-                <strong>
-                  {run.summary.assessmentCorrect} / {run.summary.assessmentTotal}
-                </strong>
-              </article>
-              <article>
-                <span>完成时间</span>
-                <strong>{new Date(run.summary.completedAt).toLocaleDateString('zh-CN')}</strong>
-              </article>
-            </div>
-            {!isRetest && run.summary.retestDueAt && (
-              <p className={styles.summaryNotice}>
-                <Icon icon="lucide:calendar-clock" />
-                延迟复测将在
-                {new Date(run.summary.retestDueAt).toLocaleDateString('zh-CN')}开放。
+          <Panel feature>
+            <PanelBody className={styles.summary}>
+              <span className={styles.summaryIcon}>
+                <Icon icon="lucide:check-circle-2" />
+              </span>
+              <p>{isRetest ? '延迟复测' : run.course.grade + ' · 物理'}</p>
+              <h1>{isRetest ? '本轮复测完成' : '课程学习完成'}</h1>
+              <p className={styles.summaryLead}>
+                {isRetest
+                  ? '结果已写入长期掌握记录，可以回到课程页查看当前状态。'
+                  : '独立测评已经记录。系统会在七天后开放延迟复测，检验是否真正保留。'}
               </p>
-            )}
-            <div className={page.actions}>
-              <Button variant="primary" onClick={() => navigate('/courses')}>
-                返回课程总览
-              </Button>
-              <Button variant="ghost" onClick={() => navigate('/dashboard')}>
-                回到今日学习
-              </Button>
-            </div>
+              <div className={styles.summaryMetrics}>
+                <article>
+                  <span>{isRetest ? '复测正确' : '独立测评'}</span>
+                  <strong>
+                    {run.summary.assessmentCorrect} / {run.summary.assessmentTotal}
+                  </strong>
+                </article>
+                <article>
+                  <span>完成时间</span>
+                  <strong>{new Date(run.summary.completedAt).toLocaleDateString('zh-CN')}</strong>
+                </article>
+              </div>
+              {!isRetest && run.summary.retestDueAt && (
+                <p className={styles.summaryNotice}>
+                  <Icon icon="lucide:calendar-clock" />
+                  延迟复测将在
+                  {new Date(run.summary.retestDueAt).toLocaleDateString('zh-CN')}开放。
+                </p>
+              )}
+              <div className={page.actions}>
+                <Button variant="primary" onClick={() => navigate('/courses')}>
+                  返回课程总览
+                </Button>
+                <Button variant="ghost" onClick={() => navigate('/dashboard')}>
+                  回到今日学习
+                </Button>
+              </div>
+            </PanelBody>
           </Panel>
         </main>
       </div>
@@ -295,7 +306,7 @@ export function CoursePlayerPage() {
                   (step.responseKind === 'choice' && step.options ? (
                     <div className={styles.options}>
                       {step.options.map((option, index) => (
-                        <button
+                        <Button
                           key={option}
                           type="button"
                           disabled={busy}
@@ -303,14 +314,14 @@ export function CoursePlayerPage() {
                         >
                           <kbd>{index + 1}</kbd>
                           <span>{option}</span>
-                        </button>
+                        </Button>
                       ))}
                     </div>
                   ) : (
                     <form className={styles.answerForm} onSubmit={submitForm}>
                       <label htmlFor="course-answer">{step.inputLabel ?? '你的答案'}</label>
                       <div>
-                        <input
+                        <Input
                           id="course-answer"
                           inputMode={step.responseKind === 'number' ? 'decimal' : 'text'}
                           value={answer}
@@ -395,7 +406,7 @@ export function CoursePlayerPage() {
               </section>
             )}
 
-            {error && <p className={page.error}>{error}</p>}
+            {error && <Alert variant="danger">{error}</Alert>}
           </article>
         </Panel>
 
@@ -427,7 +438,7 @@ export function CoursePlayerPage() {
             </div>
             <form onSubmit={askQuestion}>
               <label htmlFor="course-question">哪里没想通？</label>
-              <textarea
+              <TextArea
                 id="course-question"
                 rows={4}
                 value={question}

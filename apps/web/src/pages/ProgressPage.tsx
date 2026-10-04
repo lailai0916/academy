@@ -1,5 +1,5 @@
+import { Alert, Button, DataCard, DataState, EmptyState, Panel, Progress } from '@lailai0916/ui';
 import { useEffect, useState } from 'react';
-import { Button, EmptyState, Panel, Progress } from '@lailai0916/ui';
 import { useNavigate } from 'react-router';
 import type { LearningInsights } from '@lailai/academy-shared';
 import { Icon } from '../components/Icon';
@@ -24,8 +24,8 @@ export function ProgressPage() {
       .catch((nextError) => setError(errorMessage(nextError)));
   }, []);
 
-  if (error && !insights) return <p className={page.error}>{error}</p>;
-  if (!insights) return <div className={page.empty}>正在整理学习记录……</div>;
+  if (error && !insights) return <Alert variant="danger">{error}</Alert>;
+  if (!insights) return <DataState message={'正在整理学习记录……'} />;
 
   const maxReviews = Math.max(1, ...insights.daily.map((day) => day.reviews));
   const hasReviewActivity = insights.daily.some((day) => day.reviews > 0);
@@ -42,26 +42,30 @@ export function ProgressPage() {
       </header>
 
       <div className={page.grid4}>
-        <article className={page.metric}>
-          <span>有效复习</span>
-          <strong>{insights.metrics.reviewCount}</strong>
-          <small>次</small>
-        </article>
-        <article className={page.metric}>
-          <span>整体正确率</span>
-          <strong>{insights.metrics.accuracy}%</strong>
-          <small>全部作答</small>
-        </article>
-        <article className={page.metric}>
-          <span>延迟测试正确率</span>
-          <strong>{insights.metrics.delayedAccuracy}%</strong>
-          <small>至少间隔 24 小时</small>
-        </article>
-        <article className={page.metric}>
-          <span>有效学习日</span>
-          <strong>{insights.metrics.activeDays}</strong>
-          <small>不以在线时长计数</small>
-        </article>
+        <DataCard
+          label={'有效复习'}
+          value={insights.metrics.reviewCount}
+          description={'次'}
+          icon="lucide:calendar-clock"
+        />
+        <DataCard
+          label={'整体正确率'}
+          value={`${insights.metrics.accuracy}%`}
+          description={'全部作答'}
+          icon="lucide:target"
+        />
+        <DataCard
+          label={'延迟测试正确率'}
+          value={`${insights.metrics.delayedAccuracy}%`}
+          description={'至少间隔 24 小时'}
+          icon="lucide:target"
+        />
+        <DataCard
+          label={'有效学习日'}
+          value={insights.metrics.activeDays}
+          description={'不以在线时长计数'}
+          icon="lucide:calendar-clock"
+        />
       </div>
 
       <section className={page.section}>
@@ -81,16 +85,13 @@ export function ProgressPage() {
                   </strong>
                   <time dateTime={day.date}>{day.date.slice(5).replace('-', '/')}</time>
                 </span>
-                <span
-                  className={styles.forecastTrack}
-                  role="progressbar"
-                  aria-label={`${day.date} 预计复习 ${day.total} 项`}
-                  aria-valuemin={0}
-                  aria-valuemax={maxForecast}
-                  aria-valuenow={day.total}
-                >
-                  <span style={{ width: `${(day.total / maxForecast) * 100}%` }} />
-                </span>
+                <Progress
+                  label={`${day.date}预计复习量`}
+                  value={day.total}
+                  max={maxForecast}
+                  showLabel={false}
+                  showValue={false}
+                />
                 <span className={styles.forecastKinds}>
                   {day.total === 0 ? (
                     '无安排'
@@ -199,7 +200,7 @@ export function ProgressPage() {
             {insights.recentSessions.length > 0 ? (
               <div className={styles.sessionList}>
                 {insights.recentSessions.map((session) => (
-                  <button
+                  <Button
                     key={session.id}
                     type="button"
                     onClick={() => navigate(`/learn/session/${session.id}`)}
@@ -225,7 +226,7 @@ export function ProgressPage() {
                         {new Date(session.startedAt).toLocaleDateString('zh-CN')}
                       </time>
                     </span>
-                  </button>
+                  </Button>
                 ))}
               </div>
             ) : (

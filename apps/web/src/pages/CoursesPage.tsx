@@ -1,5 +1,5 @@
+import { Alert, Button, Panel, Progress, PanelBody, Badge } from '@lailai0916/ui';
 import { useEffect, useState } from 'react';
-import { Button, Panel, Progress } from '@lailai0916/ui';
 import {
   courseStatusLabels,
   curriculumCatalog,
@@ -94,21 +94,21 @@ export function CoursesPage() {
         </div>
       </header>
 
-      <Panel feature className={styles.milestone}>
-        <span className={styles.milestoneIcon}>
-          <Icon icon="lucide:route" />
-        </span>
-        <div>
-          <span>当前试用</span>
-          <h2>动量定理课程已接入完整学习链路</h2>
-          <p>课堂可中断恢复，练习记录提示使用，独立测评完成后会安排延迟复测。</p>
-        </div>
-        <span className={styles.status} data-status="pilot">
-          试用中
-        </span>
+      <Panel feature>
+        <PanelBody className={styles.milestone}>
+          <span className={styles.milestoneIcon}>
+            <Icon icon="lucide:route" />
+          </span>
+          <div>
+            <span>当前试用</span>
+            <h2>动量定理课程已接入完整学习链路</h2>
+            <p>课堂可中断恢复，练习记录提示使用，独立测评完成后会安排延迟复测。</p>
+          </div>
+          <Badge data-status="pilot">试用中</Badge>
+        </PanelBody>
       </Panel>
 
-      {error && <p className={page.error}>{error}</p>}
+      {error && <Alert variant="danger">{error}</Alert>}
 
       <section className={page.section}>
         <div className={page.sectionHeader}>
@@ -119,36 +119,36 @@ export function CoursesPage() {
           {curriculumCatalog.subjects.map((subject) => {
             const subjectCourses = courses.filter((course) => course.subject === subject.code);
             return (
-              <Panel key={subject.code} className={styles.subjectCard}>
-                <div className={styles.subjectHeader}>
-                  <span className={page.iconChip}>
-                    <Icon icon={subjectIcons[subject.code]} />
-                  </span>
-                  <span className={styles.status} data-status={subject.status}>
-                    {courseStatusLabels[subject.status]}
-                  </span>
-                </div>
-                <div className={styles.subjectCopy}>
-                  <h3>{subject.name}</h3>
-                  <p>{subject.scope}</p>
-                </div>
-                <div className={styles.subjectFooter}>
-                  {subjectCourses.map((course) => (
-                    <button key={course.slug} type="button" onClick={() => void start(course)}>
-                      {course.title} · {progressLabels[course.progress.status]}
-                      <Icon icon="lucide:arrow-right" />
-                    </button>
-                  ))}
-                  {subject.memoryModules.map((kind) => (
-                    <Link key={kind} to={memoryLinks[kind].href}>
-                      {memoryLinks[kind].label}已可用
-                      <Icon icon="lucide:arrow-right" />
-                    </Link>
-                  ))}
-                  {subjectCourses.length === 0 && subject.memoryModules.length === 0 && (
-                    <span>课程内容待建设</span>
-                  )}
-                </div>
+              <Panel key={subject.code} className={styles.subjectCardFrame}>
+                <PanelBody className={styles.subjectCard}>
+                  <div className={styles.subjectHeader}>
+                    <span className={page.iconChip}>
+                      <Icon icon={subjectIcons[subject.code]} />
+                    </span>
+                    <Badge data-status={subject.status}>{courseStatusLabels[subject.status]}</Badge>
+                  </div>
+                  <div className={styles.subjectCopy}>
+                    <h3>{subject.name}</h3>
+                    <p>{subject.scope}</p>
+                  </div>
+                  <div className={styles.subjectFooter}>
+                    {subjectCourses.map((course) => (
+                      <Button key={course.slug} type="button" onClick={() => void start(course)}>
+                        {course.title} · {progressLabels[course.progress.status]}
+                        <Icon icon="lucide:arrow-right" />
+                      </Button>
+                    ))}
+                    {subject.memoryModules.map((kind) => (
+                      <Link key={kind} to={memoryLinks[kind].href}>
+                        {memoryLinks[kind].label}已可用
+                        <Icon icon="lucide:arrow-right" />
+                      </Link>
+                    ))}
+                    {subjectCourses.length === 0 && subject.memoryModules.length === 0 && (
+                      <span>课程内容待建设</span>
+                    )}
+                  </div>
+                </PanelBody>
               </Panel>
             );
           })}
@@ -161,63 +161,65 @@ export function CoursesPage() {
             <h2>首个连续课程</h2>
             <p>高二物理 · 教学、测评与复测闭环</p>
           </div>
-          <Panel className={styles.pilotCard}>
-            <div className={styles.pilotIntro}>
-              <span>{pilot.grade} · 物理</span>
-              <h3>{pilot.title}</h3>
-              <p>{pilot.summary}</p>
-              <small>{pilot.statusDetail}</small>
-              <div className={styles.courseAction}>
-                <Button
-                  variant="primary"
-                  disabled={starting || pilot.progress.status === 'retest-scheduled'}
-                  onClick={() => void start(pilot)}
-                >
-                  {starting ? '正在准备' : courseAction(pilot)}
-                  {pilot.progress.status !== 'retest-scheduled' && (
-                    <Icon icon="lucide:arrow-right" />
-                  )}
-                </Button>
-                <span>{progressLabels[pilot.progress.status]}</span>
+          <Panel>
+            <PanelBody className={styles.pilotCard}>
+              <div className={styles.pilotIntro}>
+                <span>{pilot.grade} · 物理</span>
+                <h3>{pilot.title}</h3>
+                <p>{pilot.summary}</p>
+                <small>{pilot.statusDetail}</small>
+                <div className={styles.courseAction}>
+                  <Button
+                    variant="primary"
+                    disabled={starting || pilot.progress.status === 'retest-scheduled'}
+                    onClick={() => void start(pilot)}
+                  >
+                    {starting ? '正在准备' : courseAction(pilot)}
+                    {pilot.progress.status !== 'retest-scheduled' && (
+                      <Icon icon="lucide:arrow-right" />
+                    )}
+                  </Button>
+                  <span>{progressLabels[pilot.progress.status]}</span>
+                </div>
               </div>
-            </div>
-            <div className={styles.pilotDetails}>
-              <div className={styles.courseProgress}>
-                <span>学习进度</span>
-                <Progress label="学习进度" value={pilot.progress.progressPercent} />
-                <small>
-                  {pilot.progress.completedSteps} / {pilot.progress.totalSteps} 步
-                  {pilot.progress.assessmentTotal
-                    ? ` · 独立测评 ${pilot.progress.assessmentCorrect}/${pilot.progress.assessmentTotal}`
-                    : ''}
-                </small>
-                {pilot.progress.status === 'retest-scheduled' && pilot.progress.retestDueAt && (
+              <div className={styles.pilotDetails}>
+                <div className={styles.courseProgress}>
+                  <span>学习进度</span>
+                  <Progress label="学习进度" value={pilot.progress.progressPercent} />
                   <small>
-                    复测开放时间：
-                    {new Date(pilot.progress.retestDueAt).toLocaleDateString('zh-CN')}
+                    {pilot.progress.completedSteps} / {pilot.progress.totalSteps} 步
+                    {pilot.progress.assessmentTotal
+                      ? ` · 独立测评 ${pilot.progress.assessmentCorrect}/${pilot.progress.assessmentTotal}`
+                      : ''}
                   </small>
-                )}
+                  {pilot.progress.status === 'retest-scheduled' && pilot.progress.retestDueAt && (
+                    <small>
+                      复测开放时间：
+                      {new Date(pilot.progress.retestDueAt).toLocaleDateString('zh-CN')}
+                    </small>
+                  )}
+                </div>
+                <div>
+                  <span>课程目标</span>
+                  <ul>
+                    {pilot.objectives.map((objective) => (
+                      <li key={objective}>{objective}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <span>课程流程</span>
+                  <ol className={styles.flow}>
+                    {pilot.plannedFlow.map((step, index) => (
+                      <li key={step}>
+                        <small>{String(index + 1).padStart(2, '0')}</small>
+                        <strong>{step}</strong>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
               </div>
-              <div>
-                <span>课程目标</span>
-                <ul>
-                  {pilot.objectives.map((objective) => (
-                    <li key={objective}>{objective}</li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <span>课程流程</span>
-                <ol className={styles.flow}>
-                  {pilot.plannedFlow.map((step, index) => (
-                    <li key={step}>
-                      <small>{String(index + 1).padStart(2, '0')}</small>
-                      <strong>{step}</strong>
-                    </li>
-                  ))}
-                </ol>
-              </div>
-            </div>
+            </PanelBody>
           </Panel>
         </section>
       )}

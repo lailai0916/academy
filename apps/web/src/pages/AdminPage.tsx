@@ -1,5 +1,17 @@
+import {
+  Alert,
+  Button,
+  DataCard,
+  Input,
+  Panel,
+  PasswordField,
+  SelectField,
+  Table,
+  TextAreaField,
+  TextField,
+  Badge,
+} from '@lailai0916/ui';
 import { useCallback, useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
-import { Button, Panel, SelectField, TextAreaField, TextField } from '@lailai0916/ui';
 import { Link, NavLink, useLocation, useSearchParams } from 'react-router';
 import type {
   AdminContentItem,
@@ -308,11 +320,11 @@ export function AdminPage() {
         ))}
       </nav>
 
-      {error && <p className={page.error}>{error}</p>}
+      {error && <Alert variant="danger">{error}</Alert>}
       {message && (
-        <p className={page.success} role="status">
+        <Alert variant="success" role="status">
           {message}
-        </p>
+        </Alert>
       )}
 
       {section === 'overview' && <AdminOverview summary={summary} />}
@@ -438,26 +450,30 @@ function AdminOverview({ summary }: { summary: AdminSummary }) {
   return (
     <>
       <div className={page.grid4}>
-        <article className={page.metric}>
-          <span>用户</span>
-          <strong>{summary.users}</strong>
-          <small>含管理员</small>
-        </article>
-        <article className={page.metric}>
-          <span>已发布内容</span>
-          <strong>{summary.published}</strong>
-          <small>共 {summary.content} 项</small>
-        </article>
-        <article className={page.metric}>
-          <span>待审草稿</span>
-          <strong>{summary.draft}</strong>
-          <small>{summary.archived} 项已归档</small>
-        </article>
-        <article className={page.metric}>
-          <span>导入批次</span>
-          <strong>{summary.imports}</strong>
-          <small>记录来源与版本</small>
-        </article>
+        <DataCard
+          label={'用户'}
+          value={summary.users}
+          description={'含管理员'}
+          icon="lucide:users"
+        />
+        <DataCard
+          label={'已发布内容'}
+          value={summary.published}
+          description={<>共 {summary.content} 项</>}
+          icon="lucide:book-open"
+        />
+        <DataCard
+          label={'待审草稿'}
+          value={summary.draft}
+          description={<>{summary.archived} 项已归档</>}
+          icon="lucide:book-open"
+        />
+        <DataCard
+          label={'导入批次'}
+          value={summary.imports}
+          description={'记录来源与版本'}
+          icon="lucide:book-open"
+        />
       </div>
       <section className={page.section}>
         <div className={page.sectionHeader}>
@@ -569,7 +585,7 @@ function AdminContent(props: AdminContentProps) {
             </SelectField>
           </div>
           <div className={`${feature.adminSection} ${feature.tableWrap}`}>
-            <table className={feature.table}>
+            <Table>
               <thead>
                 <tr>
                   <th>内容</th>
@@ -609,9 +625,7 @@ function AdminContent(props: AdminContentProps) {
                       )}
                     </td>
                     <td>
-                      <span className={styles.status} data-status={item.status}>
-                        {contentStatusLabels[item.status]}
-                      </span>
+                      <Badge data-status={item.status}>{contentStatusLabels[item.status]}</Badge>
                       {item.status === 'draft' && item.hasPublishedVersion && (
                         <span className={styles.liveVersion}>线上版本保留</span>
                       )}
@@ -654,7 +668,7 @@ function AdminContent(props: AdminContentProps) {
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </Table>
             {props.content.length === 0 && <p className={styles.emptyTable}>没有匹配的内容。</p>}
           </div>
         </Panel>
@@ -693,7 +707,6 @@ function AdminContent(props: AdminContentProps) {
               <option value="published">直接发布</option>
             </SelectField>
             <TextAreaField
-              className={feature.jsonArea}
               label="内容 JSON"
               value={props.importJson}
               spellCheck={false}
@@ -702,7 +715,7 @@ function AdminContent(props: AdminContentProps) {
             />
             <div className={styles.importActions}>
               <label className={styles.fileButton}>
-                <input
+                <Input
                   type="file"
                   accept=".json,application/json"
                   onChange={props.onReadImportFile}
@@ -735,7 +748,7 @@ function AdminContent(props: AdminContentProps) {
         </div>
         <Panel>
           <div className={`${feature.adminSection} ${feature.tableWrap}`}>
-            <table className={feature.table}>
+            <Table>
               <thead>
                 <tr>
                   <th>来源</th>
@@ -757,11 +770,7 @@ function AdminContent(props: AdminContentProps) {
                       {item.unchangedCount}
                     </td>
                     <td>
-                      {item.rolledBackAt ? (
-                        <span className={styles.status}>已回滚</span>
-                      ) : (
-                        contentStatusLabels[item.status]
-                      )}
+                      {item.rolledBackAt ? <Badge>已回滚</Badge> : contentStatusLabels[item.status]}
                     </td>
                     <td>{new Date(item.createdAt).toLocaleString('zh-CN')}</td>
                     <td>
@@ -806,7 +815,7 @@ function AdminContent(props: AdminContentProps) {
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </Table>
             {props.imports.length === 0 && <p className={styles.emptyTable}>还没有导入记录。</p>}
           </div>
         </Panel>
@@ -949,7 +958,7 @@ function AdminInvites(props: AdminInvitesProps) {
         </Panel>
         <Panel>
           <div className={`${feature.adminSection} ${feature.tableWrap}`}>
-            <table className={feature.table}>
+            <Table>
               <thead>
                 <tr>
                   <th>标签</th>
@@ -983,7 +992,7 @@ function AdminInvites(props: AdminInvitesProps) {
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </Table>
           </div>
         </Panel>
       </div>
@@ -1034,9 +1043,9 @@ function AdminAi({
             value={ai.baseUrl}
             onChange={(event) => onChangeAi({ ...ai, baseUrl: event.target.value })}
           />
-          <TextField
+          <PasswordField
             label="API Key"
-            type="password"
+
             value={apiKey}
             autoComplete="off"
             placeholder={ai.hasApiKey ? '留空则保留现有密钥' : '输入 API Key'}
@@ -1068,7 +1077,7 @@ function AdminUsers({ users }: { users: AdminUser[] }) {
       </div>
       <Panel>
         <div className={`${feature.adminSection} ${feature.tableWrap}`}>
-          <table className={feature.table}>
+          <Table>
             <thead>
               <tr>
                 <th>用户</th>
@@ -1098,7 +1107,7 @@ function AdminUsers({ users }: { users: AdminUser[] }) {
                 </tr>
               ))}
             </tbody>
-          </table>
+          </Table>
         </div>
       </Panel>
     </section>

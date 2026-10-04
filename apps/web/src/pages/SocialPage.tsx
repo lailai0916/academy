@@ -1,5 +1,19 @@
-import { useCallback, useEffect, useState, type FormEvent, type KeyboardEvent } from 'react';
-import { Avatar, Button, Panel, SelectField, TextAreaField, TextField } from '@lailai0916/ui';
+import {
+  Alert,
+  Avatar,
+  Button,
+  DataState,
+  EmptyState,
+  Panel,
+  PanelBody,
+  Progress,
+  SelectField,
+  Tabs,
+  TextAreaField,
+  TextField,
+  Badge,
+} from '@lailai0916/ui';
+import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import type { Challenge, SocialPost, StudyGroup } from '@lailai/academy-shared';
 import { Icon } from '../components/Icon';
 import { api, errorMessage } from '../lib/api';
@@ -71,24 +85,18 @@ function ChallengeCard({
             <span>{challenge.groupName}</span>
             <h3>{challenge.title}</h3>
           </div>
-          <span className={styles.goalStatus} data-status={challenge.status}>
-            {statusLabel}
-          </span>
+          <Badge data-status={challenge.status}>{statusLabel}</Badge>
         </header>
         <div className={styles.goalProgressCopy}>
           <strong>{metric.label}</strong>
           <span>{progressLabel}</span>
         </div>
-        <div
-          className={styles.goalProgress}
-          role="progressbar"
-          aria-label={`${challenge.title}完成进度`}
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-valuenow={challenge.progressPercent}
-        >
-          <span style={{ width: `${challenge.progressPercent}%` }} />
-        </div>
+        <Progress
+          label={`${challenge.title}完成进度`}
+          value={challenge.progressPercent}
+          showLabel={false}
+          showValue={false}
+        />
         <div className={styles.goalFooter}>
           <div className={styles.metaRow}>
             <span>
@@ -216,34 +224,13 @@ export function SocialPage() {
     );
   };
 
-  const handleTabKeyDown = (event: KeyboardEvent<HTMLButtonElement>, current: SocialTab) => {
-    const currentIndex = socialTabs.findIndex(([value]) => value === current);
-    const targetIndex =
-      event.key === 'ArrowRight'
-        ? (currentIndex + 1) % socialTabs.length
-        : event.key === 'ArrowLeft'
-          ? (currentIndex - 1 + socialTabs.length) % socialTabs.length
-          : event.key === 'Home'
-            ? 0
-            : event.key === 'End'
-              ? socialTabs.length - 1
-              : -1;
-    if (targetIndex < 0) return;
-    event.preventDefault();
-    const nextTab = socialTabs[targetIndex]![0];
-    setTab(nextTab);
-    event.currentTarget.parentElement
-      ?.querySelector<HTMLButtonElement>(`[data-social-tab="${nextTab}"]`)
-      ?.focus();
-  };
-
   const joinedGroups = data?.groups.filter((group) => group.joined) ?? [];
   const currentChallenges =
     data?.challenges.filter((challenge) => challenge.status === 'active') ?? [];
   const pastChallenges =
     data?.challenges.filter((challenge) => challenge.status !== 'active') ?? [];
 
-  if (!data && !error) return <div className={page.empty}>正在载入同学圈……</div>;
+  if (!data && !error) return <DataState message={'正在载入同学圈……'} />;
 
   return (
     <div className={page.page}>
@@ -254,35 +241,28 @@ export function SocialPage() {
         </div>
       </header>
 
-      <div className={styles.tabList} role="tablist" aria-label="同学圈栏目">
-        {socialTabs.map(([value, label]) => (
-          <button
-            key={value}
-            type="button"
-            className={`${styles.tab} ${tab === value ? styles.tabActive : ''}`}
-            role="tab"
-            id={`social-tab-${value}`}
-            data-social-tab={value}
-            aria-controls={`social-panel-${value}`}
-            aria-selected={tab === value}
-            tabIndex={tab === value ? 0 : -1}
-            onClick={() => setTab(value)}
-            onKeyDown={(event) => handleTabKeyDown(event, value)}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
+      <Tabs
+        size="sm"
+        ariaLabel="同学圈栏目"
+        value={tab}
+        onChange={setTab}
+        items={socialTabs.map(([value, label]) => ({
+          value,
+          label,
+          id: `social-tab-${value}`,
+          panelId: `social-panel-${value}`,
+        }))}
+      />
 
       {error && (
-        <p className={page.error} role="alert">
+        <Alert variant="danger" role="alert">
           {error}
-        </p>
+        </Alert>
       )}
       {message && (
-        <p className={page.success} aria-live="polite">
+        <Alert variant="success" aria-live="polite">
           {message}
-        </p>
+        </Alert>
       )}
 
       {tab === 'feed' && (
@@ -336,7 +316,7 @@ export function SocialPage() {
                     <div className={styles.reactionRow}>
                       {(Object.keys(reactionLabels) as Array<keyof typeof reactionLabels>).map(
                         (kind) => (
-                          <button
+                          <Button
                             key={kind}
                             type="button"
                             aria-pressed={item.reacted.includes(kind)}
@@ -352,7 +332,7 @@ export function SocialPage() {
                           >
                             <Icon icon={reactionLabels[kind][0]} /> {reactionLabels[kind][1]}{' '}
                             {item.reactions[kind] || ''}
-                          </button>
+                          </Button>
                         )
                       )}
                     </div>
@@ -360,7 +340,7 @@ export function SocialPage() {
                 </Panel>
               ))
             ) : (
-              <p className={page.empty}>暂无动态。</p>
+              <EmptyState title={'暂无动态。'} description="" />
             )}
           </div>
         </div>
@@ -429,7 +409,7 @@ export function SocialPage() {
                 </Panel>
               ))
             ) : (
-              <p className={page.empty}>还没有学习小组，可以先创建一个。</p>
+              <EmptyState title={'还没有学习小组，可以先创建一个。'} description="" />
             )}
           </div>
           <div className={styles.goalToolbar}>
@@ -549,11 +529,14 @@ export function SocialPage() {
                 />
               ))
             ) : (
-              <p className={page.empty}>
-                {joinedGroups.length
-                  ? '当前没有进行中的共同目标。'
-                  : '加入学习小组后，可以参与共同目标。'}
-              </p>
+              <EmptyState
+                title={
+                  joinedGroups.length
+                    ? '当前没有进行中的共同目标。'
+                    : '加入学习小组后，可以参与共同目标。'
+                }
+                description=""
+              />
             )}
           </div>
           {pastChallenges.length > 0 && (
@@ -610,7 +593,7 @@ export function SocialPage() {
             </form>
           </Panel>
           <Panel>
-            <div className={page.panelBody}>
+            <PanelBody className={page.panelBody}>
               {friends.length ? (
                 <ul className={page.list}>
                   {friends.map((friend, index) => (
@@ -654,7 +637,7 @@ export function SocialPage() {
               ) : (
                 <p className={page.muted}>暂无好友或待处理申请。</p>
               )}
-            </div>
+            </PanelBody>
           </Panel>
         </div>
       )}

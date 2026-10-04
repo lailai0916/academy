@@ -1,60 +1,3 @@
-.tabs {
-  display: flex;
-  width: fit-content;
-  gap: 3px;
-  padding: 3px;
-  border: 1px solid var(--lk-color-emphasis-300);
-  border-radius: 12px;
-  background: var(--lk-color-emphasis-100);
-}
-
-.tabs button {
-  display: flex;
-  min-height: 40px;
-  align-items: center;
-  gap: 7px;
-  padding: 0 11px;
-  border: 0;
-  border-radius: 9px;
-  background: transparent;
-  color: var(--lk-font-color-secondary);
-  font-size: 13px;
-  font-weight: 600;
-  transition:
-    background-color var(--lk-transition),
-    color var(--lk-transition),
-    transform var(--lk-transition);
-}
-
-.tabs button:hover {
-  color: var(--lk-font-color-base);
-}
-
-.tabs button:active {
-  transform: scale(0.97);
-}
-
-.tabs .active {
-  background: var(--lk-card-background-color);
-  color: var(--lk-font-color-base);
-  box-shadow: var(--lk-shadow-control);
-}
-
-.tabs svg {
-  width: 16px;
-  height: 16px;
-}
-
-.tabs button > span {
-  min-width: 20px;
-  padding: 1px 5px;
-  border-radius: 8px;
-  background: var(--lk-color-emphasis-100);
-  color: var(--lk-font-color-tertiary);
-  font-size: 10px;
-  text-align: center;
-}
-
 .list {
   display: grid;
   padding: 4px 20px;
@@ -129,16 +72,6 @@
 }
 
 @media (max-width: 720px) {
-  .tabs {
-    width: 100%;
-  }
-
-  .tabs button {
-    flex: 1;
-    min-height: 44px;
-    justify-content: center;
-  }
-
   .item {
     grid-template-columns: auto minmax(0, 1fr);
   }

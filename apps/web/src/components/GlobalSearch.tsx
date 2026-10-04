@@ -1,3 +1,4 @@
+import { Button, DataState, Dialog, EmptyState, IconButton, Input } from '@lailai0916/ui';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { NavLink } from 'react-router';
 import type { WorkspaceSearchResult } from '@lailai/academy-shared';
@@ -20,7 +21,6 @@ const destinations = [
 
 export function GlobalSearch() {
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const dialogRef = useRef<HTMLElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
@@ -37,27 +37,6 @@ export function GlobalSearch() {
         event.preventDefault();
         setOpen((current) => !current);
       }
-      if (event.key === 'Escape' && open) {
-        setOpen(false);
-        triggerRef.current?.focus();
-      }
-      if (event.key === 'Tab' && open) {
-        const focusable = Array.from(
-          dialogRef.current?.querySelectorAll<HTMLElement>(
-            'a[href], button:not([disabled]), input:not([disabled])'
-          ) ?? []
-        );
-        const first = focusable[0];
-        const last = focusable.at(-1);
-        if (!first || !last) return;
-        if (event.shiftKey && document.activeElement === first) {
-          event.preventDefault();
-          last.focus();
-        } else if (!event.shiftKey && document.activeElement === last) {
-          event.preventDefault();
-          first.focus();
-        }
-      }
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
@@ -65,14 +44,8 @@ export function GlobalSearch() {
 
   useEffect(() => {
     if (!open) return;
-    const previousOverflow = document.body.style.overflow;
     setQuery('');
     setResults([]);
-    document.body.style.overflow = 'hidden';
-    window.setTimeout(() => inputRef.current?.focus(), 0);
-    return () => {
-      document.body.style.overflow = previousOverflow;
-    };
   }, [open]);
 
   useEffect(() => {
@@ -117,91 +90,81 @@ export function GlobalSearch() {
 
   return (
     <>
-      <button
+      <Button
+        leftIcon={<Icon icon="lucide:search" />}
         ref={triggerRef}
         type="button"
         className={styles.trigger}
         aria-label="搜索学习内容和功能"
         onClick={() => setOpen(true)}
       >
-        <Icon icon="lucide:search" />
-        <span>搜索学习内容或功能</span>
+        <span className={styles.triggerText}>搜索学习内容或功能</span>
         <kbd>⌘K</kbd>
-      </button>
+      </Button>
 
-      {open && (
-        <div className={styles.backdrop} role="presentation" onMouseDown={close}>
-          <section
-            ref={dialogRef}
-            className={styles.dialog}
-            role="dialog"
-            aria-modal="true"
-            aria-label="全局搜索"
-            onMouseDown={(event) => event.stopPropagation()}
-          >
-            <div className={styles.searchBox}>
-              <Icon icon="lucide:search" />
-              <label className="sr-only" htmlFor="workspace-search">
-                搜索
-              </label>
-              <input
-                ref={inputRef}
-                id="workspace-search"
-                value={query}
-                placeholder="搜索课程、词汇、古诗词、同学或功能"
-                autoComplete="off"
-                onChange={(event) => setQuery(event.target.value)}
-              />
-              <button type="button" aria-label="关闭搜索" onClick={close}>
-                <Icon icon="lucide:x" />
-              </button>
-            </div>
-
-            <div className={styles.results} aria-busy={loading}>
-              {localResults.length > 0 && (
-                <div className={styles.group}>
-                  <p>功能</p>
-                  {localResults.map((item) => (
-                    <NavLink key={item.id} to={item.href} onClick={close}>
-                      <span className={styles.resultIcon}>
-                        <Icon icon="lucide:arrow-right" />
-                      </span>
-                      <span>
-                        <strong>{item.title}</strong>
-                        <small>{item.detail}</small>
-                      </span>
-                    </NavLink>
-                  ))}
-                </div>
-              )}
-
-              {results.length > 0 && (
-                <div className={styles.group}>
-                  <p>内容与同学</p>
-                  {results.map((item) => (
-                    <NavLink key={`${item.type}-${item.id}`} to={item.href} onClick={close}>
-                      <span className={styles.resultIcon}>
-                        <Icon
-                          icon={item.type === 'content' ? 'lucide:book-open' : 'lucide:user-round'}
-                        />
-                      </span>
-                      <span>
-                        <strong>{item.title}</strong>
-                        <small>{item.detail}</small>
-                      </span>
-                    </NavLink>
-                  ))}
-                </div>
-              )}
-
-              {loading && <p className={styles.status}>正在搜索……</p>}
-              {!loading && query.trim() && localResults.length === 0 && results.length === 0 && (
-                <p className={styles.status}>没有匹配结果，请尝试课程、教材单元或用户名。</p>
-              )}
-            </div>
-          </section>
+      <Dialog open={open} onClose={close} label="全局搜索">
+        <div className={styles.searchBox}>
+          <Icon icon="lucide:search" />
+          <label className="sr-only" htmlFor="workspace-search">
+            搜索
+          </label>
+          <Input
+            autoFocus
+            ref={inputRef}
+            id="workspace-search"
+            value={query}
+            placeholder="搜索课程、词汇、古诗词、同学或功能"
+            autoComplete="off"
+            onChange={(event) => setQuery(event.target.value)}
+          />
+          <IconButton label="关闭搜索" onClick={close}>
+            <Icon icon="lucide:x" />
+          </IconButton>
         </div>
-      )}
+
+        <div className={styles.results} aria-busy={loading}>
+          {localResults.length > 0 && (
+            <div className={styles.group}>
+              <p>功能</p>
+              {localResults.map((item) => (
+                <NavLink key={item.id} to={item.href} onClick={close}>
+                  <span className={styles.resultIcon}>
+                    <Icon icon="lucide:arrow-right" />
+                  </span>
+                  <span>
+                    <strong>{item.title}</strong>
+                    <small>{item.detail}</small>
+                  </span>
+                </NavLink>
+              ))}
+            </div>
+          )}
+
+          {results.length > 0 && (
+            <div className={styles.group}>
+              <p>内容与同学</p>
+              {results.map((item) => (
+                <NavLink key={`${item.type}-${item.id}`} to={item.href} onClick={close}>
+                  <span className={styles.resultIcon}>
+                    <Icon
+                      icon={item.type === 'content' ? 'lucide:book-open' : 'lucide:user-round'}
+                    />
+                  </span>
+                  <span>
+                    <strong>{item.title}</strong>
+                    <small>{item.detail}</small>
+                  </span>
+                </NavLink>
+              ))}
+            </div>
+          )}
+
+          {loading && <DataState message="正在搜索……" />}
+          {!loading && query.trim() && localResults.length === 0 && results.length === 0 && (
+            <EmptyState title="没有匹配结果" description="请尝试课程、教材单元或用户名。" />
+          )}
+        </div>
+      </Dialog>
     </>
   );
 }

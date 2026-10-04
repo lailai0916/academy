@@ -12,13 +12,11 @@
 
 .formPanel {
   width: min(100%, 420px);
-  background: var(--lk-card-background-color);
 }
 
 .form {
   display: grid;
   gap: 18px;
-  padding: 30px;
 }
 
 .formHeader {
@@ -39,14 +37,6 @@
   font-size: 13px;
 }
 
-.error {
-  padding: 10px 12px;
-  border-radius: var(--lk-radius-control);
-  background: var(--lk-color-danger-soft);
-  color: var(--lk-color-danger);
-  font-size: 13px;
-}
-
 .switchMode {
   text-align: center;
 }
@@ -64,9 +54,5 @@
     min-height: calc(100vh - var(--academy-public-header-height));
     align-items: start;
     padding: 28px 12px;
-  }
-
-  .form {
-    padding: 24px 20px;
   }
 }

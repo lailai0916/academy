@@ -1,5 +1,5 @@
+import { Avatar, Panel, Progress, PanelBody, ButtonLink, Badge } from '@lailai0916/ui';
 import { Link } from 'react-router';
-import { Avatar, Panel } from '@lailai0916/ui';
 import { Icon } from '../components/Icon';
 import { PublicHeader } from '../components/PublicHeader';
 import styles from './LandingPage.module.css';
@@ -49,75 +49,74 @@ export function LandingPage() {
               学生可以按自己的节奏听讲、追问、练习和复测。当前英语词汇与古诗词记忆模块已经可用，连续学科课程从高二物理开始接入。
             </p>
             <div className={styles.heroActions}>
-              <Link to="/login" className={styles.primaryButton}>
+              <ButtonLink to="/login" variant="primary" size="lg">
                 登录
                 <Icon icon="lucide:arrow-right" />
-              </Link>
-              <Link to="/register" className={styles.secondaryButton}>
+              </ButtonLink>
+              <ButtonLink to="/register" variant="secondary" size="lg">
                 使用邀请码注册
-              </Link>
+              </ButtonLink>
             </div>
           </div>
 
           <Panel
             feature
-            className={styles.productPreview}
+            className={styles.productPreviewFrame}
             role="group"
             aria-label="Academy 学习界面预览"
           >
-            <div className={styles.previewHeader}>
-              <div>
-                <span>今日安排</span>
-                <strong>课程与复习</strong>
-              </div>
-              <span className={styles.previewStatus}>前期版本</span>
-            </div>
-            <div
-              className={styles.previewProgress}
-              role="progressbar"
-              aria-label="平台模块接入进度"
-              aria-valuemin={0}
-              aria-valuemax={3}
-              aria-valuenow={1}
-            >
-              <span style={{ width: '33.333%' }} />
-            </div>
-            <div className={styles.previewSubjects}>
-              <article>
-                <span className={styles.previewIcon}>
-                  <Icon icon="lucide:atom" />
-                </span>
+            <PanelBody className={styles.productPreview}>
+              <div className={styles.previewHeader}>
                 <div>
-                  <strong>物理 · 动量定理</strong>
-                  <span>连续课程 · 已开放试用</span>
+                  <span>今日安排</span>
+                  <strong>课程与复习</strong>
                 </div>
-                <span className={styles.itemStatus}>试用中</span>
-              </article>
-              <article>
-                <span className={styles.previewIcon}>
-                  <Icon icon="lucide:rotate-ccw" />
-                </span>
+                <Badge>前期版本</Badge>
+              </div>
+              <Progress
+                label="平台模块接入进度"
+                value={1}
+                max={3}
+                showLabel={false}
+                showValue={false}
+              />
+              <div className={styles.previewSubjects}>
+                <article>
+                  <span className={styles.previewIcon}>
+                    <Icon icon="lucide:atom" />
+                  </span>
+                  <div>
+                    <strong>物理 · 动量定理</strong>
+                    <span>连续课程 · 已开放试用</span>
+                  </div>
+                  <span className={styles.itemStatus}>试用中</span>
+                </article>
+                <article>
+                  <span className={styles.previewIcon}>
+                    <Icon icon="lucide:rotate-ccw" />
+                  </span>
+                  <div>
+                    <strong>词汇与古诗词复习</strong>
+                    <span>间隔复习 · 已可学习</span>
+                  </div>
+                  <span className={styles.itemStatus}>已实现</span>
+                </article>
+              </div>
+              <div className={styles.previewMetrics} role="group" aria-label="平台结构">
                 <div>
-                  <strong>词汇与古诗词复习</strong>
-                  <span>间隔复习 · 已可学习</span>
+                  <span>学科范围</span>
+                  <strong>6 科</strong>
                 </div>
-                <span className={styles.itemStatus}>已实现</span>
-              </article>
-            </div>
-            <div className={styles.previewMetrics} role="group" aria-label="平台结构">
-              <div>
-                <span>学科范围</span>
-                <strong>6 科</strong>
+                <div>
+                  <span>课程样例</span>
+                  <strong>1 个</strong>
+                </div>
+                <div>
+                  <span>可用模块</span>
+                  <strong>记忆</strong>
+                </div>
               </div>
-              <div>
-                <span>课程样例</span>
-                <strong>1 个</strong>
-              </div>
-              <div>
-                <span>可用模块</span>
-                <strong>记忆</strong>
-              </div>
-            </div>
+            </PanelBody>
           </Panel>
         </section>
 
@@ -226,20 +225,22 @@ export function LandingPage() {
               <Icon icon="lucide:arrow-right" />
             </Link>
           </div>
-          <Panel className={styles.activityPreview}>
-            <div className={styles.activityHeader}>
-              <Avatar name="lailai" alt="lailai" size={40} />
-              <div>
-                <strong>学习动态</strong>
-                <span>英语 · 词汇复习</span>
+          <Panel className={styles.activityPreviewFrame}>
+            <PanelBody className={styles.activityPreview}>
+              <div className={styles.activityHeader}>
+                <Avatar name="lailai" alt="lailai" size={40} />
+                <div>
+                  <strong>学习动态</strong>
+                  <span>英语 · 词汇复习</span>
+                </div>
               </div>
-            </div>
-            <p>今天重新整理了 3 个容易混淆的词，延迟测试全部正确。</p>
-            <div className={styles.activityActions}>
-              <span>支持 12</span>
-              <span>有启发 5</span>
-              <span>一起学 3</span>
-            </div>
+              <p>今天重新整理了 3 个容易混淆的词，延迟测试全部正确。</p>
+              <div className={styles.activityActions}>
+                <span>支持 12</span>
+                <span>有启发 5</span>
+                <span>一起学 3</span>
+              </div>
+            </PanelBody>
           </Panel>
         </section>
       </main>

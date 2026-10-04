@@ -3,7 +3,6 @@
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 20px;
-  padding: 24px;
 }
 
 .milestoneIcon {
@@ -57,10 +56,12 @@
 
 .subjectCard {
   display: grid;
-  min-height: 242px;
   align-content: space-between;
   gap: 24px;
-  padding: 22px;
+}
+
+.subjectCardFrame {
+  min-height: 242px;
 }
 
 .subjectHeader {
@@ -114,15 +115,8 @@
 .subjectFooter button {
   display: inline-flex;
   width: fit-content;
-  min-height: 42px;
   align-items: center;
   gap: 6px;
-  padding: 6px 0;
-  border: 0;
-  background: transparent;
-  color: var(--lk-color-primary-label);
-  font-size: 13px;
-  font-weight: 600;
   text-align: left;
 }
 
@@ -149,7 +143,6 @@
   display: grid;
   grid-template-columns: minmax(240px, 0.72fr) minmax(0, 1.28fr);
   gap: 34px;
-  padding: 30px;
 }
 
 .pilotIntro {
@@ -243,12 +236,7 @@
     grid-template-columns: 1fr;
   }
 
-  .subjectCard {
+  .subjectCardFrame {
     min-height: 190px;
-  }
-
-  .subjectFooter a,
-  .subjectFooter button {
-    min-height: 44px;
   }
 }

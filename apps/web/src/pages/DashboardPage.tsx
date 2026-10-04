@@ -1,5 +1,5 @@
+import { Alert, Button, DataCard, EmptyState, Panel, Progress } from '@lailai0916/ui';
 import { useCallback, useEffect, useState } from 'react';
-import { Button, EmptyState, Panel } from '@lailai0916/ui';
 import { useNavigate } from 'react-router';
 import {
   type Dashboard,
@@ -116,8 +116,6 @@ export function DashboardPage() {
   const completedWork = plan.tasks.reduce((sum, task) => sum + taskCompleted(task), 0);
   const completion = totalWork === 0 ? 0 : Math.round((completedWork / totalWork) * 100);
   const boundedCompletion = Math.min(100, Math.max(0, completion));
-  const ringLength = 276.46;
-  const ringOffset = ringLength * (1 - boundedCompletion / 100);
   const remainingTasks = plan.tasks.filter((task) => task.status !== 'completed');
   const completedTasks = plan.tasks.length - remainingTasks.length;
   const nextTask =
@@ -198,9 +196,9 @@ export function DashboardPage() {
       </header>
 
       {error && (
-        <p className={page.error} role="alert">
+        <Alert variant="danger" role="alert">
           {error}
-        </p>
+        </Alert>
       )}
 
       {activeSession && activeSession.mode !== 'plan' && (
@@ -221,29 +219,7 @@ export function DashboardPage() {
           <Panel feature className={styles.planPanel}>
             <div className={styles.plan}>
               <div className={styles.planProgress}>
-                <div
-                  className={styles.progressRing}
-                  role="progressbar"
-                  aria-label="今日计划完成度"
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                  aria-valuenow={boundedCompletion}
-                >
-                  <svg viewBox="0 0 104 104" aria-hidden="true">
-                    <circle className={styles.ringTrack} cx="52" cy="52" r="44" />
-                    <circle
-                      className={styles.ringValue}
-                      cx="52"
-                      cy="52"
-                      r="44"
-                      style={{ strokeDashoffset: ringOffset }}
-                    />
-                  </svg>
-                  <span>
-                    <strong>{boundedCompletion}%</strong>
-                    <small>完成</small>
-                  </span>
-                </div>
+                <Progress label="今日计划完成度" value={boundedCompletion} />
                 <div className={styles.progressCopy}>
                   <strong>
                     {plan.tasks.length === 0
@@ -264,7 +240,7 @@ export function DashboardPage() {
                   />
                 ) : (
                   plan.tasks.map((task) => (
-                    <button
+                    <Button
                       key={task.id}
                       type="button"
                       data-status={task.status}
@@ -306,7 +282,7 @@ export function DashboardPage() {
                           }
                         />
                       </span>
-                    </button>
+                    </Button>
                   ))
                 )}
               </div>
@@ -375,26 +351,30 @@ export function DashboardPage() {
           <p>长期记忆指标</p>
         </div>
         <div className={page.grid4}>
-          <article className={page.metric}>
-            <span>综合掌握度</span>
-            <strong>{metrics.mastery}%</strong>
-            <small>稳定性与可回忆概率</small>
-          </article>
-          <article className={page.metric}>
-            <span>延迟测试正确率</span>
-            <strong>{metrics.delayedAccuracy}%</strong>
-            <small>间隔至少 24 小时</small>
-          </article>
-          <article className={page.metric}>
-            <span>长期记忆项目</span>
-            <strong>{metrics.longTermCards}</strong>
-            <small>稳定期达到 21 天</small>
-          </article>
-          <article className={page.metric}>
-            <span>连续学习</span>
-            <strong>{metrics.streakDays}</strong>
-            <small>天</small>
-          </article>
+          <DataCard
+            label={'综合掌握度'}
+            value={`${metrics.mastery}%`}
+            description={'稳定性与可回忆概率'}
+            icon="lucide:target"
+          />
+          <DataCard
+            label={'延迟测试正确率'}
+            value={`${metrics.delayedAccuracy}%`}
+            description={'间隔至少 24 小时'}
+            icon="lucide:target"
+          />
+          <DataCard
+            label={'长期记忆项目'}
+            value={metrics.longTermCards}
+            description={'稳定期达到 21 天'}
+            icon="lucide:book-open"
+          />
+          <DataCard
+            label={'连续学习'}
+            value={metrics.streakDays}
+            description={'天'}
+            icon="lucide:book-open"
+          />
         </div>
       </section>
 

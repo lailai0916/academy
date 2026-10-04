@@ -1,5 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Avatar, Brand, IconButton, ThemeControl } from '@lailai0916/ui';
+import {
+  Panel,
+  Badge,
+  PageContainer,
+  Avatar,
+  Brand,
+  IconButton,
+  ThemeControl,
+} from '@lailai0916/ui';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router';
 import { useAuth } from '../auth/AuthProvider';
 import { GlobalSearch } from './GlobalSearch';
@@ -112,16 +120,16 @@ export function AppShell() {
 
       <header className={styles.topbar}>
         <div className={styles.brandArea}>
-          <button
+          <IconButton
             ref={menuButtonRef}
             type="button"
             className={styles.menuButton}
-            aria-label={menuOpen ? '关闭主菜单' : '打开主菜单'}
+            label={menuOpen ? '关闭主菜单' : '打开主菜单'}
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((currentOpen) => !currentOpen)}
           >
             <Icon icon={menuOpen ? 'lucide:x' : 'lucide:menu'} />
-          </button>
+          </IconButton>
           <NavLink to="/dashboard" aria-label="返回今日学习">
             <Brand logoSrc="/brand/logo.svg" name="lailai's Academy" />
           </NavLink>
@@ -165,55 +173,59 @@ export function AppShell() {
       )}
 
       <aside className={`${styles.sidebar} ${menuOpen ? styles.sidebarOpen : ''}`}>
-        <NavLink
-          className={({ isActive }) =>
-            `${styles.userCard} ${isActive ? styles.userCardActive : ''}`
-          }
-          to="/profile"
-          end
-          aria-label="打开个人主页"
-        >
-          <Avatar name={user?.displayName ?? '?'} alt="个人头像" size={36} />
-          <span>
-            <strong>{user?.displayName}</strong>
-            <small>
-              @{user?.username} · {user?.grade}
-            </small>
-          </span>
-          <span className={styles.role}>{user?.role === 'admin' ? '管理员' : '学生'}</span>
-        </NavLink>
+        <Panel className={styles.sidebarPanel}>
+          <NavLink
+            className={({ isActive }) =>
+              `${styles.userCard} ${isActive ? styles.userCardActive : ''}`
+            }
+            to="/profile"
+            end
+            aria-label="打开个人主页"
+          >
+            <Avatar name={user?.displayName ?? '?'} alt="个人头像" size={36} />
+            <span>
+              <strong>{user?.displayName}</strong>
+              <small>
+                @{user?.username} · {user?.grade}
+              </small>
+            </span>
+            <Badge>{user?.role === 'admin' ? '管理员' : '学生'}</Badge>
+          </NavLink>
 
-        <nav className={styles.navigation} aria-label="主导航">
-          {navigation.map((group) => (
-            <div key={group.label} className={styles.navGroup}>
-              <p>{group.label}</p>
-              {group.items.map((item) => (
+          <nav className={styles.navigation} aria-label="主导航">
+            {navigation.map((group) => (
+              <div key={group.label} className={styles.navGroup}>
+                <p>{group.label}</p>
+                {group.items.map((item) => (
+                  <NavLink
+                    key={item.to}
+                    to={item.to}
+                    end={item.end}
+                    className={({ isActive }) =>
+                      `${styles.navItem} ${isActive ? styles.active : ''}`
+                    }
+                  >
+                    <Icon icon={item.icon} />
+                    <span>{item.label}</span>
+                  </NavLink>
+                ))}
+              </div>
+            ))}
+
+            {user?.role === 'admin' && (
+              <div className={styles.navGroup}>
+                <p>系统</p>
                 <NavLink
-                  key={item.to}
-                  to={item.to}
-                  end={item.end}
+                  to="/admin"
                   className={({ isActive }) => `${styles.navItem} ${isActive ? styles.active : ''}`}
                 >
-                  <Icon icon={item.icon} />
-                  <span>{item.label}</span>
+                  <Icon icon="lucide:shield-check" />
+                  <span>管理</span>
                 </NavLink>
-              ))}
-            </div>
-          ))}
-
-          {user?.role === 'admin' && (
-            <div className={styles.navGroup}>
-              <p>系统</p>
-              <NavLink
-                to="/admin"
-                className={({ isActive }) => `${styles.navItem} ${isActive ? styles.active : ''}`}
-              >
-                <Icon icon="lucide:shield-check" />
-                <span>管理</span>
-              </NavLink>
-            </div>
-          )}
-        </nav>
+              </div>
+            )}
+          </nav>
+        </Panel>
       </aside>
 
       <main
@@ -222,7 +234,9 @@ export function AppShell() {
         tabIndex={-1}
         inert={menuOpen ? true : undefined}
       >
-        <Outlet />
+        <PageContainer width={1320}>
+          <Outlet />
+        </PageContainer>
       </main>
     </div>
   );

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Brand, IconButton, ThemeControl } from '@lailai0916/ui';
+import { Brand, IconButton, ThemeControl, ButtonLink } from '@lailai0916/ui';
 import { Link, useNavigate } from 'react-router';
 import { useAuth } from '../auth/AuthProvider';
 import { Icon } from './Icon';
@@ -47,9 +47,9 @@ export function PublicHeader({ minimal = false }: { minimal?: boolean }) {
             />
             {minimal ? (
               <>
-                <Link to="/" className={styles.textAction}>
+                <ButtonLink to="/" variant="ghost" size="sm">
                   返回首页
-                </Link>
+                </ButtonLink>
                 {user && (
                   <IconButton
                     label="退出登录"
@@ -62,17 +62,17 @@ export function PublicHeader({ minimal = false }: { minimal?: boolean }) {
                 )}
               </>
             ) : !loading && user ? (
-              <Link to="/dashboard" className={styles.primaryAction}>
+              <ButtonLink to="/dashboard" variant="primary" size="sm">
                 进入学习
-              </Link>
+              </ButtonLink>
             ) : !loading ? (
               <>
-                <Link to="/login" className={styles.textAction}>
+                <ButtonLink to="/login" variant="ghost" size="sm">
                   登录
-                </Link>
-                <Link to="/register" className={styles.primaryAction}>
+                </ButtonLink>
+                <ButtonLink to="/register" variant="primary" size="sm">
                   邀请码注册
-                </Link>
+                </ButtonLink>
               </>
             ) : (
               <span className={styles.actionPlaceholder} aria-hidden="true" />

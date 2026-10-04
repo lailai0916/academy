@@ -178,40 +178,18 @@
 
 .quickLinks button {
   display: grid;
-  min-height: 84px;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 12px;
-  padding: 14px 17px;
-  border: 1px solid var(--academy-separator);
-  border-radius: var(--lk-radius-lg);
-  background: var(--lk-card-background-color);
-  color: var(--lk-font-color-secondary);
   text-align: left;
-  transition:
-    border-color var(--lk-transition),
-    background-color var(--lk-transition),
-    transform var(--lk-transition);
-}
-
-.quickLinks button:hover {
-  border-color: var(--lk-color-emphasis-400);
-  background: var(--lk-color-emphasis-100);
-}
-
-.quickLinks button:active {
-  transform: scale(0.985);
 }
 
 .quickLinks button > svg:first-child {
   width: 20px;
-  height: 20px;
-  color: var(--lk-color-primary-label);
 }
 
 .quickLinks button > svg:last-child {
   width: 17px;
-  height: 17px;
 }
 
 .quickLinks button > span {

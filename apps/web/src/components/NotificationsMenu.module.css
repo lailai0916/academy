@@ -6,26 +6,7 @@
   position: relative;
   display: grid;
   width: 40px;
-  height: 40px;
-  padding: 0;
   place-items: center;
-  border: 0;
-  border-radius: 12px;
-  background: transparent;
-  color: var(--lk-font-color-secondary);
-  transition:
-    background-color var(--lk-transition),
-    color var(--lk-transition),
-    transform var(--lk-transition);
-}
-
-.trigger:hover {
-  background: var(--lk-color-emphasis-100);
-  color: var(--lk-font-color-base);
-}
-
-.trigger:active {
-  transform: scale(0.94);
 }
 
 .trigger > svg {
@@ -33,22 +14,11 @@
   height: 18px;
 }
 
-.trigger > span {
+.unreadCount {
   position: absolute;
-  top: 2px;
-  right: 1px;
-  display: grid;
-  min-width: 16px;
-  height: 16px;
-  padding: 0 4px;
-  place-items: center;
-  border: 2px solid var(--lk-card-background-color);
-  border-radius: 9px;
-  background: var(--lk-color-danger);
-  color: white;
-  font-size: 10px;
-  font-weight: 700;
-  line-height: 1;
+  top: -5px;
+  right: -5px;
+  pointer-events: none;
 }
 
 .menu {
@@ -58,10 +28,6 @@
   right: 0;
   width: min(360px, calc(100vw - 24px));
   overflow: hidden;
-  border: 1px solid var(--academy-separator);
-  border-radius: var(--lk-radius-overlay);
-  background: var(--lk-card-background-color);
-  box-shadow: var(--lk-shadow-overlay);
   animation: notification-enter var(--lk-transition-surface) both;
 }
 
@@ -179,7 +145,6 @@
 @media (max-width: 720px) {
   .trigger {
     width: 44px;
-    height: 44px;
   }
 
   .menu {

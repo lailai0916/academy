@@ -1,3 +1,4 @@
+import { Badge, IconButton, Panel, PanelHeader, DataState } from '@lailai0916/ui';
 import { useEffect, useRef, useState } from 'react';
 import { NavLink } from 'react-router';
 import type { NotificationItem } from '@lailai/academy-shared';
@@ -56,29 +57,29 @@ export function NotificationsMenu() {
 
   return (
     <div ref={rootRef} className={styles.root}>
-      <button
+      <IconButton
         ref={triggerRef}
         type="button"
         className={styles.trigger}
-        aria-label="通知"
+        label="通知"
         aria-expanded={open}
         aria-haspopup="dialog"
         onClick={toggle}
       >
         <Icon icon="lucide:bell" />
-        {unread > 0 && <span>{unread > 99 ? '99+' : unread}</span>}
-      </button>
+        {unread > 0 && <Badge count={unread} variant="danger" className={styles.unreadCount} />}
+      </IconButton>
 
       {open && (
-        <section className={styles.menu} role="dialog" aria-label="通知">
-          <header>
+        <Panel className={styles.menu} role="dialog" aria-label="通知">
+          <PanelHeader>
             <h2>通知</h2>
-          </header>
+          </PanelHeader>
           <div className={styles.list}>
             {loading ? (
-              <p className={styles.empty}>正在读取通知……</p>
+              <DataState message="正在读取通知……" />
             ) : items.length === 0 ? (
-              <p className={styles.empty}>当前没有通知。</p>
+              <DataState message="当前没有通知。" />
             ) : (
               items.map((item) => {
                 const content = (
@@ -112,7 +113,7 @@ export function NotificationsMenu() {
               })
             )}
           </div>
-        </section>
+        </Panel>
       )}
     </div>
   );
