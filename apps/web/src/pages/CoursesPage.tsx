@@ -134,7 +134,9 @@ export function CoursesPage() {
                   <div className={styles.subjectFooter}>
                     {subjectCourses.map((course) => (
                       <Button key={course.slug} type="button" onClick={() => void start(course)}>
-                        {course.title} · {progressLabels[course.progress.status]}
+                        <span>
+                          {course.title} · {progressLabels[course.progress.status]}
+                        </span>
                         <Icon icon="lucide:arrow-right" />
                       </Button>
                     ))}
@@ -184,7 +186,6 @@ export function CoursesPage() {
               </div>
               <div className={styles.pilotDetails}>
                 <div className={styles.courseProgress}>
-                  <span>学习进度</span>
                   <Progress label="学习进度" value={pilot.progress.progressPercent} />
                   <small>
                     {pilot.progress.completedSteps} / {pilot.progress.totalSteps} 步

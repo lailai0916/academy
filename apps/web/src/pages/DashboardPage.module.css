@@ -44,10 +44,13 @@
   align-items: stretch;
 }
 
-.workspaceGrid > section,
-.planPanel,
-.focusPanel {
-  height: 100%;
+.workspaceGrid > section {
+  grid-template-rows: auto 1fr;
+}
+
+.planPanel {
+  display: grid;
+  align-content: center;
 }
 
 .plan {
@@ -92,11 +95,19 @@
 }
 
 .planItems button {
+  width: 100%;
+  height: auto;
+  padding-block: var(--lk-space-3);
+  text-align: left;
+}
+
+.planItems button > span {
   display: grid;
+  min-width: 0;
+  width: 100%;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 15px;
-  text-align: left;
 }
 
 .planItems button:disabled {
@@ -110,14 +121,17 @@
 }
 
 .planTaskCopy > strong {
+  overflow: hidden;
   font-size: 15px;
   letter-spacing: -0.01em;
+  text-overflow: ellipsis;
 }
 
 .planTaskCopy > small {
   overflow: hidden;
   color: var(--lk-font-color-secondary);
   font-size: 13px;
+  font-weight: 400;
   line-height: 1.45;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -326,8 +340,9 @@
   }
 
   .planProgress {
-    grid-template-columns: auto minmax(0, 1fr);
-    justify-items: start;
+    grid-template-columns: 1fr;
+    justify-items: stretch;
+    gap: var(--lk-space-3);
     padding: 0 0 22px;
     border-right: 0;
     border-bottom: 1px solid var(--lk-color-emphasis-300);
@@ -335,10 +350,10 @@
   }
 
   .progressCopy {
-    max-width: 240px;
+    max-width: none;
   }
 
-  .planItems button {
+  .planItems button > span {
     gap: 11px;
   }
 
@@ -367,8 +382,4 @@
   .chartMeta {
     padding-inline: 14px;
   }
-}
-
-.planProgress {
-  grid-template-columns: 1fr;
 }

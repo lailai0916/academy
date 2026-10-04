@@ -118,7 +118,7 @@ export function MistakesPage() {
                   </small>
                 </div>
                 <div className={styles.progress}>
-                  <Progress label={`掌握度 ${mistake.mastery}%`} value={mistake.mastery} />
+                  <Progress label="掌握度" value={mistake.mastery} />
                   <span>
                     错误 {mistake.mistakeCount} 次 · 最近{' '}
                     {new Date(mistake.lastMistakeAt).toLocaleDateString('zh-CN')}

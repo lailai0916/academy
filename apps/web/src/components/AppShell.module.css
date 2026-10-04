@@ -269,12 +269,6 @@
   }
 }
 
-@media (max-width: 1280px) {
-  .main {
-    width: min(calc(100% - 48px), var(--academy-content-width));
-  }
-}
-
 @media (max-width: 1080px) {
   .location {
     padding-inline: 10px;
@@ -355,7 +349,6 @@
   }
 
   .main {
-    width: min(calc(100% - 28px), 760px);
     padding: 32px 0 64px;
   }
 }
@@ -368,8 +361,11 @@
     justify-content: center;
   }
 
+  .brandArea :global([data-lk='brand'] > span:last-child) {
+    display: none;
+  }
+
   .main {
-    width: min(calc(100% - 24px), 760px);
     padding-top: 26px;
   }
 }

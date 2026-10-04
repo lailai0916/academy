@@ -217,29 +217,27 @@ export function DashboardPage() {
             </p>
           </div>
           <Panel feature className={styles.planPanel}>
-            <div className={styles.plan}>
-              <div className={styles.planProgress}>
-                <Progress label="今日计划完成度" value={boundedCompletion} />
-                <div className={styles.progressCopy}>
-                  <strong>
-                    {plan.tasks.length === 0
-                      ? '今天暂无学习任务'
-                      : remainingTasks.length === 0
+            {plan.tasks.length === 0 ? (
+              <EmptyState
+                title="今天没有待办任务"
+                description="可以浏览学科课程，或查看学习分析。"
+                icon={<Icon icon="lucide:circle-check-big" />}
+              />
+            ) : (
+              <div className={styles.plan}>
+                <div className={styles.planProgress}>
+                  <Progress label="今日计划完成度" value={boundedCompletion} />
+                  <div className={styles.progressCopy}>
+                    <strong>
+                      {remainingTasks.length === 0
                         ? '今日计划已完成'
                         : `还需完成 ${remainingTasks.length} 项任务`}
-                  </strong>
-                  <span>{planSummary}</span>
+                    </strong>
+                    <span>{planSummary}</span>
+                  </div>
                 </div>
-              </div>
-              <div className={styles.planItems}>
-                {plan.tasks.length === 0 ? (
-                  <EmptyState
-                    title="今天没有待办任务"
-                    description="可以浏览学科课程，或查看学习分析。"
-                    icon={<Icon icon="lucide:circle-check-big" />}
-                  />
-                ) : (
-                  plan.tasks.map((task) => (
+                <div className={styles.planItems}>
+                  {plan.tasks.map((task) => (
                     <Button
                       key={task.id}
                       type="button"
@@ -268,7 +266,7 @@ export function DashboardPage() {
                             {taskStatusLabels[task.status]}
                           </span>
                         </span>
-                        <strong>{task.title}</strong>
+                        <strong title={task.title}>{task.title}</strong>
                         <small>{taskMeta(task)}</small>
                       </span>
                       <span className={styles.planTaskAction} aria-hidden="true">
@@ -283,10 +281,10 @@ export function DashboardPage() {
                         />
                       </span>
                     </Button>
-                  ))
-                )}
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </Panel>
         </section>
 
@@ -294,7 +292,7 @@ export function DashboardPage() {
           <div className={page.sectionHeader}>
             <h2>当前重点</h2>
           </div>
-          <Panel className={styles.focusPanel}>
+          <Panel>
             <div className={styles.focus}>
               <article>
                 <span>
@@ -369,12 +367,7 @@ export function DashboardPage() {
             description={'稳定期达到 21 天'}
             icon="lucide:book-open"
           />
-          <DataCard
-            label={'连续学习'}
-            value={metrics.streakDays}
-            description={'天'}
-            icon="lucide:book-open"
-          />
+          <DataCard label={'连续学习'} value={`${metrics.streakDays} 天`} icon="lucide:book-open" />
         </div>
       </section>
 

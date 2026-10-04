@@ -177,22 +177,30 @@
 }
 
 .quickLinks button {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 12px;
+  height: auto;
+  padding-block: var(--lk-space-4);
   text-align: left;
-}
-
-.quickLinks button > svg:first-child {
-  width: 20px;
-}
-
-.quickLinks button > svg:last-child {
-  width: 17px;
+  white-space: normal;
 }
 
 .quickLinks button > span {
+  display: grid;
+  min-width: 0;
+  width: 100%;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.quickLinks button > span > svg:first-child {
+  width: 20px;
+}
+
+.quickLinks button > span > svg:last-child {
+  width: 17px;
+}
+
+.quickLinks button > span > span {
   display: grid;
   gap: 1px;
 }
@@ -205,6 +213,7 @@
 .quickLinks small {
   color: var(--lk-font-color-secondary);
   font-size: 13px;
+  font-weight: 400;
 }
 
 @media (max-width: 720px) {

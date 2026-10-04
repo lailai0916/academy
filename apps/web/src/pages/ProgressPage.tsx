@@ -44,8 +44,7 @@ export function ProgressPage() {
       <div className={page.grid4}>
         <DataCard
           label={'有效复习'}
-          value={insights.metrics.reviewCount}
-          description={'次'}
+          value={`${insights.metrics.reviewCount} 次`}
           icon="lucide:calendar-clock"
         />
         <DataCard
@@ -62,7 +61,7 @@ export function ProgressPage() {
         />
         <DataCard
           label={'有效学习日'}
-          value={insights.metrics.activeDays}
+          value={`${insights.metrics.activeDays} 天`}
           description={'不以在线时长计数'}
           icon="lucide:calendar-clock"
         />
@@ -169,7 +168,7 @@ export function ProgressPage() {
                         {unit.cardCount} 项已学 · {unit.due} 项到期 · 累计遗忘 {unit.lapses} 次
                       </small>
                     </div>
-                    <Progress label={`掌握度 ${unit.mastery}%`} value={unit.mastery} />
+                    <Progress label="掌握度" value={unit.mastery} />
                     <Button
                       size="sm"
                       variant="ghost"

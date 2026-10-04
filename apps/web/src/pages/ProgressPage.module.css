@@ -133,6 +133,11 @@
   font-size: 12px;
 }
 
+.sessionList small,
+.sessionList time {
+  font-weight: 400;
+}
+
 .weakList strong {
   overflow: hidden;
   font-size: 14px;
@@ -145,11 +150,19 @@
 }
 
 .sessionList button {
+  width: 100%;
+  height: auto;
+  padding-block: var(--lk-space-3);
+  text-align: left;
+}
+
+.sessionList button > span {
   display: grid;
+  min-width: 0;
+  width: 100%;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 11px;
-  text-align: left;
 }
 
 .sessionIcon {
@@ -167,7 +180,7 @@
   height: 17px;
 }
 
-.sessionList button > span:nth-child(2) {
+.sessionList button > span > span:nth-child(2) {
   display: grid;
   min-width: 0;
   gap: 2px;

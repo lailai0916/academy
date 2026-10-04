@@ -216,7 +216,7 @@ export function LearnPage({ kind }: { kind?: ContentKind }) {
                       </small>
                     </div>
                     <div className={styles.unitProgress}>
-                      <Progress label={`教材覆盖 ${progress}%`} value={progress} />
+                      <Progress label="教材覆盖" value={progress} />
                       <Button
                         size="sm"
                         variant="ghost"
