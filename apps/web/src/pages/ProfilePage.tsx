@@ -1,3 +1,4 @@
+import Hint from '@lailai0916/ui/Hint';
 import {
   Card,
   DataCard,
@@ -288,10 +289,12 @@ export function ProfilePage() {
               <div className={styles.nameRow}>
                 <h1 id="profile-name">{profile.displayName}</h1>
                 {profile.role === 'admin' && (
-                  <span className={styles.verified} title="Academy 管理员">
-                    <Icon icon="lucide:badge-check" />
-                    <span>管理员</span>
-                  </span>
+                  <Hint label="Academy 管理员">
+                    <span className={styles.verified}>
+                      <Icon icon="lucide:badge-check" />
+                      <span>管理员</span>
+                    </span>
+                  </Hint>
                 )}
               </div>
               <span className={styles.handle}>@{profile.username}</span>

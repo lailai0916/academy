@@ -96,6 +96,7 @@ export function GlobalSearch() {
         type="button"
         className={styles.trigger}
         aria-label="搜索学习内容和功能"
+        title="搜索学习内容和功能（⌘K / Ctrl+K）"
         onClick={() => setOpen(true)}
       >
         <span className={styles.triggerText}>搜索学习内容或功能</span>

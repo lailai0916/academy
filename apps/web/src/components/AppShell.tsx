@@ -1,3 +1,4 @@
+import Hint from '@lailai0916/ui/Hint';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Panel,
@@ -155,10 +156,12 @@ export function AppShell() {
             <NotificationsMenu />
             <ThemeButton theme={resolvedTheme} onThemeChange={setPreference} />
             <span className={styles.divider} aria-hidden="true" />
-            <NavLink className={styles.accountButton} to="/profile" aria-label="打开个人主页">
-              <Avatar name={user?.displayName ?? '?'} alt="个人头像" size={32} />
-              <span>{user?.displayName}</span>
-            </NavLink>
+            <Hint label="打开个人主页">
+              <NavLink className={styles.accountButton} to="/profile" aria-label="打开个人主页">
+                <Avatar name={user?.displayName ?? '?'} alt="个人头像" size={32} />
+                <span>{user?.displayName}</span>
+              </NavLink>
+            </Hint>
             <IconButton
               className={styles.logoutButton}
               label="退出登录"
