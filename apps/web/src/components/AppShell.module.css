@@ -6,38 +6,11 @@
 }
 
 .topbar {
-  position: fixed;
-  z-index: 40;
-  inset: 0 0 auto;
-  display: grid;
-  height: var(--lk-header-height);
-  grid-template-columns:
-    calc(var(--academy-sidebar-width) + var(--academy-shell-gap) * 2)
-    minmax(120px, 1fr) auto;
-  align-items: center;
-  border-bottom: 1px solid var(--academy-separator);
-  background: var(--academy-chrome);
-  box-shadow: 0 1px 0 rgb(255 255 255 / 36%) inset;
-  backdrop-filter: saturate(180%) blur(24px);
-  -webkit-backdrop-filter: saturate(180%) blur(24px);
-}
-
-.brandArea {
-  display: flex;
-  min-width: 0;
-  align-items: center;
-  gap: 6px;
-  padding: 0 20px;
-}
-
-.brandArea > a {
-  display: inline-flex;
-  min-width: 0;
-  border-radius: var(--lk-radius-control);
+  --lk-header-brand-width: calc(var(--academy-sidebar-width) + var(--academy-shell-gap));
 }
 
 .menuButton {
-  display: none;
+  display: grid;
   width: 44px;
   place-items: center;
 }
@@ -51,7 +24,6 @@
   display: flex;
   min-width: 0;
   align-items: center;
-  padding: 0 20px;
 }
 
 .location strong {
@@ -62,13 +34,6 @@
   letter-spacing: -0.015em;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.topbarTools {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding-right: 16px;
 }
 
 .divider {
@@ -270,10 +235,6 @@
 }
 
 @media (max-width: 1080px) {
-  .location {
-    padding-inline: 10px;
-  }
-
   .accountButton span {
     display: none;
   }
@@ -282,27 +243,6 @@
 @media (max-width: 900px) {
   .shell {
     padding-left: 0;
-  }
-
-  .topbar {
-    grid-template-columns: minmax(0, 1fr) auto;
-  }
-
-  .brandArea {
-    padding-left: 6px;
-  }
-
-  .menuButton {
-    display: grid;
-  }
-
-  .location {
-    display: none;
-  }
-
-  .topbarTools {
-    gap: 2px;
-    padding-right: 6px;
   }
 
   .divider,
@@ -354,24 +294,12 @@
 }
 
 @media (max-width: 520px) {
-  .brandArea > a {
-    width: 44px;
-    height: 44px;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .brandArea :global([data-lk='brand'] > span:last-child) {
-    display: none;
-  }
-
   .main {
     padding-top: 26px;
   }
 }
 
 @media (prefers-reduced-transparency: reduce) {
-  .topbar,
   .sidebar,
   .mobileBackdrop {
     backdrop-filter: none;
@@ -380,7 +308,6 @@
 }
 
 @media (prefers-contrast: more) {
-  .topbar,
   .sidebar {
     box-shadow: none;
   }

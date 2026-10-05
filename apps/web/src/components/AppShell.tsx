@@ -6,6 +6,8 @@ import {
   Avatar,
   Brand,
   IconButton,
+  SiteHeader,
+  SkipLink,
   ThemeControl,
 } from '@lailai0916/ui';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router';
@@ -61,13 +63,16 @@ export function AppShell() {
 
   useEffect(() => {
     setMenuOpen(false);
-    if (previousPath.current !== location.pathname) {
-      window.requestAnimationFrame(() =>
-        document.getElementById('main-content')?.focus({ preventScroll: true })
-      );
-      previousPath.current = location.pathname;
-    }
   }, [location.pathname]);
+
+  useEffect(() => {
+    if (menuOpen || previousPath.current === location.pathname) return;
+    previousPath.current = location.pathname;
+    const frame = window.requestAnimationFrame(() =>
+      document.getElementById('main-content')?.focus({ preventScroll: true })
+    );
+    return () => window.cancelAnimationFrame(frame);
+  }, [location.pathname, menuOpen]);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -114,12 +119,13 @@ export function AppShell() {
 
   return (
     <div className={styles.shell}>
-      <a className="skip-link" href="#main-content">
-        跳到主要内容
-      </a>
+      <SkipLink>跳到主要内容</SkipLink>
 
-      <header className={styles.topbar}>
-        <div className={styles.brandArea}>
+      <SiteHeader
+        className={styles.topbar}
+        position="fixed"
+        fullWidth
+        mobileAction={
           <IconButton
             ref={menuButtonRef}
             type="button"
@@ -130,38 +136,42 @@ export function AppShell() {
           >
             <Icon icon={menuOpen ? 'lucide:x' : 'lucide:menu'} />
           </IconButton>
+        }
+        brand={
           <NavLink to="/dashboard" aria-label="返回今日学习">
             <Brand logoSrc="/brand/logo.svg" name="lailai's Academy" />
           </NavLink>
-        </div>
-
-        <div className={styles.location} aria-label="当前位置">
-          <strong>{currentLabel}</strong>
-        </div>
-
-        <div className={styles.topbarTools}>
-          <GlobalSearch />
-          <NotificationsMenu />
-          <ThemeControl
-            variant="compact"
-            labels={{ system: '跟随系统', light: '浅色', dark: '深色' }}
-          />
-          <span className={styles.divider} aria-hidden="true" />
-          <NavLink className={styles.accountButton} to="/profile" aria-label="打开个人主页">
-            <Avatar name={user?.displayName ?? '?'} alt="个人头像" size={32} />
-            <span>{user?.displayName}</span>
-          </NavLink>
-          <IconButton
-            className={styles.logoutButton}
-            label="退出登录"
-            size="sm"
-            disabled={loggingOut}
-            onClick={() => void handleLogout()}
-          >
-            <Icon icon="lucide:log-out" />
-          </IconButton>
-        </div>
-      </header>
+        }
+        navigation={
+          <div className={styles.location} aria-label="当前位置">
+            <strong>{currentLabel}</strong>
+          </div>
+        }
+        actions={
+          <>
+            <GlobalSearch />
+            <NotificationsMenu />
+            <ThemeControl
+              variant="compact"
+              labels={{ system: '跟随系统', light: '浅色', dark: '深色' }}
+            />
+            <span className={styles.divider} aria-hidden="true" />
+            <NavLink className={styles.accountButton} to="/profile" aria-label="打开个人主页">
+              <Avatar name={user?.displayName ?? '?'} alt="个人头像" size={32} />
+              <span>{user?.displayName}</span>
+            </NavLink>
+            <IconButton
+              className={styles.logoutButton}
+              label="退出登录"
+              size="sm"
+              disabled={loggingOut}
+              onClick={() => void handleLogout()}
+            >
+              <Icon icon="lucide:log-out" />
+            </IconButton>
+          </>
+        }
+      />
 
       {menuOpen && (
         <button

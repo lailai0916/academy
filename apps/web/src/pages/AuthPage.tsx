@@ -49,7 +49,7 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
   return (
     <div className={styles.page}>
       <PublicHeader minimal />
-      <main id="main-content" className={styles.content}>
+      <main id="main-content" className={styles.content} tabIndex={-1}>
         <Panel feature className={styles.formPanel}>
           <PanelBody>
             <form className={styles.form} onSubmit={submit} aria-busy={submitting}>

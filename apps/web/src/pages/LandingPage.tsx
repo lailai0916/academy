@@ -40,7 +40,7 @@ export function LandingPage() {
     <div id="top" className={styles.page}>
       <PublicHeader />
 
-      <main id="main-content">
+      <main id="main-content" tabIndex={-1}>
         <section className={styles.hero}>
           <div className={styles.heroCopy}>
             <span className={styles.eyebrow}>面向浙江高中生的 AI 自学平台</span>

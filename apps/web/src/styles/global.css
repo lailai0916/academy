@@ -125,27 +125,6 @@ p {
   }
 }
 
-.skip-link {
-  position: fixed;
-  z-index: 100;
-  top: 8px;
-  left: 8px;
-  min-height: 44px;
-  padding: 8px 12px;
-  border: 1px solid var(--lk-color-emphasis-300);
-  border-radius: var(--lk-radius-control);
-  background: var(--lk-card-background-color);
-  color: var(--lk-font-color-base);
-  font-size: 14px;
-  font-weight: 650;
-  transform: translateY(-160%);
-  transition: transform var(--lk-transition);
-}
-
-.skip-link:focus {
-  transform: translateY(0);
-}
-
 .sr-only {
   position: absolute;
   width: 1px;

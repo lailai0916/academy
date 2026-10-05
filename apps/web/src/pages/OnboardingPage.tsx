@@ -74,7 +74,7 @@ export function OnboardingPage() {
   return (
     <div className={styles.page}>
       <PublicHeader minimal />
-      <main id="main-content" className={styles.content}>
+      <main id="main-content" className={styles.content} tabIndex={-1}>
         <header className={styles.heading}>
           <h1>学习档案</h1>
         </header>
