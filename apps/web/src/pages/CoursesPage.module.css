@@ -82,25 +82,6 @@
   letter-spacing: -0.03em;
 }
 
-.status {
-  width: fit-content;
-  min-height: 24px;
-  padding: 3px 9px;
-  border-radius: 999px;
-  background: var(--lk-color-emphasis-100);
-  color: var(--lk-font-color-secondary);
-  font-size: 12px;
-  font-weight: 650;
-  white-space: nowrap;
-}
-
-.status[data-status='building'],
-.status[data-status='pilot'],
-.status[data-status='available'] {
-  background: var(--lk-color-primary-soft);
-  color: var(--lk-color-primary-label);
-}
-
 .subjectFooter {
   min-height: 28px;
 }

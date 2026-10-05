@@ -257,7 +257,16 @@ export function AdminContentDetailPage({
                 <h3>内容编辑</h3>
                 <p>保存会创建不可变修订记录，不覆盖历史版本。</p>
               </div>
-              <Badge data-status={editor.status}>
+              <Badge
+                data-status={editor.status}
+                variant={
+                  editor.status === 'published'
+                    ? 'success'
+                    : editor.status === 'draft'
+                      ? 'primary'
+                      : 'neutral'
+                }
+              >
                 {editor.status === 'draft'
                   ? '草稿'
                   : editor.status === 'published'

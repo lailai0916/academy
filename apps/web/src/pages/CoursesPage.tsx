@@ -104,7 +104,9 @@ export function CoursesPage() {
             <h2>动量定理课程已接入完整学习链路</h2>
             <p>课堂可中断恢复，练习记录提示使用，独立测评完成后会安排延迟复测。</p>
           </div>
-          <Badge data-status="pilot">试用中</Badge>
+          <Badge data-status="pilot" variant="primary">
+            试用中
+          </Badge>
         </PanelBody>
       </Panel>
 
@@ -125,7 +127,16 @@ export function CoursesPage() {
                     <span className={page.iconChip}>
                       <Icon icon={subjectIcons[subject.code]} />
                     </span>
-                    <Badge data-status={subject.status}>{courseStatusLabels[subject.status]}</Badge>
+                    <Badge
+                      data-status={subject.status}
+                      variant={
+                        ['building', 'pilot', 'available'].includes(subject.status)
+                          ? 'primary'
+                          : 'neutral'
+                      }
+                    >
+                      {courseStatusLabels[subject.status]}
+                    </Badge>
                   </div>
                   <div className={styles.subjectCopy}>
                     <h3>{subject.name}</h3>

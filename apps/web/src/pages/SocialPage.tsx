@@ -85,7 +85,18 @@ function ChallengeCard({
             <span>{challenge.groupName}</span>
             <h3>{challenge.title}</h3>
           </div>
-          <Badge data-status={challenge.status}>{statusLabel}</Badge>
+          <Badge
+            data-status={challenge.status}
+            variant={
+              challenge.status === 'completed'
+                ? 'success'
+                : challenge.status === 'active'
+                  ? 'primary'
+                  : 'neutral'
+            }
+          >
+            {statusLabel}
+          </Badge>
         </header>
         <div className={styles.goalProgressCopy}>
           <strong>{metric.label}</strong>
@@ -319,7 +330,7 @@ export function SocialPage() {
                           <Button
                             key={kind}
                             type="button"
-                            aria-pressed={item.reacted.includes(kind)}
+                            active={item.reacted.includes(kind)}
                             disabled={busy}
                             onClick={() =>
                               run(async () => {

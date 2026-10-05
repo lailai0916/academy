@@ -625,7 +625,18 @@ function AdminContent(props: AdminContentProps) {
                       )}
                     </td>
                     <td>
-                      <Badge data-status={item.status}>{contentStatusLabels[item.status]}</Badge>
+                      <Badge
+                        data-status={item.status}
+                        variant={
+                          item.status === 'published'
+                            ? 'success'
+                            : item.status === 'draft'
+                              ? 'primary'
+                              : 'neutral'
+                        }
+                      >
+                        {contentStatusLabels[item.status]}
+                      </Badge>
                       {item.status === 'draft' && item.hasPublishedVersion && (
                         <span className={styles.liveVersion}>线上版本保留</span>
                       )}

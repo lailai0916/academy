@@ -96,7 +96,7 @@ function PostCard({
               <Button
                 key={kind}
                 type="button"
-                aria-pressed={post.reacted.includes(kind)}
+                active={post.reacted.includes(kind)}
                 aria-label={`${detail.label}${post.reactions[kind] > 0 ? `，${post.reactions[kind]} 人` : ''}`}
                 disabled={busy}
                 onClick={() => onReact(kind)}
