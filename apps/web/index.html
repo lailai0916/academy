@@ -10,11 +10,10 @@
     <script>
       (function () {
         try {
-          var preference = localStorage.getItem('lailai.theme');
           var system = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-          var theme = preference === 'light' || preference === 'dark' ? preference : system;
-          document.documentElement.dataset.theme = theme;
-          document.documentElement.dataset.themePreference = preference || 'system';
+          document.documentElement.dataset.theme = system;
+          document.documentElement.dataset.themePreference = 'system';
+          document.documentElement.style.colorScheme = system;
         } catch (_) {
           document.documentElement.dataset.theme = 'light';
           document.documentElement.dataset.themePreference = 'system';

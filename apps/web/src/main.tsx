@@ -15,7 +15,7 @@ if (!root) {
 
 createRoot(root).render(
   <StrictMode>
-    <ThemeProvider>
+    <ThemeProvider mode="system" themeColors={{ light: '#f6f6f8', dark: '#111214' }}>
       <BrowserRouter>
         <LaikitProvider locale="zh-Hans" linkComponent={AppLink}>
           <AuthProvider>

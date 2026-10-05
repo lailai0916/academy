@@ -8,7 +8,8 @@ import {
   IconButton,
   SiteHeader,
   SkipLink,
-  ThemeControl,
+  ThemeButton,
+  useTheme,
 } from '@lailai0916/ui';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router';
 import { useAuth } from '../auth/AuthProvider';
@@ -53,6 +54,7 @@ const navigation: { label: string; items: NavigationItem[] }[] = [
 ];
 
 export function AppShell() {
+  const { resolvedTheme, setPreference } = useTheme();
   const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
@@ -151,10 +153,7 @@ export function AppShell() {
           <>
             <GlobalSearch />
             <NotificationsMenu />
-            <ThemeControl
-              variant="compact"
-              labels={{ system: '跟随系统', light: '浅色', dark: '深色' }}
-            />
+            <ThemeButton theme={resolvedTheme} onThemeChange={setPreference} />
             <span className={styles.divider} aria-hidden="true" />
             <NavLink className={styles.accountButton} to="/profile" aria-label="打开个人主页">
               <Avatar name={user?.displayName ?? '?'} alt="个人头像" size={32} />

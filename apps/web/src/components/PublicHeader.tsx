@@ -1,5 +1,13 @@
 import { useState } from 'react';
-import { Brand, IconButton, SiteHeader, SkipLink, ThemeControl, ButtonLink } from '@lailai0916/ui';
+import {
+  Brand,
+  IconButton,
+  SiteHeader,
+  SkipLink,
+  ThemeButton,
+  ButtonLink,
+  useTheme,
+} from '@lailai0916/ui';
 import { Link, useNavigate } from 'react-router';
 import { useAuth } from '../auth/AuthProvider';
 import { Icon } from './Icon';
@@ -7,6 +15,7 @@ import styles from './PublicHeader.module.css';
 
 export function PublicHeader({ minimal = false }: { minimal?: boolean }) {
   const { loading, user, logout } = useAuth();
+  const { resolvedTheme, setPreference } = useTheme();
   const navigate = useNavigate();
   const [loggingOut, setLoggingOut] = useState(false);
 
@@ -41,10 +50,7 @@ export function PublicHeader({ minimal = false }: { minimal?: boolean }) {
         }
         actions={
           <>
-            <ThemeControl
-              variant="compact"
-              labels={{ system: '跟随系统', light: '浅色', dark: '深色' }}
-            />
+            <ThemeButton theme={resolvedTheme} onThemeChange={setPreference} />
             {minimal ? (
               <>
                 <ButtonLink to="/" variant="ghost" size="sm">
