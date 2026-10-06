@@ -1,0 +1,76 @@
+{
+  "version": 1,
+  "metric": "gzip-bytes",
+  "compressionLevel": 9,
+  "html": 2469,
+  "modules": {
+    "index.html": {
+      "js": 111270,
+      "css": 12734
+    },
+    "src/components/AppShell.tsx": {
+      "js": 131678,
+      "css": 14969
+    },
+    "src/pages/AdminPage.tsx": {
+      "js": 163705,
+      "css": 20341
+    },
+    "src/pages/AuthPage.tsx": {
+      "js": 128281,
+      "css": 13227
+    },
+    "src/pages/CoursePlayerPage.tsx": {
+      "js": 136549,
+      "css": 18092
+    },
+    "src/pages/CoursesPage.tsx": {
+      "js": 136197,
+      "css": 17284
+    },
+    "src/pages/DashboardPage.tsx": {
+      "js": 138668,
+      "css": 18165
+    },
+    "src/pages/LandingPage.tsx": {
+      "js": 129552,
+      "css": 15182
+    },
+    "src/pages/LearnPage.tsx": {
+      "js": 138074,
+      "css": 17665
+    },
+    "src/pages/MistakesPage.tsx": {
+      "js": 136436,
+      "css": 16695
+    },
+    "src/pages/NotFoundPage.tsx": {
+      "js": 112215,
+      "css": 14725
+    },
+    "src/pages/OnboardingPage.tsx": {
+      "js": 149375,
+      "css": 13596
+    },
+    "src/pages/ProfilePage.tsx": {
+      "js": 159657,
+      "css": 17632
+    },
+    "src/pages/ProgressPage.tsx": {
+      "js": 137020,
+      "css": 17433
+    },
+    "src/pages/SessionPage.tsx": {
+      "js": 137781,
+      "css": 18161
+    },
+    "src/pages/SettingsPage.tsx": {
+      "js": 156418,
+      "css": 18216
+    },
+    "src/pages/SocialPage.tsx": {
+      "js": 159303,
+      "css": 18216
+    }
+  }
+}

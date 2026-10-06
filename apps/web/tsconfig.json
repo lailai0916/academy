@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "allowImportingTsExtensions": true,
     "composite": true,
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
@@ -14,6 +15,6 @@
     "target": "ES2022",
     "useDefineForClassFields": true
   },
-  "include": ["src", "vite.config.ts"],
+  "include": ["src", "vite.config.ts", "vite.route-preload.ts"],
   "references": [{ "path": "../../packages/shared" }]
 }

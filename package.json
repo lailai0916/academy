@@ -11,7 +11,8 @@
   ],
   "scripts": {
     "build": "npm run build -w @lailai/academy-shared && npm run build -w @lailai/academy-api && npm run build -w @lailai/academy-web",
-    "check": "npm run format:check && npm run typecheck && npm run test && npm run build",
+    "check": "npm run format:check && npm run typecheck && npm run test && npm run build && npm run check:performance",
+    "check:performance": "node scripts/check-performance.mjs",
     "db:generate": "npm run db:generate -w @lailai/academy-api",
     "db:migrate": "npm run db:migrate -w @lailai/academy-api",
     "db:seed": "npm run db:seed -w @lailai/academy-api",

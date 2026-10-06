@@ -36,13 +36,13 @@ jobs:
           submodules: false
       - uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
 
       - name: Install dependencies
         run: npm ci
       - name: Build
-        run: npm run build
+        run: npm run build && npm run check:performance
 
       - name: Migrate, seed, and test
         env:
@@ -92,9 +92,15 @@ jobs:
             "https://academy.lailai.one/?deployment=$GITHUB_SHA" -o "$RUNNER_TEMP/deployed-index.html"
           cmp apps/web/dist/index.html "$RUNNER_TEMP/deployed-index.html"
           python3 - <<'PY' > "$RUNNER_TEMP/deployed-assets.txt"
-          import pathlib, re
+          import json, pathlib, re
           html = pathlib.Path('apps/web/dist/index.html').read_text()
-          for asset in sorted(set(re.findall(r'(?:src|href)=[\"\'](/assets/[^\"\']+)', html))):
+          assets = set(re.findall(r'(?:src|href)=[\"\'](/assets/[^\"\']+)', html))
+          manifest = json.loads(pathlib.Path('apps/web/dist/.vite/manifest.json').read_text())
+          for chunk in manifest.values():
+              assets.add('/' + chunk['file'])
+              assets.update('/' + css for css in chunk.get('css', []))
+          assets.add('/brand/logo.svg')
+          for asset in sorted(assets):
               print(asset)
           PY
           while IFS= read -r asset; do

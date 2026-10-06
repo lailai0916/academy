@@ -35,6 +35,9 @@ npm run db:generate
 
 Run `npm run check` before committing. Run the API integration suite against an isolated database
 with `ACADEMY_INTEGRATION_TEST=true` when changing authentication, learning, social, or admin flows.
+The performance check verifies built HTML/JS/CSS ceilings in `scripts/performance-budgets.json`;
+`node scripts/check-performance.mjs --update` only tightens them. Results live in `perf/report.md`.
+Use Node 24 to reproduce CI builds and compressed asset sizes.
 
 ## Durable conventions
 

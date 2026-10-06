@@ -1,11 +1,7 @@
 import { Alert, Button, Panel, Progress, PanelBody, Badge } from '@lailai0916/ui';
 import { useEffect, useState } from 'react';
-import {
-  courseStatusLabels,
-  curriculumCatalog,
-  type CourseListItem,
-  type CourseProgressStatus,
-} from '@lailai/academy-shared';
+import { courseStatusLabels, curriculumCatalog } from '@lailai/academy-shared/catalog';
+import type { CourseListItem, CourseProgressStatus } from '@lailai/academy-shared';
 import { Link, useNavigate } from 'react-router';
 import { Icon } from '../components/Icon';
 import { api, errorMessage } from '../lib/api';
