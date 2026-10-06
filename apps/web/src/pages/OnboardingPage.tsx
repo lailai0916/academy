@@ -1,4 +1,4 @@
-import { Alert, Button, Panel, Radio, SelectField, TextField } from '@lailai0916/ui';
+import { Alert, Button, DropdownSelectField, Panel, Radio, TextField } from '@lailai0916/ui';
 import { useState, type FormEvent } from 'react';
 import type { ContentKind, Grade, Profile } from '@lailai/academy-shared';
 import { useAuth } from '../auth/AuthProvider';
@@ -92,15 +92,16 @@ export function OnboardingPage() {
                   onChange={(event) => setDisplayName(event.target.value)}
                   required
                 />
-                <SelectField
+                <DropdownSelectField
                   label="当前年级"
                   value={grade}
-                  onChange={(event) => setGrade(event.target.value as Grade)}
-                >
-                  <option value="高一">高一</option>
-                  <option value="高二">高二</option>
-                  <option value="高三">高三</option>
-                </SelectField>
+                  options={[
+                    { value: '高一', label: '高一' },
+                    { value: '高二', label: '高二' },
+                    { value: '高三', label: '高三' },
+                  ]}
+                  onValueChange={(value) => setGrade(value as Grade)}
+                />
               </div>
               <TextField
                 label="高考总分目标"

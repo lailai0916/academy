@@ -4,7 +4,7 @@ import {
   DataState,
   Panel,
   PasswordField,
-  SelectField,
+  DropdownSelectField,
   TextAreaField,
   TextField,
 } from '@lailai0916/ui';
@@ -202,15 +202,16 @@ export function SettingsPage() {
                       onChange={(event) => update('displayName', event.target.value)}
                       required
                     />
-                    <SelectField
+                    <DropdownSelectField
                       label="当前年级"
                       value={profile.grade}
-                      onChange={(event) => update('grade', event.target.value as Grade)}
-                    >
-                      <option value="高一">高一</option>
-                      <option value="高二">高二</option>
-                      <option value="高三">高三</option>
-                    </SelectField>
+                      options={[
+                        { value: '高一', label: '高一' },
+                        { value: '高二', label: '高二' },
+                        { value: '高三', label: '高三' },
+                      ]}
+                      onValueChange={(value) => update('grade', value as Grade)}
+                    />
                   </div>
                   <TextAreaField
                     label="个人简介"
@@ -237,14 +238,15 @@ export function SettingsPage() {
                     value={profile.dailyGoal}
                     onChange={(event) => update('dailyGoal', Number(event.target.value))}
                   />
-                  <SelectField
+                  <DropdownSelectField
                     label="个人主页可见性"
                     value={profile.isPublic ? 'public' : 'private'}
-                    onChange={(event) => update('isPublic', event.target.value === 'public')}
-                  >
-                    <option value="public">平台用户可见</option>
-                    <option value="private">仅自己可见</option>
-                  </SelectField>
+                    options={[
+                      { value: 'public', label: '平台用户可见' },
+                      { value: 'private', label: '仅自己可见' },
+                    ]}
+                    onValueChange={(value) => update('isPublic', value === 'public')}
+                  />
                 </div>
               </div>
               <div className={page.actions}>

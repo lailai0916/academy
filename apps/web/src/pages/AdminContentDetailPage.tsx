@@ -2,7 +2,7 @@ import {
   Alert,
   Button,
   Panel,
-  SelectField,
+  DropdownSelectField,
   TextAreaField,
   TextField,
   PanelBody,
@@ -276,25 +276,27 @@ export function AdminContentDetailPage({
             </div>
 
             <div className={page.formRow}>
-              <SelectField
+              <DropdownSelectField
                 label="年级"
                 value={editor.grade}
-                onChange={(event) => update('grade', event.target.value as EditorState['grade'])}
-              >
-                <option value="高一">高一</option>
-                <option value="高二">高二</option>
-                <option value="高三">高三</option>
-              </SelectField>
-              <SelectField
+                options={[
+                  { value: '高一', label: '高一' },
+                  { value: '高二', label: '高二' },
+                  { value: '高三', label: '高三' },
+                ]}
+                onValueChange={(value) => update('grade', value as EditorState['grade'])}
+              />
+              <DropdownSelectField
                 label="状态"
                 value={editor.status}
                 description="草稿和归档内容不会进入学生学习计划。"
-                onChange={(event) => update('status', event.target.value as EditorState['status'])}
-              >
-                <option value="draft">草稿</option>
-                <option value="published">发布</option>
-                <option value="archived">归档</option>
-              </SelectField>
+                options={[
+                  { value: 'draft', label: '草稿' },
+                  { value: 'published', label: '发布' },
+                  { value: 'archived', label: '归档' },
+                ]}
+                onValueChange={(value) => update('status', value as EditorState['status'])}
+              />
             </div>
             <TextField
               label="教材"

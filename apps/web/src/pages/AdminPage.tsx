@@ -5,7 +5,7 @@ import {
   Input,
   Panel,
   PasswordField,
-  SelectField,
+  DropdownSelectField,
   Table,
   TextAreaField,
   TextField,
@@ -554,35 +554,38 @@ function AdminContent(props: AdminContentProps) {
               placeholder="内容、教材或单元"
               onChange={(event) => props.onChangeContentQuery(event.target.value)}
             />
-            <SelectField
+            <DropdownSelectField
               label="类型"
               value={props.contentKind}
-              onChange={(event) => props.onChangeContentKind(event.target.value)}
-            >
-              <option value="">全部</option>
-              <option value="word">单词</option>
-              <option value="poem">古诗词</option>
-            </SelectField>
-            <SelectField
+              options={[
+                { value: '', label: '全部' },
+                { value: 'word', label: '单词' },
+                { value: 'poem', label: '古诗词' },
+              ]}
+              onValueChange={props.onChangeContentKind}
+            />
+            <DropdownSelectField
               label="年级"
               value={props.contentGrade}
-              onChange={(event) => props.onChangeContentGrade(event.target.value)}
-            >
-              <option value="">全部</option>
-              <option value="高一">高一</option>
-              <option value="高二">高二</option>
-              <option value="高三">高三</option>
-            </SelectField>
-            <SelectField
+              options={[
+                { value: '', label: '全部' },
+                { value: '高一', label: '高一' },
+                { value: '高二', label: '高二' },
+                { value: '高三', label: '高三' },
+              ]}
+              onValueChange={props.onChangeContentGrade}
+            />
+            <DropdownSelectField
               label="状态"
               value={props.contentStatus}
-              onChange={(event) => props.onChangeContentStatus(event.target.value)}
-            >
-              <option value="">全部</option>
-              <option value="draft">草稿</option>
-              <option value="published">已发布</option>
-              <option value="archived">已归档</option>
-            </SelectField>
+              options={[
+                { value: '', label: '全部' },
+                { value: 'draft', label: '草稿' },
+                { value: 'published', label: '已发布' },
+                { value: 'archived', label: '已归档' },
+              ]}
+              onValueChange={props.onChangeContentStatus}
+            />
           </div>
           <div className={`${feature.adminSection} ${feature.tableWrap}`}>
             <Table>
@@ -706,17 +709,16 @@ function AdminContent(props: AdminContentProps) {
                 onChange={(event) => props.onChangeImportVersion(event.target.value)}
               />
             </div>
-            <SelectField
+            <DropdownSelectField
               label="导入状态"
               value={props.importStatus}
               description="草稿不会进入学生学习计划。确认内容无误后再发布。"
-              onChange={(event) =>
-                props.onChangeImportStatus(event.target.value as 'draft' | 'published')
-              }
-            >
-              <option value="draft">保存为草稿</option>
-              <option value="published">直接发布</option>
-            </SelectField>
+              options={[
+                { value: 'draft', label: '保存为草稿' },
+                { value: 'published', label: '直接发布' },
+              ]}
+              onValueChange={(value) => props.onChangeImportStatus(value as 'draft' | 'published')}
+            />
             <TextAreaField
               label="内容 JSON"
               value={props.importJson}

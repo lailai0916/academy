@@ -12,7 +12,7 @@
   "dependencies": {
     "@iconify-icons/lucide": "^2.0.15",
     "@lailai/academy-shared": "*",
-    "@lailai0916/ui": "0.3.3",
+    "@lailai0916/ui": "0.3.6",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "react-router": "^8.3.0"

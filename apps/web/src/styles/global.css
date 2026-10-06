@@ -120,7 +120,8 @@ p {
   }
 
   [data-lk='panel'],
-  [data-lk='field-control'] {
+  [data-lk='field-control'],
+  [data-lk='dropdown-select-trigger'] {
     border-width: 2px;
   }
 }

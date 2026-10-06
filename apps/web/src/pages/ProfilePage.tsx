@@ -7,7 +7,7 @@ import {
   Button,
   EmptyState,
   Panel,
-  SelectField,
+  DropdownSelectField,
   Tabs,
   TextAreaField,
 } from '@lailai0916/ui';
@@ -464,16 +464,15 @@ export function ProfilePage() {
                       required
                     />
                     <div className={styles.composerActions}>
-                      <SelectField
+                      <DropdownSelectField
                         label="可见范围"
                         value={visibility}
-                        onChange={(event) =>
-                          setVisibility(event.target.value as 'platform' | 'friends')
-                        }
-                      >
-                        <option value="platform">全站可见</option>
-                        <option value="friends">仅好友</option>
-                      </SelectField>
+                        options={[
+                          { value: 'platform', label: '全站可见' },
+                          { value: 'friends', label: '仅好友' },
+                        ]}
+                        onValueChange={(value) => setVisibility(value as 'platform' | 'friends')}
+                      />
                       <div className={styles.publishAction}>
                         <span>{post.length} / 500</span>
                         <Button

@@ -7,7 +7,7 @@ import {
   Panel,
   PanelBody,
   Progress,
-  SelectField,
+  DropdownSelectField,
   Tabs,
   TextAreaField,
   TextField,
@@ -293,14 +293,15 @@ export function SocialPage() {
                 onChange={(event) => setPost(event.target.value)}
               />
               <div className={styles.composerActions}>
-                <SelectField
+                <DropdownSelectField
                   label="谁可以看到"
                   value={visibility}
-                  onChange={(event) => setVisibility(event.target.value as typeof visibility)}
-                >
-                  <option value="platform">全平台</option>
-                  <option value="friends">仅好友</option>
-                </SelectField>
+                  options={[
+                    { value: 'platform', label: '全平台' },
+                    { value: 'friends', label: '仅好友' },
+                  ]}
+                  onValueChange={(value) => setVisibility(value as typeof visibility)}
+                />
                 <Button variant="primary" type="submit" disabled={busy || !post.trim()}>
                   发布动态
                 </Button>
@@ -445,17 +446,15 @@ export function SocialPage() {
             <Panel feature>
               <form id="create-group-goal" className={styles.goalForm} onSubmit={createChallenge}>
                 <div className={styles.goalFormPrimary}>
-                  <SelectField
+                  <DropdownSelectField
                     label="学习小组"
                     value={challengeGroupId}
-                    onChange={(event) => setChallengeGroupId(event.target.value)}
-                  >
-                    {joinedGroups.map((group) => (
-                      <option key={group.id} value={group.id}>
-                        {group.name}
-                      </option>
-                    ))}
-                  </SelectField>
+                    options={joinedGroups.map((group) => ({
+                      value: group.id,
+                      label: group.name,
+                    }))}
+                    onValueChange={setChallengeGroupId}
+                  />
                   <TextField
                     label="目标名称"
                     value={challengeTitle}
@@ -467,17 +466,15 @@ export function SocialPage() {
                   />
                 </div>
                 <div className={styles.goalFormMetrics}>
-                  <SelectField
+                  <DropdownSelectField
                     label="衡量方式"
                     value={challengeMetric}
-                    onChange={(event) => changeMetric(event.target.value as Challenge['metric'])}
-                  >
-                    {Object.entries(metricDetails).map(([value, detail]) => (
-                      <option key={value} value={value}>
-                        {detail.label}
-                      </option>
-                    ))}
-                  </SelectField>
+                    options={Object.entries(metricDetails).map(([value, detail]) => ({
+                      value,
+                      label: detail.label,
+                    }))}
+                    onValueChange={(value) => changeMetric(value as Challenge['metric'])}
+                  />
                   <TextField
                     label={`${metricDetails[challengeMetric].targetLabel}（${metricDetails[challengeMetric].unit}）`}
                     type="number"
