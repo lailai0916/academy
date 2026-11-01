@@ -56,6 +56,9 @@ Use Node 24 to reproduce CI builds and compressed asset sizes.
 - Never attach usernames, answers, content text, API responses, or other sensitive learning data to
   Umami events.
 - Keep `AGENTS.md`, architecture docs, and deployment instructions aligned with code changes.
+- Successful deployments retain the five newest releases plus current, previous, and any container
+  Compose references. Retention stops when container metadata cannot be verified. Deployment
+  regression checks run through `npm run check` and CI.
 
 Shared UI is maintained in `lailai0916/ui` and installed from npm. Import `theme.css` before
 `styles.css`, use `--lk-*` tokens, and customize supported `data-lk` hooks rather than generated classes.

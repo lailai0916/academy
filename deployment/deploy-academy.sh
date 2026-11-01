@@ -72,4 +72,11 @@ fi
 
 rsync -rlpt --delete "$release/apps/web/dist/" /var/www/academy.lailai.one/
 echo "$release_id" > "$academy_root/current-release"
+if test -n "$previous_release"; then
+  ln -sfn "$releases/$previous_release" "$academy_root/previous.next"
+  mv -Tf "$academy_root/previous.next" "$academy_root/previous"
+fi
+if ! python3 "$release/deployment/release_retention.py" "$academy_root"; then
+  echo "Academy retention could not complete; unverified releases were preserved." >&2
+fi
 echo "Academy release $release_id is healthy."

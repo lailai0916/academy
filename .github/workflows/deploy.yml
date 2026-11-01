@@ -44,6 +44,9 @@ jobs:
       - name: Build
         run: npm run build && npm run check:performance
 
+      - name: Check deployment retention
+        run: python3 -B -m unittest discover -s deployment
+
       - name: Migrate, seed, and test
         env:
           ACADEMY_INTEGRATION_TEST: 'true'
