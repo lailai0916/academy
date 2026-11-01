@@ -53,6 +53,10 @@ Use Node 24 to reproduce CI builds and compressed asset sizes.
 - Store invitation and session tokens as hashes. Store AI keys encrypted at rest and return only
   `hasApiKey` to the browser.
 - Preserve additive, reviewed database migrations. Back up production before applying migrations.
+- Production deployment stops before activation when its database backup fails. Backup jobs share
+  a lock and publish uniquely named dumps only after export and archive checks succeed. Failed
+  preparation removes only its unactivated release and image tag; preserve activated failures for
+  diagnosis. Code rollback never reverses database migrations.
 - Never attach usernames, answers, content text, API responses, or other sensitive learning data to
   Umami events.
 - Keep `AGENTS.md`, architecture docs, and deployment instructions aligned with code changes.

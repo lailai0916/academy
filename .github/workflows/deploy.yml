@@ -44,7 +44,7 @@ jobs:
       - name: Build
         run: npm run build && npm run check:performance
 
-      - name: Check deployment retention
+      - name: Check deployment scripts
         run: python3 -B -m unittest discover -s deployment
 
       - name: Migrate, seed, and test

@@ -10,6 +10,26 @@ releases="$academy_root/releases"
 environment="$academy_root/.env"
 release_id=$(date -u +%Y%m%dT%H%M%SZ)
 release="$releases/$release_id"
+release_created=false
+image_built=false
+activation_started=false
+
+cleanup_failed_preparation() {
+  local exit_code=$?
+  if test "$exit_code" -ne 0 && test "$activation_started" = false; then
+    if test "$image_built" = true; then
+      docker image rm --no-prune "academy-api:$release_id" || \
+        echo "Failed preparation image is still referenced and was preserved." >&2
+    fi
+    if test "$release_created" = true; then
+      rm -rf -- "$release"
+    fi
+  fi
+  exit "$exit_code"
+}
+trap cleanup_failed_preparation EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
 
 test -f "$incoming/package-lock.json"
 test -f "$incoming/deployment/Dockerfile.api"
@@ -18,20 +38,27 @@ test -f "$incoming/apps/web/dist/index.html"
 test -f "$environment"
 
 mkdir -p "$releases" /var/www/academy.lailai.one
-cp -a "$incoming" "$release"
+mkdir "$release"
+release_created=true
+cp -a "$incoming/." "$release/"
 
 docker build \
   --pull \
   --file "$release/deployment/Dockerfile.api" \
   --tag "academy-api:$release_id" \
   "$release"
+image_built=true
 
 previous_release=''
 if test -L "$academy_root/current"; then
   previous_release=$(basename "$(readlink -f "$academy_root/current")")
-  /usr/local/sbin/backup-academy || true
+  if ! /usr/local/sbin/backup-academy; then
+    echo "Academy backup failed; deployment was stopped before activation." >&2
+    exit 1
+  fi
 fi
 
+activation_started=true
 ln -sfn "$release" "$academy_root/current.next"
 mv -Tf "$academy_root/current.next" "$academy_root/current"
 
