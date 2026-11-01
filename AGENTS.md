@@ -4,9 +4,9 @@ Runtime-neutral guidance for coding agents in this repository.
 
 ## Personal style
 
-Cross-project writing, design, and engineering preferences live in the `lailai-skill` submodule
-at `.agents/skills/lailai-skill/`. Read its `SKILL.md` and only the references relevant to the
-task. Do not duplicate those general rules here.
+Cross-project writing, design, and engineering preferences live in the shared `lailai-skill`
+at `~/.agents/skills/lailai-skill/`, maintained in `lailai0916/lailai-skill`. Read its `SKILL.md`
+and only the references relevant to the task. Do not duplicate those general rules here.
 
 ## Project
 
@@ -36,13 +36,18 @@ npm run db:generate
 Run `npm run check` before committing. Run the API integration suite against an isolated database
 with `ACADEMY_INTEGRATION_TEST=true` when changing authentication, learning, social, or admin flows.
 The performance check verifies built HTML/JS/CSS ceilings in `scripts/performance-budgets.json`;
-`node scripts/check-performance.mjs --update` only tightens them. Results live in `perf/report.md`.
+`node scripts/check-performance.mjs --update` only tightens them.
 Use Node 24 to reproduce CI builds and compressed asset sizes.
 
 ## Durable conventions
 
 - Keep the student interface Simplified Chinese. Tools remains the bilingual product.
 - Use semantic tokens and primitives from `@lailai0916/ui`; keep light, dark, and system modes complete.
+- Appearance uses the persistent `ThemeProvider` default and the shared three-option
+  `AppearanceControl` in public and authenticated headers. Follow the
+  [theme preference contract](https://github.com/lailai0916/ui/blob/main/docs/integration.md#theme-preference-contract).
+  The pre-paint script and provider share `lailai.theme`; preserve explicit choices across reloads,
+  tabs, and system changes. Do not restore temporary `mode="system"` behavior.
 - Measure mastery, delayed accuracy, and long-term retention. Do not optimize product feedback for
   time spent.
 - Keep continuous course teaching separate from vocabulary and poetry memory training. FSRS cards

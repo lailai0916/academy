@@ -113,8 +113,8 @@ Web 使用 laikit UI 的默认组件样式。页面的横向留白与居中只�
 
 公开页面和登录后的应用共用 laikit UI 的 `SiteHeader` 与 `SkipLink`。组件统一顶部栏的表面、栏高、容器、间距和响应式规则；应用通过插槽提供品牌、当前位置、移动菜单、搜索、通知与账号操作。应用侧栏只设置桌面品牌列的对齐宽度，菜单状态、路由、退出登录与弹层交互仍由 Academy 管理。
 
-顶部栏共用 laikit UI 的 `ThemeButton`：太阳或月亮显示当前主题，点击立即切换。根部使用 `ThemeProvider mode="system"`，加载页面和系统主题变化时跟随系统，手动切换仅影响当前页面。首次绘制脚本采用相同策略。Academy 保持简体中文，不提供尚未实现的语言切换入口。
-操作提示统一使用 laikit UI 的 `Hint`：主题和图标按钮自动接入，搜索快捷键和个人主页入口复用同一提示交互。
+顶部栏共用 `AppearanceControl`，通过 laikit UI 的紧凑 `ThemeControl` 菜单提供「跟随系统、浅色、深色」三项选择。根部使用默认的 `ThemeProvider` 偏好模式；未选择时跟随系统，手动选择保存在浏览器的 `lailai.theme`，刷新页面、切换标签页或系统外观变化都不会覆盖它。选回「跟随系统」后立即采用系统外观并继续同步。首次绘制脚本读取相同存储键，非法值或存储不可用时跟随系统，避免初始化前后的主题闪烁。完整约定见 [主题偏好规范](https://github.com/lailai0916/ui/blob/main/docs/integration.md#theme-preference-contract)。Academy 保持简体中文，不提供语言切换入口。
+操作提示统一使用 laikit UI 的 `Hint`：图标按钮自动接入，搜索快捷键和个人主页入口复用同一提示交互。
 
 ## 安全与隐私
 
