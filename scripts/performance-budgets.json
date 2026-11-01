@@ -2,75 +2,75 @@
   "version": 1,
   "metric": "gzip-bytes",
   "compressionLevel": 9,
-  "html": 2469,
+  "html": 2553,
   "modules": {
     "index.html": {
-      "js": 111270,
-      "css": 12734
+      "js": 111642,
+      "css": 14327
     },
     "src/components/AppShell.tsx": {
-      "js": 131678,
-      "css": 14969
+      "js": 133303,
+      "css": 16561
     },
     "src/pages/AdminPage.tsx": {
-      "js": 163705,
-      "css": 20341
+      "js": 165323,
+      "css": 21930
     },
     "src/pages/AuthPage.tsx": {
-      "js": 128281,
-      "css": 13227
+      "js": 129145,
+      "css": 14815
     },
     "src/pages/CoursePlayerPage.tsx": {
-      "js": 136549,
-      "css": 18092
+      "js": 138173,
+      "css": 19686
     },
     "src/pages/CoursesPage.tsx": {
-      "js": 136197,
-      "css": 17284
+      "js": 137821,
+      "css": 18877
     },
     "src/pages/DashboardPage.tsx": {
-      "js": 138668,
-      "css": 18165
+      "js": 140291,
+      "css": 19755
     },
     "src/pages/LandingPage.tsx": {
-      "js": 129552,
-      "css": 15182
+      "js": 131170,
+      "css": 16776
     },
     "src/pages/LearnPage.tsx": {
-      "js": 138074,
-      "css": 17665
+      "js": 139696,
+      "css": 19258
     },
     "src/pages/MistakesPage.tsx": {
-      "js": 136436,
-      "css": 16695
+      "js": 138059,
+      "css": 18286
     },
     "src/pages/NotFoundPage.tsx": {
-      "js": 112215,
-      "css": 14725
+      "js": 112585,
+      "css": 16312
     },
     "src/pages/OnboardingPage.tsx": {
-      "js": 149375,
-      "css": 13596
+      "js": 150236,
+      "css": 15186
     },
     "src/pages/ProfilePage.tsx": {
-      "js": 159657,
-      "css": 17632
+      "js": 161279,
+      "css": 19224
     },
     "src/pages/ProgressPage.tsx": {
-      "js": 137020,
-      "css": 17433
+      "js": 138642,
+      "css": 19030
     },
     "src/pages/SessionPage.tsx": {
-      "js": 137781,
-      "css": 18161
+      "js": 139401,
+      "css": 19742
     },
     "src/pages/SettingsPage.tsx": {
-      "js": 156418,
-      "css": 18216
+      "js": 158039,
+      "css": 19804
     },
     "src/pages/SocialPage.tsx": {
-      "js": 159303,
-      "css": 18216
+      "js": 160924,
+      "css": 19804
     }
   }
 }

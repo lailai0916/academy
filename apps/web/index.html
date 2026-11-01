@@ -9,15 +9,16 @@
     <title>lailai's Academy</title>
     <script>
       (function () {
+        var preference = 'system';
         try {
-          var system = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-          document.documentElement.dataset.theme = system;
-          document.documentElement.dataset.themePreference = 'system';
-          document.documentElement.style.colorScheme = system;
-        } catch (_) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
+          var stored = localStorage.getItem('lailai.theme');
+          if (stored === 'light' || stored === 'dark') preference = stored;
+        } catch (_) {}
+        var system = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        var theme = preference === 'system' ? system : preference;
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.dataset.themePreference = preference;
+        document.documentElement.style.colorScheme = theme;
 
         function syncThemeColor() {
           var meta = document.querySelector('meta[name="theme-color"]');

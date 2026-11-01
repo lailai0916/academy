@@ -9,11 +9,10 @@ import {
   IconButton,
   SiteHeader,
   SkipLink,
-  ThemeButton,
-  useTheme,
 } from '@lailai0916/ui';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router';
 import { useAuth } from '../auth/AuthProvider';
+import { AppearanceControl } from './AppearanceControl';
 import { GlobalSearch } from './GlobalSearch';
 import { Icon, type IconName } from './Icon';
 import { NotificationsMenu } from './NotificationsMenu';
@@ -55,7 +54,6 @@ const navigation: { label: string; items: NavigationItem[] }[] = [
 ];
 
 export function AppShell() {
-  const { resolvedTheme, setPreference } = useTheme();
   const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
@@ -154,7 +152,7 @@ export function AppShell() {
           <>
             <GlobalSearch />
             <NotificationsMenu />
-            <ThemeButton theme={resolvedTheme} onThemeChange={setPreference} />
+            <AppearanceControl />
             <span className={styles.divider} aria-hidden="true" />
             <Hint label="打开个人主页">
               <NavLink className={styles.accountButton} to="/profile" aria-label="打开个人主页">

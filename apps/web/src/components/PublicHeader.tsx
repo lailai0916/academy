@@ -1,21 +1,13 @@
 import { useState } from 'react';
-import {
-  Brand,
-  IconButton,
-  SiteHeader,
-  SkipLink,
-  ThemeButton,
-  ButtonLink,
-  useTheme,
-} from '@lailai0916/ui';
+import { Brand, IconButton, SiteHeader, SkipLink, ButtonLink } from '@lailai0916/ui';
 import { Link, useNavigate } from 'react-router';
 import { useAuth } from '../auth/AuthProvider';
+import { AppearanceControl } from './AppearanceControl';
 import { Icon } from './Icon';
 import styles from './PublicHeader.module.css';
 
 export function PublicHeader({ minimal = false }: { minimal?: boolean }) {
   const { loading, user, logout } = useAuth();
-  const { resolvedTheme, setPreference } = useTheme();
   const navigate = useNavigate();
   const [loggingOut, setLoggingOut] = useState(false);
 
@@ -50,7 +42,7 @@ export function PublicHeader({ minimal = false }: { minimal?: boolean }) {
         }
         actions={
           <>
-            <ThemeButton theme={resolvedTheme} onThemeChange={setPreference} />
+            <AppearanceControl />
             {minimal ? (
               <>
                 <ButtonLink to="/" variant="ghost" size="sm">
