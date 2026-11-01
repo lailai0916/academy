@@ -3,7 +3,7 @@ import subprocess
 import tempfile
 import unittest
 
-from release_retention import prune_releases
+from release_retention import prune_images, prune_releases
 
 
 class ReleaseRetentionTest(unittest.TestCase):
@@ -76,6 +76,53 @@ class ReleaseRetentionTest(unittest.TestCase):
             with self.assertRaises(ValueError):
                 prune_releases(root, lambda: [])
             self.assertTrue(all(path.is_dir() for path in paths))
+
+
+class ImageRetentionTest(unittest.TestCase):
+    def images(self):
+        images = {f"academy-api:202610{day:02d}T120000Z": str(day) for day in range(1, 8)}
+        images["academy-api:20261101T120000Z"] = "7"
+        return images
+
+    def test_distinct_versions_and_all_aliases_are_retained(self):
+        images = self.images()
+        images["postgres:17.11-alpine"] = "outside"
+        images["academy-api:manual"] = "unknown"
+        removed = []
+        result = prune_images(Path("/tmp"), lambda: images, lambda _: set(),
+                              lambda tag: not removed.append(tag))
+        expected = ["academy-api:20261001T120000Z", "academy-api:20261002T120000Z"]
+        self.assertEqual(result, expected)
+        self.assertEqual(removed, expected)
+
+    def test_current_previous_and_container_identities_override_age(self):
+        images = self.images()
+        self.assertEqual(prune_images(Path("/tmp"), lambda: images, lambda _: {"1", "2"},
+                                      lambda _: self.fail("Protected image deletion attempted")), [])
+
+    def test_metadata_failure_stops_and_docker_conflict_preserves_image(self):
+        images = self.images()
+        def unavailable(_):
+            raise subprocess.CalledProcessError(1, "docker")
+        with self.assertRaises(subprocess.CalledProcessError):
+            prune_images(Path("/tmp"), lambda: images, unavailable,
+                         lambda _: self.fail("Unverified image deletion attempted"))
+        self.assertEqual(prune_images(Path("/tmp"), lambda: images, lambda _: set(),
+                                      lambda _: False), [])
+
+    def test_dry_run_and_retagging_do_not_remove_changed_image(self):
+        images = self.images()
+        self.assertEqual(len(prune_images(Path("/tmp"), lambda: images, lambda _: set(),
+                                          lambda _: self.fail("Dry run deleted an image"), dry_run=True)), 2)
+        calls = []
+        def inventory():
+            calls.append(None)
+            current = images.copy()
+            if len(calls) > 1:
+                current["academy-api:20261001T120000Z"] = "7"
+            return current
+        self.assertEqual(prune_images(Path("/tmp"), inventory, lambda _: set(),
+                                      lambda _: True), ["academy-api:20261002T120000Z"])
 
 
 if __name__ == "__main__":
